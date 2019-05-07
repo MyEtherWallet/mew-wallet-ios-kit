@@ -1,0 +1,57 @@
+warning_threshold: 35
+
+excluded:
+- thirdparty
+
+disabled_rules:
+- trailing_whitespace
+
+line_length:
+  ignores_comments: true
+  warning: 180
+
+function_parameter_count:
+  warning: 10
+  error: 15
+
+file_length:
+  warning: 800
+  error: 1000
+
+type_body_length:
+  warning: 400
+  error: 450
+
+function_body_length:
+  warning: 70
+  error: 200
+
+identifier_name:
+  allowed_symbols: "_"
+  excluded:
+  - dx
+  - dy
+  - id
+  - to
+  - up
+  - i
+  - j
+  - k
+  - l
+  - at
+
+large_tuple:
+  warning: 4
+  error: 5
+
+type_name:
+  min_length: 3
+  max_length:
+    warning: 50
+    error: 70
+
+cyclomatic_complexity:
+  ignores_case_statements: true
+
+
+reporter: "xcode"
