@@ -1,6 +1,6 @@
 //
 //  Network.swift
-//  MEWwalletKitTests
+//  MEWwalletKit
 //
 //  Created by Mikhail Nikanorov on 4/17/19.
 //  Copyright © 2019 MyEtherWallet Inc. All rights reserved.

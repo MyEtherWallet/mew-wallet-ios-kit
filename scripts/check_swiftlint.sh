@@ -2,7 +2,7 @@ set -e
 
 if which swiftlint >/dev/null; then
   current_version=$(swiftlint version)
-  actual_version="0.31.0"
+  actual_version="0.32.0"
   echo $version
 if [ "$current_version" != "$actual_version" ] ; then
     echo "warning: Incorrect version of SwiftLint. $actual_version vs $current_version"
