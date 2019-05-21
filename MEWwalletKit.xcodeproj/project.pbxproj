@@ -20,6 +20,7 @@
 		5625D15E226EB9E5000B6357 /* Data+RIPEMB160.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5625D15D226EB9E5000B6357 /* Data+RIPEMB160.swift */; };
 		5625D1DD226FD991000B6357 /* Data+EIP55.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5625D1DC226FD991000B6357 /* Data+EIP55.swift */; };
 		5625D1E0226FDAFC000B6357 /* DataEIP55Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5625D1DF226FDAFC000B6357 /* DataEIP55Tests.swift */; };
+		566B158A229471A000EDAB4E /* libsecp256k1.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5625D130226A6302000B6357 /* libsecp256k1.framework */; };
 		5698B34D226111F600F713E1 /* MEWwalletKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5698B343226111F600F713E1 /* MEWwalletKit.framework */; };
 		5698B354226111F600F713E1 /* MEWwalletKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 5698B346226111F600F713E1 /* MEWwalletKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5698B361226112C000F713E1 /* BIP39.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5698B360226112C000F713E1 /* BIP39.swift */; };
@@ -159,6 +160,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				566B158A229471A000EDAB4E /* libsecp256k1.framework in Frameworks */,
 				5698B386226508CA00F713E1 /* Nimble.framework in Frameworks */,
 				5698B384226508C000F713E1 /* Quick.framework in Frameworks */,
 				5698B34D226111F600F713E1 /* MEWwalletKit.framework in Frameworks */,
