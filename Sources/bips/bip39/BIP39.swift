@@ -22,7 +22,7 @@ private let BIP39Salt = "mnemonic"
 
 public final class BIP39 {
   private var _entropy: Data?
-  lazy private (set) var entropy: Data? = {
+  lazy public private(set) var entropy: Data? = {
     if self._entropy != nil {
       return self._entropy
     }
@@ -37,7 +37,7 @@ public final class BIP39 {
   }()
   
   private var _mnemonic: [String]?
-  lazy private (set) var mnemonic: [String]? = {
+  lazy public private(set) var mnemonic: [String]? = {
     if self._mnemonic != nil {
       return self._mnemonic
     }
@@ -54,24 +54,24 @@ public final class BIP39 {
 
   private let language: BIP39Wordlist
   
-  init(bitsOfEntropy: Int = 256, language: BIP39Wordlist = .english) throws {
+  public init(bitsOfEntropy: Int = 256, language: BIP39Wordlist = .english) throws {
     self.language = language
     
     let entropy = try self.generateEntropy(bitsOfEntropy: bitsOfEntropy)
     self._entropy = entropy
   }
   
-  init(mnemonic: [String], language: BIP39Wordlist = .english) {
+  public init(mnemonic: [String], language: BIP39Wordlist = .english) {
     self.language = language
     self._mnemonic = mnemonic
   }
   
-  init(entropy: Data, language: BIP39Wordlist = .english) {
+  public init(entropy: Data, language: BIP39Wordlist = .english) {
     self.language = language
     self._entropy = entropy
   }
   
-  func seed(password: String = "") throws -> Data? {
+  public func seed(password: String = "") throws -> Data? {
     guard let mnemonic = self.mnemonic else {
       throw BIP39Error.invalidMnemonic
     }

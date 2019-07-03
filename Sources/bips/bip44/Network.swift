@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum Network {
+public enum Network {
   case bitcoin
   case litecoin
   case singularDTV
@@ -109,7 +109,7 @@ enum Network {
     }
   }
   
-  var path: String {
+  public var path: String {
     switch self {
     case .singularDTV:
       return "m/0'/0'/0'"

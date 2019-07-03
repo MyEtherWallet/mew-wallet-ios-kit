@@ -8,9 +8,9 @@
 
 import Foundation
 
-struct Address: CustomDebugStringConvertible {
+public struct Address: CustomDebugStringConvertible {
   private var _address: String
-  var address: String {
+  public var address: String {
     return self._address
   }
   
@@ -19,7 +19,7 @@ struct Address: CustomDebugStringConvertible {
     self._address = address
   }
   
-  var debugDescription: String {
+  public var debugDescription: String {
     return self._address
   }
 }

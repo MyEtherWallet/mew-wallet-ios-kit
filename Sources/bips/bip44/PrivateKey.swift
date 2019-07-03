@@ -16,7 +16,7 @@ enum PrivateKeyError: Error {
 
 private let HMACKeyData: [UInt8] = [0x42, 0x69, 0x74, 0x63, 0x6F, 0x69, 0x6E, 0x20, 0x73, 0x65, 0x65, 0x64] //"Bitcoin seed"
 
-struct PrivateKey: Key {
+public struct PrivateKey: Key {
   private let raw: Data
   private let chainCode: Data
   private let depth: UInt8
@@ -162,11 +162,12 @@ struct PrivateKey: Key {
     extendedKey += checksum
     return extendedKey.encodeBase58(alphabet: alphabet)
   }
+  
   func data() -> Data {
     return self.raw
   }
   
-  func address() -> Address? {
+  public func address() -> Address? {
     return self.publicKey()?.address()
   }
 }
