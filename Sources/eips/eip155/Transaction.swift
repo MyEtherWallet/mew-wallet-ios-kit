@@ -51,7 +51,7 @@ class Transaction: CustomDebugStringConvertible {
     var description = "Transaction\n"
     description += "Nonce: \(self.nonce._data.toHexString())\n"
     description += "Gas Price: \(self.gasPrice._data.toHexString())\n"
-    description += "Gas Limit: \(self.gasLimit._data.toHexString()))\n"
+    description += "Gas Limit: \(self.gasLimit._data.toHexString())\n"
     description += "From: \(String(describing: self.from)) \n"
     description += "To: \(self.to?.address ?? "")\n"
     description += "Value: \(self.value._data.toHexString())\n"

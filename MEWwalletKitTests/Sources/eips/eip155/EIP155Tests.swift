@@ -90,7 +90,7 @@ class EIP155Tests: QuickSpec {
   }()
   
   override func spec() {
-    describe("Signature tests tests") {
+    describe("Signature tests") {
       it("ttSignature tests") {
         for vector in self.testVectors {
           do {
