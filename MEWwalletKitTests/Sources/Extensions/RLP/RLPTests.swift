@@ -58,7 +58,7 @@ class RLPTests: QuickSpec {
   }()
   
   override func spec() {
-    fdescribe("RLP tests") {
+    describe("RLP tests") {
       it("Should correctly encode data") {
         for vector in self.testVectors[13...13] {
           let rlpData = vector.decoded.rlpEncode(offset: nil)

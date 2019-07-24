@@ -20,6 +20,11 @@
 		5625D15E226EB9E5000B6357 /* Data+RIPEMB160.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5625D15D226EB9E5000B6357 /* Data+RIPEMB160.swift */; };
 		5625D1DD226FD991000B6357 /* Data+EIP55.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5625D1DC226FD991000B6357 /* Data+EIP55.swift */; };
 		5625D1E0226FDAFC000B6357 /* DataEIP55Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5625D1DF226FDAFC000B6357 /* DataEIP55Tests.swift */; };
+		565FFFB922E8CB0000C42D4F /* MEWconnectSignatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565FFFB822E8CB0000C42D4F /* MEWconnectSignatureTests.swift */; };
+		565FFFBE22E8E9FF00C42D4F /* String+EthSign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565FFFBC22E8E9F700C42D4F /* String+EthSign.swift */; };
+		565FFFC122E8ECFA00C42D4F /* StringEthSignTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565FFFC022E8ECFA00C42D4F /* StringEthSignTests.swift */; };
+		565FFFC622E8EE3400C42D4F /* DataEthSignTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565FFFC522E8EE3400C42D4F /* DataEthSignTests.swift */; };
+		565FFFC722E8EF5F00C42D4F /* Data+EthSign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565FFFC322E8EDB000C42D4F /* Data+EthSign.swift */; };
 		566B158A229471A000EDAB4E /* libsecp256k1.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5625D130226A6302000B6357 /* libsecp256k1.framework */; };
 		5698B34D226111F600F713E1 /* MEWwalletKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5698B343226111F600F713E1 /* MEWwalletKit.framework */; };
 		5698B354226111F600F713E1 /* MEWwalletKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 5698B346226111F600F713E1 /* MEWwalletKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -97,6 +102,11 @@
 		5625D15D226EB9E5000B6357 /* Data+RIPEMB160.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+RIPEMB160.swift"; sourceTree = "<group>"; };
 		5625D1DC226FD991000B6357 /* Data+EIP55.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+EIP55.swift"; sourceTree = "<group>"; };
 		5625D1DF226FDAFC000B6357 /* DataEIP55Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataEIP55Tests.swift; sourceTree = "<group>"; };
+		565FFFB822E8CB0000C42D4F /* MEWconnectSignatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MEWconnectSignatureTests.swift; sourceTree = "<group>"; };
+		565FFFBC22E8E9F700C42D4F /* String+EthSign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+EthSign.swift"; sourceTree = "<group>"; };
+		565FFFC022E8ECFA00C42D4F /* StringEthSignTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringEthSignTests.swift; sourceTree = "<group>"; };
+		565FFFC322E8EDB000C42D4F /* Data+EthSign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+EthSign.swift"; sourceTree = "<group>"; };
+		565FFFC522E8EE3400C42D4F /* DataEthSignTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataEthSignTests.swift; sourceTree = "<group>"; };
 		5698B343226111F600F713E1 /* MEWwalletKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MEWwalletKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5698B346226111F600F713E1 /* MEWwalletKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MEWwalletKit.h; sourceTree = "<group>"; };
 		5698B347226111F600F713E1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -220,6 +230,40 @@
 			path = bips;
 			sourceTree = "<group>";
 		};
+		565FFFB622E8CAE400C42D4F /* SECP256k1 */ = {
+			isa = PBXGroup;
+			children = (
+				565FFFB822E8CB0000C42D4F /* MEWconnectSignatureTests.swift */,
+			);
+			path = SECP256k1;
+			sourceTree = "<group>";
+		};
+		565FFFBA22E8E9D200C42D4F /* jsonrpc */ = {
+			isa = PBXGroup;
+			children = (
+				565FFFBB22E8E9DE00C42D4F /* Extensions */,
+			);
+			path = jsonrpc;
+			sourceTree = "<group>";
+		};
+		565FFFBB22E8E9DE00C42D4F /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				565FFFBC22E8E9F700C42D4F /* String+EthSign.swift */,
+				565FFFC322E8EDB000C42D4F /* Data+EthSign.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		565FFFBF22E8ECE100C42D4F /* jsonrpc */ = {
+			isa = PBXGroup;
+			children = (
+				565FFFC022E8ECFA00C42D4F /* StringEthSignTests.swift */,
+				565FFFC522E8EE3400C42D4F /* DataEthSignTests.swift */,
+			);
+			path = jsonrpc;
+			sourceTree = "<group>";
+		};
 		5698B339226111F600F713E1 = {
 			isa = PBXGroup;
 			children = (
@@ -263,6 +307,7 @@
 		5698B35E2261125A00F713E1 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				565FFFBA22E8E9D200C42D4F /* jsonrpc */,
 				56E08C7A2272529100FC60EF /* Protocols */,
 				56E08C6E227243C000FC60EF /* eips */,
 				5625D137226A6FC2000B6357 /* bips */,
@@ -306,6 +351,8 @@
 		5698B37E226507F100F713E1 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				565FFFBF22E8ECE100C42D4F /* jsonrpc */,
+				565FFFB622E8CAE400C42D4F /* SECP256k1 */,
 				56E08C8F22726DBA00FC60EF /* eips */,
 				5625D139226A6FD7000B6357 /* bips */,
 				5698B37F226507FA00F713E1 /* Extensions */,
@@ -618,6 +665,7 @@
 				56E08C82227255D300FC60EF /* Int+RLP.swift in Sources */,
 				5698B3B12267DADC00F713E1 /* PublicKey.swift in Sources */,
 				5698B361226112C000F713E1 /* BIP39.swift in Sources */,
+				565FFFBE22E8E9FF00C42D4F /* String+EthSign.swift in Sources */,
 				5625CEDA226905BC000B6357 /* BigInt.swift in Sources */,
 				56E08C792272524D00FC60EF /* String+RLP.swift in Sources */,
 				5698B3B42267F1AD00F713E1 /* DerivationNode.swift in Sources */,
@@ -632,6 +680,7 @@
 				5698B397226671C000F713E1 /* FixedWidthInteger+Data.swift in Sources */,
 				56E08C9D2272C16200FC60EF /* SECP256k1EcdsaRecoverableSignature+Recover.swift in Sources */,
 				5698B38F22651C2B00F713E1 /* Data+Bits.swift in Sources */,
+				565FFFC722E8EF5F00C42D4F /* Data+EthSign.swift in Sources */,
 				56E08C8C2272686F00FC60EF /* Transaction+RLP.swift in Sources */,
 				56E08CAD22777EBE00FC60EF /* Data+Length.swift in Sources */,
 				56E08C7622724B9D00FC60EF /* Transaction+EIP155.swift in Sources */,
@@ -662,12 +711,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				56E08C9322726DDE00FC60EF /* RLPTests.swift in Sources */,
+				565FFFB922E8CB0000C42D4F /* MEWconnectSignatureTests.swift in Sources */,
 				5698B3812265080900F713E1 /* DataRandomBytesTests.swift in Sources */,
 				5698B3912265359900F713E1 /* DataBitsTests.swift in Sources */,
+				565FFFC122E8ECFA00C42D4F /* StringEthSignTests.swift in Sources */,
 				5698B38B2265114100F713E1 /* BIP39Tests.swift in Sources */,
 				5625CED3226904D5000B6357 /* DataZeroTests.swift in Sources */,
 				56E08CAB2272FBC200FC60EF /* EIP155Tests.swift in Sources */,
 				5625D134226A6785000B6357 /* BIP44Tests.swift in Sources */,
+				565FFFC622E8EE3400C42D4F /* DataEthSignTests.swift in Sources */,
 				5698B3A022668B0B00F713E1 /* ArrayBitDataTests.swift in Sources */,
 				5698B3992266732000F713E1 /* FixedWidthIntegerDataTests.swift in Sources */,
 				5625D1E0226FDAFC000B6357 /* DataEIP55Tests.swift in Sources */,
@@ -831,9 +883,10 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_ENFORCE_EXCLUSIVE_ACCESS = off;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "arm64 arm64e armv7s";
 			};
 			name = Debug;
 		};
@@ -843,6 +896,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -861,9 +915,10 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_ENFORCE_EXCLUSIVE_ACCESS = off;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "arm64 arm64e armv7s";
 			};
 			name = Release;
 		};
