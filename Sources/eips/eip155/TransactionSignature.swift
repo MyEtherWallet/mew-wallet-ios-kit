@@ -12,7 +12,7 @@ enum TransactionSignatureError: Error {
   case invalidSignature
 }
 
-internal struct TransactionSignature {
+internal struct TransactionSignature: CustomDebugStringConvertible {
   //swiftlint:disable identifier_name
   internal let r: BigInt<UInt8>
   internal let s: BigInt<UInt8>
@@ -84,5 +84,16 @@ internal struct TransactionSignature {
     guard let hash = transaction.hash(chainID: inferedChainID, forSignature: true) else { return nil }
     guard let publicKey = signature.secp256k1RecoverPublicKey(hash: hash, context: context) else { return nil }
     return publicKey
+  }
+  
+  // MARK: - CustomDebugStringConvertible
+  
+  var debugDescription: String {
+    var description = "Signature\n"
+    description += "r: \(self.r._data.toHexString())\n"
+    description += "s: \(self.s._data.toHexString())\n"
+    description += "v: \(self.v._data.toHexString())\n"
+    description += "chainID: \(self.chainID._data.toHexString())"
+    return description
   }
 }

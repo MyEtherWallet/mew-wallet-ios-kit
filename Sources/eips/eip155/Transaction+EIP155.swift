@@ -18,7 +18,10 @@ enum TransactionSignError: Error {
 }
 
 extension Transaction {
-  func sign(key: PrivateKey, extraEntropy: Bool = false) throws {
+  public func sign(key: PrivateKey, extraEntropy: Bool = false) throws {
+    if self.chainID == nil {
+      self.chainID = BigInt<UInt8>(key.network.chainID)
+    }
     guard var context = secp256k1_context_create(UInt32(SECP256K1_CONTEXT_SIGN|SECP256K1_CONTEXT_VERIFY)) else { throw TransactionSignError.internalError }
     defer { secp256k1_context_destroy(context) }
     guard let chainID = self.chainID else { throw TransactionSignError.invalidChainId }
@@ -37,7 +40,7 @@ extension Transaction {
     guard self.chainID != nil else { throw TransactionSignError.invalidChainId }
     self.signature = nil
     guard let publicKey = privateKey.publicKey(compressed: true)?.data() else { throw TransactionSignError.invalidPublicKey }
-    guard let hash = self.hash() else { throw TransactionSignError.internalError }
+    guard let hash = self.hash(chainID: self.chainID, forSignature: true) else { throw TransactionSignError.internalError }
     for _ in 0 ..< 1024 {
       guard var signature = hash.secp256k1RecoverableSign(privateKey: privateKeyData, extraEntropy: extraEntropy, context: context) else { continue }
       guard let recoveredPublicKey = signature.recoverPublicKey(from: hash, compressed: true, context: context) else { continue }

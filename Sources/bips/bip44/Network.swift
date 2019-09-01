@@ -42,7 +42,7 @@ public enum Network {
   case akroma
   case iolite
   case ether1
-  case custom(name: String, path: String)
+  case custom(name: String, path: String, chainID: UInt32)
   
   var name: String {
     switch self {
@@ -104,7 +104,7 @@ public enum Network {
       return "Iolite"
     case .ether1:
       return "Ether-1"
-    case let .custom(name, _):
+    case let .custom(name, _, _):
       return name
     }
   }
@@ -173,8 +173,77 @@ public enum Network {
       return "m/44'/1171337'/0'/0"
     case .ether1:
       return "m/44'/1313114'/0'/0"
-    case let .custom(_, path):
+    case let .custom(_, path, _):
       return path
+    }
+  }
+  
+  public var chainID: UInt32 {
+    switch self {
+    case .singularDTV:
+      return 0
+    case .bitcoin:
+      return 0
+    case .ropsten:
+      return 3
+    case .litecoin:
+      return 2
+    case .expanse:
+      return 40
+    case .ledgerLiveEthereum, .keepkeyEthereum:
+      return 60
+    case .ledgerEthereum:
+      return 60
+    case .ethereum:
+      return 60
+    case .ledgerEthereumClassic:
+      return 60
+    case .ledgerEthereumClassicVintage:
+      return 60
+    case .ledgerLiveEthereumClassic, .keepkeyEthereumClassic:
+      return 44
+    case .ethereumClassic:
+      return 61
+    case .mixBlockchain:
+      return 76
+    case .ubiq:
+      return 108
+    case .rskMainnet:
+      return 137
+    case .ellaism:
+      return 163
+    case .pirl:
+      return 164
+    case .musicoin:
+      return 184
+    case .callisto:
+      return 820
+    case .tomoChain:
+      return 889
+    case .thundercore:
+      return 1001
+    case .ethereumSocial:
+      return 1128
+    case .atheios:
+      return 1620
+    case .etherGem:
+      return 1987
+    case .eosClassic:
+      return 2018
+    case .goChain:
+      return 6060
+    case .etherSocialNetwork:
+      return 31102
+    case .rskTestnet:
+      return 37310
+    case .akroma:
+      return 200625
+    case .iolite:
+      return 1171337
+    case .ether1:
+      return 1313114
+    case let .custom(_, _, chainID):
+      return chainID
     }
   }
   

@@ -14,7 +14,7 @@ public struct Address: CustomDebugStringConvertible {
     return self._address
   }
   
-  init?(_ address: String) {
+  public init?(_ address: String) {
     guard address.count == 42, address.isHex() else { return nil } //42 = 0x + 20bytes
     self._address = address
   }

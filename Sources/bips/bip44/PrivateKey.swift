@@ -22,9 +22,9 @@ public struct PrivateKey: Key {
   private let depth: UInt8
   private let fingerprint: Data
   private let index: UInt32
-  private let network: Network
+  internal let network: Network
   
-  init(seed: Data, network: Network) throws {
+  public init(seed: Data, network: Network) throws {
     let output = try Data(HMAC(key: HMACKeyData, variant: .sha512).authenticate(seed.bytes))
     guard output.count == 64 else {
       throw PrivateKeyError.invalidData
@@ -37,7 +37,7 @@ public struct PrivateKey: Key {
     self.network = network
   }
   
-  init(privateKey: Data, network: Network) {
+  public init(privateKey: Data, network: Network) {
     self.raw = privateKey
     self.chainCode = Data()
     self.depth = 0
@@ -163,7 +163,7 @@ public struct PrivateKey: Key {
     return extendedKey.encodeBase58(alphabet: alphabet)
   }
   
-  func data() -> Data {
+  public func data() -> Data {
     return self.raw
   }
   
