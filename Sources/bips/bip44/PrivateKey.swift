@@ -121,7 +121,7 @@ public struct PrivateKey: Key {
     return nil
   }
   
-  func publicKey(compressed: Bool? = nil) -> PublicKey? {
+  public func publicKey(compressed: Bool? = nil) -> PublicKey? {
     let compressed = compressed ?? self.network.publicKeyCompressed
     do {
       let publicKey = try PublicKey(privateKey: self.raw, compressed: compressed, chainCode: self.chainCode, depth: self.depth,

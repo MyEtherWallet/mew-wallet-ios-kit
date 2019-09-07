@@ -13,41 +13,58 @@ enum TransactionError: Error {
 }
 
 public class Transaction: CustomDebugStringConvertible {
-  internal var nonce: BigInt<UInt8>
-  internal var gasPrice: BigInt<UInt8>
-  internal var gasLimit: BigInt<UInt8>
+  //swiftlint:disable identifier_name
+  internal var _nonce: BigInt<UInt8>
+  public var nonce: Data {
+    return Data(self._nonce._data.reversed())
+  }
+  
+  internal var _gasPrice: BigInt<UInt8>
+  public var gasPrice: Data {
+    return Data(self._gasPrice._data.reversed())
+  }
+  internal var _gasLimit: BigInt<UInt8>
+  public var gasLimit: Data {
+    return Data(self._gasLimit._data.reversed())
+  }
   public var from: Address?
-  internal var to: Address?
-  internal var value: BigInt<UInt8>
+  public var to: Address?
+  internal var _value: BigInt<UInt8>
+  public var value: Data {
+    return Data(self._value._data.reversed())
+  }
   internal var data: Data
   internal var signature: TransactionSignature?
   internal var chainID: BigInt<UInt8>?
+  //swiftlint:enable identifier_name
   
-  init(nonce: BigInt<UInt8> = BigInt<UInt8>(0x00), gasPrice: BigInt<UInt8> = BigInt<UInt8>(0x00), gasLimit: BigInt<UInt8> = BigInt<UInt8>(0x00), to: Address?,
-       value: BigInt<UInt8> = BigInt<UInt8>(0x00), data: Data = Data()) {
-    self.nonce = nonce
-    self.gasPrice = gasPrice
-    self.gasLimit = gasLimit
+  init(nonce: BigInt<UInt8> = BigInt<UInt8>(0x00), gasPrice: BigInt<UInt8> = BigInt<UInt8>(0x00), gasLimit: BigInt<UInt8> = BigInt<UInt8>(0x00),
+       from: Address? = nil, to: Address?, value: BigInt<UInt8> = BigInt<UInt8>(0x00), data: Data = Data()) {
+    self._nonce = nonce
+    self._gasPrice = gasPrice
+    self._gasLimit = gasLimit
+    self.from = from
     self.to = to
-    self.value = value
+    self._value = value
     self.data = data
   }
   
-  public convenience init(nonce: Data = Data([0x00]), gasPrice: Data = Data([0x00]), gasLimit: Data = Data([0x00]), to: Address?,
+  public convenience init(nonce: Data = Data([0x00]), gasPrice: Data = Data([0x00]), gasLimit: Data = Data([0x00]), from: Address? = nil, to: Address?,
                           value: Data = Data([0x00]), data: Data = Data()) {
     self.init(nonce: BigInt<UInt8>(nonce), gasPrice: BigInt<UInt8>(gasPrice), gasLimit: BigInt<UInt8>(gasLimit), to: to, value: BigInt<UInt8>(value), data: data)
   }
   
-  public convenience init(nonce: String = "0x00", gasPrice: String = "0x00", gasLimit: String = "0x00", to: Address?, value: String = "0x00", data: Data) throws {
+  public convenience init(nonce: String = "0x00", gasPrice: String = "0x00", gasLimit: String = "0x00",
+                          from: Address? = nil, to: Address?, value: String = "0x00", data: Data) throws {
     let nonce = BigInt<UInt8>(Data(hex: nonce).bytes.reversed())
     let gasPrice = BigInt<UInt8>(Data(hex: gasPrice).bytes.reversed())
     let gasLimit = BigInt<UInt8>(Data(hex: gasLimit).bytes.reversed())
     let value = BigInt<UInt8>(Data(hex: value).bytes.reversed())
     
-    self.init(nonce: nonce, gasPrice: gasPrice, gasLimit: gasLimit, to: to, value: value, data: data)
+    self.init(nonce: nonce, gasPrice: gasPrice, gasLimit: gasLimit, from: from, to: to, value: value, data: data)
   }
   
-  public convenience init(nonce: Decimal? = nil, gasPrice: Decimal?, gasLimit: Decimal?, to: Address?, value: Decimal?, data: Data) throws {
+  public convenience init(nonce: Decimal? = nil, gasPrice: Decimal?, gasLimit: Decimal?, from: Address? = nil, to: Address?, value: Decimal?, data: Data) throws {
     let nonceBigInt: BigInt<UInt8>
     let gasPriceBigInt: BigInt<UInt8>
     let gasLimitBigInt: BigInt<UInt8>
@@ -77,17 +94,17 @@ public class Transaction: CustomDebugStringConvertible {
       valueBigInt = BigInt<UInt8>(0x00)
     }
     
-    self.init(nonce: nonceBigInt, gasPrice: gasPriceBigInt, gasLimit: gasLimitBigInt, to: to, value: valueBigInt, data: data)
+    self.init(nonce: nonceBigInt, gasPrice: gasPriceBigInt, gasLimit: gasLimitBigInt, from: from, to: to, value: valueBigInt, data: data)
   }
   
   public var debugDescription: String {
     var description = "Transaction\n"
-    description += "Nonce: \(self.nonce._data.reversed().toHexString())\n"
-    description += "Gas Price: \(self.gasPrice._data.reversed().toHexString())\n"
-    description += "Gas Limit: \(self.gasLimit._data.reversed().toHexString())\n"
+    description += "Nonce: \(self._nonce._data.reversed().toHexString())\n"
+    description += "Gas Price: \(self._gasPrice._data.reversed().toHexString())\n"
+    description += "Gas Limit: \(self._gasLimit._data.reversed().toHexString())\n"
     description += "From: \(String(describing: self.from)) \n"
     description += "To: \(self.to?.address ?? "")\n"
-    description += "Value: \(self.value._data.reversed().toHexString())\n"
+    description += "Value: \(self._value._data.reversed().toHexString())\n"
     description += "Data: \(self.data.toHexString())\n"
     description += "ChainID: \(self.chainID?._data.reversed().toHexString() ?? "none")\n"
     description += "\(self.signature?.debugDescription ?? "Signature: none")\n"

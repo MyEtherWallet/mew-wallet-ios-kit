@@ -19,7 +19,7 @@
 		5625D15C226EA61F000B6357 /* Data+Hash160.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5625D15B226EA61F000B6357 /* Data+Hash160.swift */; };
 		5625D15E226EB9E5000B6357 /* Data+RIPEMB160.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5625D15D226EB9E5000B6357 /* Data+RIPEMB160.swift */; };
 		5625D1DD226FD991000B6357 /* Data+EIP55.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5625D1DC226FD991000B6357 /* Data+EIP55.swift */; };
-		5625D1E0226FDAFC000B6357 /* DataEIP55Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5625D1DF226FDAFC000B6357 /* DataEIP55Tests.swift */; };
+		5625D1E0226FDAFC000B6357 /* EIP55Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5625D1DF226FDAFC000B6357 /* EIP55Tests.swift */; };
 		565FFFB922E8CB0000C42D4F /* MEWconnectSignatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565FFFB822E8CB0000C42D4F /* MEWconnectSignatureTests.swift */; };
 		565FFFBE22E8E9FF00C42D4F /* String+EthSign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565FFFBC22E8E9F700C42D4F /* String+EthSign.swift */; };
 		565FFFC122E8ECFA00C42D4F /* StringEthSignTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565FFFC022E8ECFA00C42D4F /* StringEthSignTests.swift */; };
@@ -69,6 +69,7 @@
 		56E08CA82272E41F00FC60EF /* TransactionSignature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56E08CA72272E41F00FC60EF /* TransactionSignature.swift */; };
 		56E08CAB2272FBC200FC60EF /* EIP155Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56E08CAA2272FBC200FC60EF /* EIP155Tests.swift */; };
 		56E08CAD22777EBE00FC60EF /* Data+Length.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56E08CAC22777EBE00FC60EF /* Data+Length.swift */; };
+		56F5A5C12323717500084762 /* String+EIP55.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F5A5C02323717500084762 /* String+EIP55.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -101,7 +102,7 @@
 		5625D15B226EA61F000B6357 /* Data+Hash160.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Hash160.swift"; sourceTree = "<group>"; };
 		5625D15D226EB9E5000B6357 /* Data+RIPEMB160.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+RIPEMB160.swift"; sourceTree = "<group>"; };
 		5625D1DC226FD991000B6357 /* Data+EIP55.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+EIP55.swift"; sourceTree = "<group>"; };
-		5625D1DF226FDAFC000B6357 /* DataEIP55Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataEIP55Tests.swift; sourceTree = "<group>"; };
+		5625D1DF226FDAFC000B6357 /* EIP55Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EIP55Tests.swift; sourceTree = "<group>"; };
 		565FFFB822E8CB0000C42D4F /* MEWconnectSignatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MEWconnectSignatureTests.swift; sourceTree = "<group>"; };
 		565FFFBC22E8E9F700C42D4F /* String+EthSign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+EthSign.swift"; sourceTree = "<group>"; };
 		565FFFC022E8ECFA00C42D4F /* StringEthSignTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringEthSignTests.swift; sourceTree = "<group>"; };
@@ -154,6 +155,7 @@
 		56E08CA72272E41F00FC60EF /* TransactionSignature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionSignature.swift; sourceTree = "<group>"; };
 		56E08CAA2272FBC200FC60EF /* EIP155Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EIP155Tests.swift; sourceTree = "<group>"; };
 		56E08CAC22777EBE00FC60EF /* Data+Length.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Length.swift"; sourceTree = "<group>"; };
+		56F5A5C02323717500084762 /* String+EIP55.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+EIP55.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -445,6 +447,7 @@
 			isa = PBXGroup;
 			children = (
 				5625D1DC226FD991000B6357 /* Data+EIP55.swift */,
+				56F5A5C02323717500084762 /* String+EIP55.swift */,
 			);
 			path = eip55;
 			sourceTree = "<group>";
@@ -483,7 +486,7 @@
 		56E08C9022726DC500FC60EF /* eip55 */ = {
 			isa = PBXGroup;
 			children = (
-				5625D1DF226FDAFC000B6357 /* DataEIP55Tests.swift */,
+				5625D1DF226FDAFC000B6357 /* EIP55Tests.swift */,
 			);
 			path = eip55;
 			sourceTree = "<group>";
@@ -683,6 +686,7 @@
 				565FFFC722E8EF5F00C42D4F /* Data+EthSign.swift in Sources */,
 				56E08C8C2272686F00FC60EF /* Transaction+RLP.swift in Sources */,
 				56E08CAD22777EBE00FC60EF /* Data+Length.swift in Sources */,
+				56F5A5C12323717500084762 /* String+EIP55.swift in Sources */,
 				56E08C7622724B9D00FC60EF /* Transaction+EIP155.swift in Sources */,
 				56E08CA62272DC1D00FC60EF /* SECP256k1EcdsaRecoverableSignature+Data.swift in Sources */,
 				5625D13D226A7225000B6357 /* Data+Base58.swift in Sources */,
@@ -722,7 +726,7 @@
 				565FFFC622E8EE3400C42D4F /* DataEthSignTests.swift in Sources */,
 				5698B3A022668B0B00F713E1 /* ArrayBitDataTests.swift in Sources */,
 				5698B3992266732000F713E1 /* FixedWidthIntegerDataTests.swift in Sources */,
-				5625D1E0226FDAFC000B6357 /* DataEIP55Tests.swift in Sources */,
+				5625D1E0226FDAFC000B6357 /* EIP55Tests.swift in Sources */,
 				5625D141226A76E6000B6357 /* Base58Tests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -31,6 +31,7 @@ class MEWconnectSignatureTests: QuickSpec {
           fail("Can't create secp256k1 context")
           return
         }
+        defer { secp256k1_context_destroy(context) }
         
         var recoverableSignature = testMessage.secp256k1RecoverableSign(privateKey: testPrivateKey, context: context)
         guard let recoverableSignatureData = recoverableSignature?.data() else {
@@ -44,11 +45,30 @@ class MEWconnectSignatureTests: QuickSpec {
           return
         }
         expect(testSerializedRecoverableSignature) == serializedRecoverableSignature
+      }
       
-//        siga: 3108f384 2259841f abb09bde cf7e51ac b20b408d fcce4760 f4536d79 1e1f3835 41dd7786 1a248648 8cdbbeb5 07dd5326 65fca92c f09d0182 54e02cfb b822ca02 00
-//              3108f384 2259841f abb09bde cf7e51ac b20b408d fcce4760 f4536d79 1e1f3835 41dd7786 1a248648 8cdbbeb5 07dd5326 65fca92c f09d0182 54e02cfb b822ca02 01
-        //          3108f3 84225984 1fabb09b decf7e51 acb20b40 8dfcce47 60f4536d 791e1f38 3541dd77 861a2486 488cdbbe b507dd53 2665fca9 2cf09d01 8254e02c fbb822ca 0201
-//        result: 1c3108f3 84225984 1fabb09b decf7e51 acb20b40 8dfcce47 60f4536d 791e1f38 3541dd77 861a2486 488cdbbe b507dd53 2665fca9 2cf09d01 8254e02c fbb822ca 02
+      it("Should sign data correctly") {
+        let testData = "064701b9218c1a1893d8ef7e33f45afa11d4bf986fa7f815e8b23a2dc8b4d89b".hashPersonalMessage()!
+        let testKey = Data(hex: "064701b9218c1a1893d8ef7e33f45afa11d4bf986fa7f815e8b23a2dc8b4d89b")
+        
+        let testResult = Data(hex: "1c5cb544567bd07a5ec818908c076307d18dbfd6ae83ef324fc818d0d20ee359723d74a80bca59358994d2cacdcb6102826b9631dbf69ee092c9341c7d273bcf1d")
+        
+        guard let signedData = testData.sign(key: testKey) else {
+          fail("Can't get signed data")
+          return
+        }
+        
+        expect(signedData) == testResult
+      }
+      
+      it("Should multiply EC correctly") {
+        let testPrivateKey = Data(hex: "db391b235fc493cbcab9f5d2ed9582036606b946b8685995db4a17df2b87e2a2")
+        let testPublicKey = Data(hex: "04669a833ba477e4b2136c7fd6778247a688f4d9de6da9e9de92d3637a4a674f55af8d29a13b5e2b81db6aece5726dc7a0b4d99fe09f7335e54dab9ee012aa0c45")
+        let testMultiplied = Data(hex: "0449be3b4c5e49732f9fd57111f3a9e7e2100856337de980302877a061defc02593e6a92ad1ca153ab95cba05736754814240a7b3579cabaf3fb29b8d5d1b05340")
+        
+        let multiData = testPublicKey.secp256k1Multiply(privateKey: testPrivateKey)
+        
+        expect(multiData) == testMultiplied
       }
     }
   }

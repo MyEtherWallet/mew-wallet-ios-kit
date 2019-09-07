@@ -30,14 +30,19 @@ internal struct TransactionSignature: CustomDebugStringConvertible {
     }
   }
   
-  init(signature: Data, chainID: BigInt<UInt8>) throws {
+  init(signature: Data, chainID: BigInt<UInt8>? = nil) throws {
     guard signature.count == 65 else {
       throw TransactionSignatureError.invalidSignature
     }
     self.r = BigInt<UInt8>(signature[0 ..< 32])
     self.s = BigInt<UInt8>(signature[32 ..< 64])
-    self.v = BigInt<UInt8>(signature[64]) + 35 + chainID + chainID
-    self.chainID = chainID
+    if let chainID = chainID {
+      self.v = BigInt<UInt8>(signature[64]) + 35 + chainID + chainID
+    } else {
+      self.v = BigInt<UInt8>(signature[64]) + 27
+    }
+    
+    self.chainID = chainID ?? BigInt<UInt8>()
   }
   
   //swiftlint:disable identifier_name
@@ -65,7 +70,7 @@ internal struct TransactionSignature: CustomDebugStringConvertible {
     } else if inferedChainID != nil {
       normalizedV = self.v - 35 - 2 * inferedChainID!
     } else {
-      normalizedV = self.v - 27
+      normalizedV = self.v - 0x1B
     }
     var rData = Data(self.r._data)
     rData.setLength(32)

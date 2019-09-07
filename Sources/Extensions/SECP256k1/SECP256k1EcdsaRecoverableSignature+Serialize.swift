@@ -29,12 +29,9 @@ extension secp256k1_ecdsa_recoverable_signature {
     guard result != 0 else {
       return nil
     }
-    // FIXME: Add 27 ?
     switch v {
-    case 0:
-      serialized.append(0x00)
-    case 1:
-      serialized.append(0x01)
+    case 0, 1:
+      serialized.append(UInt8(v))
     default:
       return nil
     }

@@ -10,20 +10,6 @@ import Foundation
 
 extension Data {
   func eip55() -> String? {
-    let address = self.toHexString().lowercased()
-    guard let hash = address.data(using: .ascii)?.sha3(.keccak256).toHexString() else {
-      return nil
-    }
-    
-    return zip(address, hash).map { addr, hash -> String in
-      switch (addr, hash) {
-      case ("0", _), ("1", _), ("2", _), ("3", _), ("4", _), ("5", _), ("6", _), ("7", _), ("8", _), ("9", _):
-        return String(addr)
-      case (_, "8"), (_, "9"), (_, "a"), (_, "b"), (_, "c"), (_, "d"), (_, "e"), (_, "f"):
-        return String(addr).uppercased()
-      default:
-        return String(addr).lowercased()
-      }
-      }.joined()
+    return self.toHexString().eip55()
   }
 }

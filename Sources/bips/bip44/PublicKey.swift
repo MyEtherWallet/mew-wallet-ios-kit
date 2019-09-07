@@ -38,7 +38,7 @@ private struct PublicKeyConfig {
   }
 }
 
-struct PublicKey: Key {
+public struct PublicKey: Key {
   private let raw: Data
   private let chainCode: Data
   private let depth: UInt8
@@ -52,9 +52,7 @@ struct PublicKey: Key {
     guard var context = secp256k1_context_create(UInt32(SECP256K1_CONTEXT_SIGN)) else {
       throw PublicKeyError.internalError
     }
-    defer {
-      secp256k1_context_destroy(context)
-    }
+    defer { secp256k1_context_destroy(context) }
     
     var pKey = try secp256k1_pubkey(privateKey: privateKey, context: context)
     
@@ -102,7 +100,7 @@ struct PublicKey: Key {
     return extendedKey.encodeBase58(alphabet: alphabet)
   }
   
-  func data() -> Data {
+  public func data() -> Data {
     return self.raw
   }
   

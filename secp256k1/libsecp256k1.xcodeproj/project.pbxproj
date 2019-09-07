@@ -50,11 +50,12 @@
 		5625D119226A5DC6000B6357 /* scalar_low.h in Headers */ = {isa = PBXBuildFile; fileRef = 5625D0B9226A5B64000B6357 /* scalar_low.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		5625D11A226A5DC6000B6357 /* eckey.h in Headers */ = {isa = PBXBuildFile; fileRef = 5625D0BA226A5B64000B6357 /* eckey.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		5625D11B226A5DFB000B6357 /* secp256k1.c in Sources */ = {isa = PBXBuildFile; fileRef = 5625D087226A5B64000B6357 /* secp256k1.c */; };
+		562EA2A12320D95B005D97F0 /* main_impl.h in Sources */ = {isa = PBXBuildFile; fileRef = 5625D0B1226A5B64000B6357 /* main_impl.h */; };
 		56E08C96227296A600FC60EF /* lax_der_privatekey_parsing.c in Sources */ = {isa = PBXBuildFile; fileRef = 5625D062226A5B64000B6357 /* lax_der_privatekey_parsing.c */; };
 		56E08C97227296A900FC60EF /* lax_der_parsing.c in Sources */ = {isa = PBXBuildFile; fileRef = 5625D063226A5B64000B6357 /* lax_der_parsing.c */; };
 		56E08C98227296EF00FC60EF /* lax_der_parsing.h in Headers */ = {isa = PBXBuildFile; fileRef = 5625D061226A5B64000B6357 /* lax_der_parsing.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		56E08C99227296F200FC60EF /* lax_der_privatekey_parsing.h in Headers */ = {isa = PBXBuildFile; fileRef = 5625D064226A5B64000B6357 /* lax_der_privatekey_parsing.h */; settings = {ATTRIBUTES = (Private, ); }; };
-		56E08C9A2272974500FC60EF /* main_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5625D0B1226A5B64000B6357 /* main_impl.h */; };
+		56E08C9A2272974500FC60EF /* main_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5625D0B1226A5B64000B6357 /* main_impl.h */; settings = {ATTRIBUTES = (Private, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -467,8 +468,8 @@
 				5625D11A226A5DC6000B6357 /* eckey.h in Headers */,
 				5625D102226A5DC6000B6357 /* ecdsa_impl.h in Headers */,
 				5625D0FE226A5DC6000B6357 /* ecdsa.h in Headers */,
-				5625D0FA226A5DC6000B6357 /* basic-config.h in Headers */,
 				56E08C9A2272974500FC60EF /* main_impl.h in Headers */,
+				5625D0FA226A5DC6000B6357 /* basic-config.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -542,6 +543,7 @@
 				5625D11B226A5DFB000B6357 /* secp256k1.c in Sources */,
 				56E08C96227296A600FC60EF /* lax_der_privatekey_parsing.c in Sources */,
 				56E08C97227296A900FC60EF /* lax_der_parsing.c in Sources */,
+				562EA2A12320D95B005D97F0 /* main_impl.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -680,6 +682,10 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GCC_PREFIX_HEADER = "libsecp256k1/libsecp256k1-prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"ENABLE_MODULE_ECDH=1",
+				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
 				GCC_WARN_UNINITIALIZED_AUTOS = NO;
 				GCC_WARN_UNUSED_FUNCTION = NO;
@@ -709,6 +715,10 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GCC_PREFIX_HEADER = "libsecp256k1/libsecp256k1-prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"ENABLE_MODULE_ECDH=1",
+				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
 				GCC_WARN_UNINITIALIZED_AUTOS = NO;
 				GCC_WARN_UNUSED_FUNCTION = NO;

@@ -57,7 +57,7 @@ extension Data {
     //swiftlint:enable identifier_name
     
     let result = serialized.withUnsafeMutableBytes { serializedBufferPointer -> Int32 in
-      guard let serializedPointer = serializedBufferPointer.baseAddress?.assumingMemoryBound(to: UInt8.self) else { return 0}
+      guard let serializedPointer = serializedBufferPointer.baseAddress?.assumingMemoryBound(to: UInt8.self) else { return 0 }
       
       return withUnsafeMutablePointer(to: &signature, { signaturePointer -> Int32 in
         return secp256k1_ecdsa_recoverable_signature_parse_compact(context, signaturePointer, serializedPointer, v)
@@ -73,5 +73,46 @@ extension Data {
     guard var signature = self.secp256k1ParseSignature(context: context) else { return nil }
     guard let publicKey = signature.recoverPublicKey(from: hash, compressed: false, context: context) else { return nil }
     return publicKey
+  }
+  
+  public func secp256k1Multiply(privateKey: Data) -> Data? {
+    guard var context = secp256k1_context_create(UInt32(SECP256K1_CONTEXT_SIGN|SECP256K1_CONTEXT_VERIFY)) else {
+      return nil
+    }
+    
+    defer { secp256k1_context_destroy(context) }
+    
+    do {
+      var secp256k1PublicKey = try secp256k1_pubkey.parse(publicKey: self, context: context)
+      
+      let result = privateKey.withUnsafeBytes { privateKeyBufferPointer -> Int32 in
+        guard let privateKeyPointer = privateKeyBufferPointer.baseAddress?.assumingMemoryBound(to: UInt8.self) else { return 0 }
+        return secp256k1_ec_pubkey_tweak_mul(context, &secp256k1PublicKey, privateKeyPointer)
+      }
+      
+      if result == 0 {
+        return nil
+      }
+      
+      return secp256k1PublicKey.data(context: context, flags: UInt32(SECP256K1_EC_UNCOMPRESSED))
+    } catch {
+      return nil
+    }
+  }
+  
+  public func secp256k1ExtractPublicKey() -> Data? {
+    guard var context = secp256k1_context_create(UInt32(SECP256K1_CONTEXT_SIGN|SECP256K1_CONTEXT_VERIFY)) else {
+      return nil
+    }
+    
+    defer { secp256k1_context_destroy(context) }
+    
+    do {
+      var secp256k1PublicKey = try secp256k1_pubkey(privateKey: self, context: context)
+      
+      return secp256k1PublicKey.data(context: context, flags: UInt32(SECP256K1_EC_UNCOMPRESSED))
+    } catch {
+      return nil
+    }
   }
 }

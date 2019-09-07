@@ -15,4 +15,8 @@ extension String {
     }
     return personalMessage.hashPersonalMessage()
   }
+  
+  func sign(key: Data) -> Data? {
+    return self.hashPersonalMessage()?.sign(key: key)
+  }
 }

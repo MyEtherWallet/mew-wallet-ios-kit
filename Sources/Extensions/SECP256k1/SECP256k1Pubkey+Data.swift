@@ -11,9 +11,28 @@ import libsecp256k1
 
 enum SECP256k1PubkeyError: Error {
   case invalidPrivateKey
+  case invalidData
 }
 
 extension secp256k1_pubkey {
+  static func parse(publicKey: Data, context: OpaquePointer/*secp256k1_context*/) throws -> secp256k1_pubkey {
+    guard publicKey.count == 33 || publicKey.count == 65 else {
+      throw SECP256k1PubkeyError.invalidData
+    }
+    
+    var key = secp256k1_pubkey()
+    
+    let result = publicKey.withUnsafeBytes { publicBufferPointer -> Int32 in
+      guard let publicPointer = publicBufferPointer.baseAddress?.assumingMemoryBound(to: UInt8.self) else { return 0 }
+      return secp256k1_ec_pubkey_parse(context, &key, publicPointer, publicKey.count)
+    }
+    if result == 0 {
+      throw SECP256k1PubkeyError.invalidData
+    }
+    
+    return key
+  }
+  
   init(privateKey: Data, context: OpaquePointer/*secp256k1_context*/) throws {
     self.init()
     let prvKey = privateKey.bytes
