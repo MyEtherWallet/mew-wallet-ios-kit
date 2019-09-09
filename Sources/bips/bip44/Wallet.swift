@@ -33,8 +33,11 @@ public final class Wallet {
     self.privateKey = privateKey
   }
   
-  public func derive(_ path: String) throws -> Wallet {
-    let derivationPath = try path.derivationPath()
+  public func derive(_ path: String, index: Int? = nil) throws -> Wallet {
+    var derivationPath = try path.derivationPath()
+    if let index = index {
+      derivationPath.append(.nonHardened(UInt32(index)))
+    }
     
     guard let derivedPrivateKey = self.privateKey.derived(nodes: derivationPath) else {
       throw WalletError.emptyPrivateKey

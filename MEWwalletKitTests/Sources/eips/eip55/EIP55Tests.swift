@@ -31,7 +31,7 @@ class EIP55Tests: QuickSpec {
         for vector in self.testVectors {
           let data = Data(hex: vector.lowercased())
           
-          expect(data.eip55()).to(equal(vector))
+          expect(data.eip55()).to(equal(vector.stringRemoveHexPrefix()))
           expect(vector.eip55()).to(equal(vector))
         }
       }

@@ -13,12 +13,17 @@ extension String {
     guard self.isHex() else {
       return nil
     }
-    let address = self.stringRemoveHexPrefix().lowercased()
+    var address = self
+    let hasHexPrefix = address.hasHexPrefix()
+    if hasHexPrefix {
+      address.removeHexPrefix()
+    }
+    address = address.lowercased()
     guard let hash = address.data(using: .ascii)?.sha3(.keccak256).toHexString() else {
       return nil
     }
     
-    return zip(address, hash).map { addr, hash -> String in
+    var eip55 = zip(address, hash).map { addr, hash -> String in
       switch (addr, hash) {
       case ("0", _), ("1", _), ("2", _), ("3", _), ("4", _), ("5", _), ("6", _), ("7", _), ("8", _), ("9", _):
         return String(addr)
@@ -27,6 +32,10 @@ extension String {
       default:
         return String(addr).lowercased()
       }
-      }.joined().stringAddHexPrefix()
+      }.joined()
+    if hasHexPrefix {
+      eip55.addHexPrefix()
+    }
+    return eip55
   }
 }

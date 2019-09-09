@@ -31,6 +31,10 @@ extension String {
     }
   }
   
+  func hasHexPrefix() -> Bool {
+    return self.hasPrefix("0x")
+  }
+  
   func stringRemoveHexPrefix() -> String {
     var string = self
     string.removeHexPrefix()

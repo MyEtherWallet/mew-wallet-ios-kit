@@ -121,8 +121,7 @@ public struct PublicKey: Key {
       guard let stringAddress: String = data.encodeBase58(alphabet: alphabet) else {
         return nil
       }
-      return Address(stringAddress)
-//    case .ethereum, .ropsten:
+      return Address(raw: stringAddress)
     default:
       guard self.raw.count == PublicKeyConstants.decompressedKeySize else {
         return nil
@@ -133,8 +132,7 @@ public struct PublicKey: Key {
       guard let eip55 = addressData.eip55() else {
         return nil
       }
-      let stringAddress = self.network.addressPrefix + eip55
-      return Address(stringAddress)
+      return Address(address: eip55, prefix: self.network.addressPrefix)
     }
   }
 }

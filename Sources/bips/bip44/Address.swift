@@ -14,8 +14,24 @@ public struct Address: CustomDebugStringConvertible {
     return self._address
   }
   
-  public init?(_ address: String) {
-    guard address.count == 42, address.isHex(), let address = address.eip55() else { return nil } //42 = 0x + 20bytes
+  public init?(data: Data, prefix: String? = nil) {
+    self.init(address: data.toHexString(), prefix: prefix)
+  }
+  
+  public init(raw: String) {
+    self._address = raw
+  }
+  
+  public init?(address: String, prefix: String? = nil) {
+    var address = address
+    if let prefix = prefix, !address.hasPrefix(prefix) {
+      address.insert(contentsOf: prefix, at: address.startIndex)
+    }
+    self._address = address
+  }
+  
+  public init?(ethereumAddress: String) {
+    guard ethereumAddress.count == 42, ethereumAddress.isHex(), let address = ethereumAddress.eip55() else { return nil } //42 = 0x + 20bytes
     self._address = address
   }
   
