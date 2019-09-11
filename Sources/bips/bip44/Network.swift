@@ -44,6 +44,75 @@ public enum Network {
   case ether1
   case custom(name: String, path: String, chainID: UInt32)
   
+  public init(path: String) {
+    switch path {
+    case "m/0'/0'/0'":
+      self = .singularDTV
+    case "m/44'/0'/0'/0":
+      self = .bitcoin
+    case "m/44'/1'/0'/0":
+      self = .ropsten
+    case "m/44'/2'/0'/0":
+      self = .litecoin
+    case "m/44'/40'/0'/0":
+      self = .expanse
+    case "m/44'/60'":
+      self = .keepkeyEthereum
+    case "m/44'/60'/0":
+      self = .ledgerEthereum
+    case "m/44'/60'/0'/0":
+      self = .ethereum
+    case "m/44'/60'/160720'/0":
+      self = .ledgerEthereumClassic
+    case "m/44'/60'/160720'/0'":
+      self = .ledgerEthereumClassicVintage
+    case "m/44'/61'":
+      self = .keepkeyEthereumClassic
+    case "m/44'/61'/0'/0":
+      self = .ethereumClassic
+    case "m/44'/76'/0'/0":
+      self = .mixBlockchain
+    case "m/44'/108'/0'/0":
+      self = .ubiq
+    case "m/44'/137'/0'/0":
+      self = .rskMainnet
+    case "m/44'/163'/0'/0":
+      self = .ellaism
+    case "m/44'/164'/0'/0":
+      self = .pirl
+    case "m/44'/184'/0'/0":
+      self = .musicoin
+    case "m/44'/820'/0'/0":
+      self = .callisto
+    case "m/44'/889'/0'/0":
+      self = .tomoChain
+    case "m/44'/1001'/0'/0":
+      self = .thundercore
+    case "m/44'/1128'/0'/0":
+      self = .ethereumSocial
+    case "m/44'/1620'/0'/0":
+      self = .atheios
+    case "m/44'/1987'/0'/0":
+      self = .etherGem
+    case "m/44'/2018'/0'/0":
+      self = .eosClassic
+    case "m/44'/6060'/0'/0":
+      self = .goChain
+    case "m/44'/31102'/0'/0":
+      self = .etherSocialNetwork
+    case "m/44'/37310'/0'/0":
+      self = .rskTestnet
+    case "m/44'/200625'/0'/0":
+      self = .akroma
+    case "m/44'/1171337'/0'/0":
+      self = .iolite
+    case "m/44'/1313114'/0'/0":
+      self = .ether1
+    default:
+      self = .custom(name: path, path: path, chainID: 0)
+    }
+  }
+  
   var name: String {
     switch self {
     case .bitcoin:
@@ -319,6 +388,19 @@ public enum Network {
       return false
     default:
       return false
+    }
+  }
+  
+  var symbol: String {
+    switch self {
+    case .bitcoin:
+      return "btc"
+    case .ethereum:
+      return "eth"
+    case .ropsten:
+      return "rop"
+    default:
+      return ""
     }
   }
 }
