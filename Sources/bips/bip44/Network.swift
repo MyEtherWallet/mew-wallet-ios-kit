@@ -113,7 +113,7 @@ public enum Network {
     }
   }
   
-  var name: String {
+  public var name: String {
     switch self {
     case .bitcoin:
       return "Bitcoin"
