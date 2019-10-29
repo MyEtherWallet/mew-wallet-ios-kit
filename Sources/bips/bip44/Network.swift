@@ -258,17 +258,17 @@ public enum Network {
     case .litecoin:
       return 2
     case .expanse:
-      return 40
+      return 2
     case .ledgerLiveEthereum, .keepkeyEthereum:
-      return 60
+      return 1
     case .ledgerEthereum:
-      return 60
+      return 1
     case .ethereum:
-      return 60
+      return 1
     case .ledgerEthereumClassic:
-      return 60
+      return 1
     case .ledgerEthereumClassicVintage:
-      return 60
+      return 1
     case .ledgerLiveEthereumClassic, .keepkeyEthereumClassic:
       return 44
     case .ethereumClassic:
@@ -276,21 +276,21 @@ public enum Network {
     case .mixBlockchain:
       return 76
     case .ubiq:
-      return 108
+      return 8
     case .rskMainnet:
-      return 137
+      return 30
     case .ellaism:
-      return 163
+      return 64
     case .pirl:
-      return 164
+      return 3125659152
     case .musicoin:
-      return 184
+      return 7762959
     case .callisto:
       return 820
     case .tomoChain:
-      return 889
+      return 88
     case .thundercore:
-      return 1001
+      return 108
     case .ethereumSocial:
       return 1128
     case .atheios:
@@ -300,15 +300,15 @@ public enum Network {
     case .eosClassic:
       return 2018
     case .goChain:
-      return 6060
+      return 60
     case .etherSocialNetwork:
       return 31102
     case .rskTestnet:
-      return 37310
+      return 31
     case .akroma:
       return 200625
     case .iolite:
-      return 1171337
+      return 18289463
     case .ether1:
       return 1313114
     case let .custom(_, _, chainID):
