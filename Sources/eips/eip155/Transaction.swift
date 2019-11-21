@@ -56,10 +56,10 @@ public class Transaction: CustomDebugStringConvertible {
   
   public convenience init(nonce: String = "0x00", gasPrice: String = "0x00", gasLimit: String = "0x00",
                           from: Address? = nil, to: Address?, value: String = "0x00", data: Data) throws {
-    let nonce = BigInt<UInt8>(Data(hex: nonce).bytes.reversed())
-    let gasPrice = BigInt<UInt8>(Data(hex: gasPrice).bytes.reversed())
-    let gasLimit = BigInt<UInt8>(Data(hex: gasLimit).bytes.reversed())
-    let value = BigInt<UInt8>(Data(hex: value).bytes.reversed())
+    let nonce = BigInt<UInt8>(Data(hex: nonce.stringWithAlignedHexBytes()).bytes.reversed())
+    let gasPrice = BigInt<UInt8>(Data(hex: gasPrice.stringWithAlignedHexBytes()).bytes.reversed())
+    let gasLimit = BigInt<UInt8>(Data(hex: gasLimit.stringWithAlignedHexBytes()).bytes.reversed())
+    let value = BigInt<UInt8>(Data(hex: value.stringWithAlignedHexBytes()).bytes.reversed())
     
     self.init(nonce: nonce, gasPrice: gasPrice, gasLimit: gasLimit, from: from, to: to, value: value, data: data)
   }

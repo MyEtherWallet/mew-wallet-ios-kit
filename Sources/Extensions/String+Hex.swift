@@ -31,6 +31,20 @@ extension String {
     }
   }
   
+  mutating func alignHexBytes() {
+    guard self.isHex(), self.count % 2 != 0 else {
+      return
+    }
+    let hasPrefix = self.hasPrefix("0x")
+    if hasPrefix {
+      self.removeHexPrefix()
+    }
+    self = "0" + self
+    if hasPrefix {
+      self.addHexPrefix()
+    }
+  }
+  
   func hasHexPrefix() -> Bool {
     return self.hasPrefix("0x")
   }
@@ -44,6 +58,12 @@ extension String {
   func stringAddHexPrefix() -> String {
     var string = self
     string.addHexPrefix()
+    return string
+  }
+  
+  func stringWithAlignedHexBytes() -> String {
+    var string = self
+    string.alignHexBytes()
     return string
   }
 }
