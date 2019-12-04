@@ -391,7 +391,7 @@ public enum Network {
     }
   }
   
-  var symbol: String {
+  public var symbol: String {
     switch self {
     case .bitcoin:
       return "btc"
