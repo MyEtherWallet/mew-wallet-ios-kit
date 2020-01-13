@@ -33,7 +33,7 @@ public class Transaction: CustomDebugStringConvertible {
   public var value: Data {
     return Data(self._value._data.reversed())
   }
-  internal var data: Data
+  internal(set) public var data: Data
   internal var signature: TransactionSignature?
   internal var chainID: BigInt<UInt8>?
   //swiftlint:enable identifier_name

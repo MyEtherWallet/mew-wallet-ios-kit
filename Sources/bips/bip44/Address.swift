@@ -9,6 +9,10 @@
 import Foundation
 
 public struct Address: CustomDebugStringConvertible {
+  public struct Ethereum {
+    static let length = 42
+  }
+  
   private var _address: String
   public var address: String {
     return self._address
@@ -31,7 +35,8 @@ public struct Address: CustomDebugStringConvertible {
   }
   
   public init?(ethereumAddress: String) {
-    guard ethereumAddress.count == 42, ethereumAddress.isHex(), let address = ethereumAddress.eip55() else { return nil } //42 = 0x + 20bytes
+    let value = ethereumAddress.stringAddHexPrefix()
+    guard value.count == Address.Ethereum.length, value.isHex(), let address = value.eip55() else { return nil } //42 = 0x + 20bytes
     self._address = address
   }
   

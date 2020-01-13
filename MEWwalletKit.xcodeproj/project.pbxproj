@@ -26,6 +26,7 @@
 		565FFFC622E8EE3400C42D4F /* DataEthSignTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565FFFC522E8EE3400C42D4F /* DataEthSignTests.swift */; };
 		565FFFC722E8EF5F00C42D4F /* Data+EthSign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565FFFC322E8EDB000C42D4F /* Data+EthSign.swift */; };
 		566B158A229471A000EDAB4E /* libsecp256k1.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5625D130226A6302000B6357 /* libsecp256k1.framework */; };
+		567A3B6423C75B9600CBAE81 /* Transaction+TokenTransfer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567A3B6323C75B9600CBAE81 /* Transaction+TokenTransfer.swift */; };
 		5698B34D226111F600F713E1 /* MEWwalletKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5698B343226111F600F713E1 /* MEWwalletKit.framework */; };
 		5698B354226111F600F713E1 /* MEWwalletKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 5698B346226111F600F713E1 /* MEWwalletKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5698B361226112C000F713E1 /* BIP39.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5698B360226112C000F713E1 /* BIP39.swift */; };
@@ -108,6 +109,7 @@
 		565FFFC022E8ECFA00C42D4F /* StringEthSignTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringEthSignTests.swift; sourceTree = "<group>"; };
 		565FFFC322E8EDB000C42D4F /* Data+EthSign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+EthSign.swift"; sourceTree = "<group>"; };
 		565FFFC522E8EE3400C42D4F /* DataEthSignTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataEthSignTests.swift; sourceTree = "<group>"; };
+		567A3B6323C75B9600CBAE81 /* Transaction+TokenTransfer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Transaction+TokenTransfer.swift"; sourceTree = "<group>"; };
 		5698B343226111F600F713E1 /* MEWwalletKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MEWwalletKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5698B346226111F600F713E1 /* MEWwalletKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MEWwalletKit.h; sourceTree = "<group>"; };
 		5698B347226111F600F713E1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -439,6 +441,7 @@
 				56E08C712272442500FC60EF /* Transaction.swift */,
 				56E08C7522724B9D00FC60EF /* Transaction+EIP155.swift */,
 				56E08CA72272E41F00FC60EF /* TransactionSignature.swift */,
+				567A3B6323C75B9600CBAE81 /* Transaction+TokenTransfer.swift */,
 			);
 			path = eip155;
 			sourceTree = "<group>";
@@ -706,6 +709,7 @@
 				5625D15E226EB9E5000B6357 /* Data+RIPEMB160.swift in Sources */,
 				56E08C74227246BF00FC60EF /* Address.swift in Sources */,
 				5698B39C22667B8900F713E1 /* ArrayBit+Data.swift in Sources */,
+				567A3B6423C75B9600CBAE81 /* Transaction+TokenTransfer.swift in Sources */,
 				56E08C7C2272529900FC60EF /* RLP.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
