@@ -42,6 +42,7 @@ public enum Network {
   case akroma
   case iolite
   case ether1
+  case anonymizedId
   case custom(name: String, path: String, chainID: UInt32)
   
   public init(path: String) {
@@ -108,6 +109,8 @@ public enum Network {
       self = .iolite
     case "m/44'/1313114'/0'/0":
       self = .ether1
+    case "m/1000'/60'/0'/0":
+      self = .anonymizedId
     default:
       self = .custom(name: path, path: path, chainID: 0)
     }
@@ -173,6 +176,8 @@ public enum Network {
       return "Iolite"
     case .ether1:
       return "Ether-1"
+    case .anonymizedId:
+      return "AnonymizedId"
     case let .custom(name, _, _):
       return name
     }
@@ -242,6 +247,8 @@ public enum Network {
       return "m/44'/1171337'/0'/0"
     case .ether1:
       return "m/44'/1313114'/0'/0"
+    case .anonymizedId:
+      return "m/1000'/60'/0'/0"
     case let .custom(_, path, _):
       return path
     }
@@ -311,6 +318,8 @@ public enum Network {
       return 18289463
     case .ether1:
       return 1313114
+    case .anonymizedId:
+      return 1
     case let .custom(_, _, chainID):
       return chainID
     }
@@ -342,7 +351,7 @@ public enum Network {
     switch self {
     case .bitcoin:
       return ""
-    case .ethereum, .ropsten:
+    case .ethereum, .ropsten, .anonymizedId:
       return "0x"
     default:
       return "0x"
@@ -384,7 +393,7 @@ public enum Network {
     switch self {
     case .bitcoin, .litecoin:
       return true
-    case .ethereum, .ropsten:
+    case .ethereum, .ropsten, .anonymizedId:
       return false
     default:
       return false
