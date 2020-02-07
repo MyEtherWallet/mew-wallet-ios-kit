@@ -51,14 +51,17 @@ class MEWconnectSignatureTests: QuickSpec {
         let testData = "064701b9218c1a1893d8ef7e33f45afa11d4bf986fa7f815e8b23a2dc8b4d89b".hashPersonalMessage()!
         let testKey = Data(hex: "064701b9218c1a1893d8ef7e33f45afa11d4bf986fa7f815e8b23a2dc8b4d89b")
         
-        let testResult = Data(hex: "1c5cb544567bd07a5ec818908c076307d18dbfd6ae83ef324fc818d0d20ee359723d74a80bca59358994d2cacdcb6102826b9631dbf69ee092c9341c7d273bcf1d")
+        let testResultLeadingV = Data(hex: "1c5cb544567bd07a5ec818908c076307d18dbfd6ae83ef324fc818d0d20ee359723d74a80bca59358994d2cacdcb6102826b9631dbf69ee092c9341c7d273bcf1d")
+        let testResultTrailingV = Data(hex: "5cb544567bd07a5ec818908c076307d18dbfd6ae83ef324fc818d0d20ee359723d74a80bca59358994d2cacdcb6102826b9631dbf69ee092c9341c7d273bcf1d1c")
         
-        guard let signedData = testData.sign(key: testKey) else {
+        guard let signedDataLeadingV = testData.sign(key: testKey, leadingV: true), let signedDataTrailingV = testData.sign(key: testKey, leadingV: false)
+        else {
           fail("Can't get signed data")
           return
         }
         
-        expect(signedData) == testResult
+        expect(signedDataLeadingV) == testResultLeadingV
+        expect(signedDataTrailingV) == testResultTrailingV
       }
       
       it("Should multiply EC correctly") {

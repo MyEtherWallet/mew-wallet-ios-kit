@@ -37,7 +37,7 @@ public struct PrivateKey: Key {
     self.network = network
   }
   
-  public init(privateKey: Data, network: Network) {
+  public init(privateKey: Data, network: Network = .none) {
     self.raw = privateKey
     self.chainCode = Data()
     self.depth = 0
@@ -56,6 +56,9 @@ public struct PrivateKey: Key {
   }
   
   func derived(nodes: [DerivationNode]) -> PrivateKey? {
+    if case .none = self.network {
+      return self
+    }
     guard nodes.count > 0 else {
       return self
     }

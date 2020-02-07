@@ -23,7 +23,13 @@ public extension Data {
     return hash
   }
   
-  func sign(key: Data) -> Data? {
+  func sign(key: PrivateKey, leadingV: Bool) -> Data? {
+    self.sign(key: key.data(), leadingV: leadingV)
+  }
+}
+
+internal extension Data {
+  func sign(key: Data, leadingV: Bool) -> Data? {
     var dataToSign: Data
     if self.count != 32 {
       guard let hash = self.hashPersonalMessage() else {
@@ -46,9 +52,14 @@ public extension Data {
     do {
       let signature = try TransactionSignature(signature: serializedRecoverableSignature)
       var signed = Data()
-      signed.append(Data(signature.v._data))
+      if leadingV {
+        signed.append(Data(signature.v._data))
+      }
       signed.append(Data(signature.r._data))
       signed.append(Data(signature.s._data))
+      if !leadingV {
+        signed.append(Data(signature.v._data))
+      }
       
       return signed
     } catch {

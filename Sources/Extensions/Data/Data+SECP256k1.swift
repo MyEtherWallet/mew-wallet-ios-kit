@@ -75,6 +75,10 @@ extension Data {
     return publicKey
   }
   
+  public func secp256k1Multiply(privateKey: PrivateKey) -> Data? {
+    return self.secp256k1Multiply(privateKey: privateKey.data())
+  }
+  
   public func secp256k1Multiply(privateKey: Data) -> Data? {
     guard var context = secp256k1_context_create(UInt32(SECP256K1_CONTEXT_SIGN|SECP256K1_CONTEXT_VERIFY)) else {
       return nil

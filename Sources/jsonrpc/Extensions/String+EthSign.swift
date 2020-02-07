@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension String {
+public extension String {
   func hashPersonalMessage() -> Data? {
     guard let personalMessage = self.data(using: .utf8) else {
       return nil
@@ -16,7 +16,27 @@ extension String {
     return personalMessage.hashPersonalMessage()
   }
   
-  func sign(key: Data) -> Data? {
-    return self.hashPersonalMessage()?.sign(key: key)
+  func hashPersonalMessageAndSign(key: PrivateKey, leadingV: Bool) -> Data? {
+    return self.hashPersonalMessage()?.sign(key: key.data(), leadingV: leadingV)
+  }
+  
+  func sign(key: PrivateKey, leadingV: Bool) -> Data? {
+    guard let personalMessage = self.data(using: .utf8) else {
+      return nil
+    }
+    return personalMessage.sign(key: key.data(), leadingV: leadingV)
+  }
+}
+
+internal extension String {
+  func hashPersonalMessageAndSign(key: Data, leadingV: Bool) -> Data? {
+    return self.hashPersonalMessage()?.sign(key: key, leadingV: leadingV)
+  }
+  
+  func sign(key: Data, leadingV: Bool) -> Data? {
+    guard let personalMessage = self.data(using: .utf8) else {
+      return nil
+    }
+    return personalMessage.sign(key: key, leadingV: leadingV)
   }
 }
