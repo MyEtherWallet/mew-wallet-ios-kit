@@ -1,0 +1,25 @@
+//
+//  Data+Length.swift
+//  MEWwalletKit
+//
+//  Created by Mikhail Nikanorov on 4/29/19.
+//  Copyright © 2019 MyEtherWallet Inc. All rights reserved.
+//
+
+import Foundation
+
+extension Data {
+  mutating func setLength(_ length: Int, appendFromLeft: Bool = true, negative: Bool = false) {
+    guard self.count < length else {
+      return
+    }
+    
+    let leftLength = length - self.count
+    
+    if appendFromLeft {
+      self = Data(repeating: negative ? 0xFF : 0x00, count: leftLength) + self
+    } else {
+      self += Data(repeating: negative ? 0xFF : 0x00, count: leftLength)
+    }
+  }
+}
