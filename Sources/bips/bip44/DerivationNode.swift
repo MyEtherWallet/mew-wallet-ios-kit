@@ -62,6 +62,17 @@ enum DerivationNode {
   }
 }
 
+extension DerivationNode: CustomDebugStringConvertible {
+  var debugDescription: String {
+    switch self {
+    case let .hardened(index):
+      return "\(index)'"
+    case let .nonHardened(index):
+      return "\(index)"
+    }
+  }
+}
+
 extension String {
   func derivationPath() throws -> [DerivationNode] {
     return try DerivationNode.nodes(path: self)

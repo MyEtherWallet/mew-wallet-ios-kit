@@ -100,10 +100,25 @@ public struct PrivateKey: Key {
 
     let rawKey = BigInt<UInt8>(self.raw)
     
-    let calculatedKey = ((BigInt<UInt8>(factor._data.reversed()) +
-                          BigInt<UInt8>(rawKey._data.reversed())) % curveOrder)
-
-    derivedPrivateKeyData = Data(calculatedKey._data.reversed())
+    var reversedRawKeyData = rawKey._data.reversed() as [UInt8]
+    while reversedRawKeyData.count < 32 {
+      reversedRawKeyData.insert(0x00, at: 0)
+    }
+    
+    var reversedFactorData = factor._data.reversed() as [UInt8]
+    while reversedFactorData.count < 32 {
+      reversedFactorData.insert(0x00, at: 0)
+    }
+    
+    //swiftlint:disable:next identifier_name
+    let bn = BigInt<UInt8>(reversedRawKeyData) + BigInt<UInt8>(reversedFactorData)
+    let calculatedKey = (bn % curveOrder)
+    
+    var derivedPrivateKeyDataCandidate = Data(calculatedKey._data.reversed())
+    while derivedPrivateKeyDataCandidate.count < 32 {
+      derivedPrivateKeyDataCandidate.insert(0x00, at: 0)
+    }
+    derivedPrivateKeyData = derivedPrivateKeyDataCandidate
     derivedChainCode = Data(digest[32 ..< 64])
     
     let fingerprint = Data(publicKeyData.ripemd160().prefix(4))
