@@ -39,7 +39,7 @@ public class Transaction: CustomDebugStringConvertible {
   //swiftlint:enable identifier_name
   
   init(nonce: BigInt<UInt8> = BigInt<UInt8>(0x00), gasPrice: BigInt<UInt8> = BigInt<UInt8>(0x00), gasLimit: BigInt<UInt8> = BigInt<UInt8>(0x00),
-       from: Address? = nil, to: Address?, value: BigInt<UInt8> = BigInt<UInt8>(0x00), data: Data = Data()) {
+       from: Address? = nil, to: Address?, value: BigInt<UInt8> = BigInt<UInt8>(0x00), data: Data = Data(), chainID: BigInt<UInt8>? = nil) {
     self._nonce = nonce
     self._gasPrice = gasPrice
     self._gasLimit = gasLimit
@@ -47,24 +47,35 @@ public class Transaction: CustomDebugStringConvertible {
     self.to = to
     self._value = value
     self.data = data
+    self.chainID = chainID
   }
   
   public convenience init(nonce: Data = Data([0x00]), gasPrice: Data = Data([0x00]), gasLimit: Data = Data([0x00]), from: Address? = nil, to: Address?,
-                          value: Data = Data([0x00]), data: Data = Data()) {
-    self.init(nonce: BigInt<UInt8>(nonce), gasPrice: BigInt<UInt8>(gasPrice), gasLimit: BigInt<UInt8>(gasLimit), to: to, value: BigInt<UInt8>(value), data: data)
+                          value: Data = Data([0x00]), data: Data = Data(), chainID: Data?) {
+    if let chainID = chainID {
+      self.init(nonce: BigInt<UInt8>(nonce), gasPrice: BigInt<UInt8>(gasPrice), gasLimit: BigInt<UInt8>(gasLimit), to: to,
+      value: BigInt<UInt8>(value), data: data, chainID: BigInt<UInt8>(chainID))
+    } else {
+      self.init(nonce: BigInt<UInt8>(nonce), gasPrice: BigInt<UInt8>(gasPrice), gasLimit: BigInt<UInt8>(gasLimit), to: to,
+      value: BigInt<UInt8>(value), data: data, chainID: nil)
+    }
   }
   
-  public convenience init(nonce: String = "0x00", gasPrice: String = "0x00", gasLimit: String = "0x00",
-                          from: Address? = nil, to: Address?, value: String = "0x00", data: Data) throws {
+  public convenience init(nonce: String = "0x00", gasPrice: String = "0x00", gasLimit: String = "0x00", from: Address? = nil, to: Address?,
+                          value: String = "0x00", data: Data, chainID: Data? = nil) throws {
     let nonce = BigInt<UInt8>(Data(hex: nonce.stringWithAlignedHexBytes()).bytes.reversed())
     let gasPrice = BigInt<UInt8>(Data(hex: gasPrice.stringWithAlignedHexBytes()).bytes.reversed())
     let gasLimit = BigInt<UInt8>(Data(hex: gasLimit.stringWithAlignedHexBytes()).bytes.reversed())
     let value = BigInt<UInt8>(Data(hex: value.stringWithAlignedHexBytes()).bytes.reversed())
-    
-    self.init(nonce: nonce, gasPrice: gasPrice, gasLimit: gasLimit, from: from, to: to, value: value, data: data)
+    if let chainID = chainID {
+      self.init(nonce: nonce, gasPrice: gasPrice, gasLimit: gasLimit, from: from, to: to, value: value, data: data, chainID: BigInt<UInt8>(chainID))
+    } else {
+      self.init(nonce: nonce, gasPrice: gasPrice, gasLimit: gasLimit, from: from, to: to, value: value, data: data)
+    }
   }
   
-  public convenience init(nonce: Decimal? = nil, gasPrice: Decimal?, gasLimit: Decimal?, from: Address? = nil, to: Address?, value: Decimal?, data: Data) throws {
+  public convenience init(nonce: Decimal? = nil, gasPrice: Decimal?, gasLimit: Decimal?, from: Address? = nil, to: Address?,
+                          value: Decimal?, data: Data, chainID: Data? = nil) throws {
     let nonceBigInt: BigInt<UInt8>
     let gasPriceBigInt: BigInt<UInt8>
     let gasLimitBigInt: BigInt<UInt8>
@@ -94,7 +105,11 @@ public class Transaction: CustomDebugStringConvertible {
       valueBigInt = BigInt<UInt8>(0x00)
     }
     
-    self.init(nonce: nonceBigInt, gasPrice: gasPriceBigInt, gasLimit: gasLimitBigInt, from: from, to: to, value: valueBigInt, data: data)
+    if let chainID = chainID {
+      self.init(nonce: nonceBigInt, gasPrice: gasPriceBigInt, gasLimit: gasLimitBigInt, from: from, to: to, value: valueBigInt, data: data, chainID: BigInt<UInt8>(chainID))
+    } else {
+      self.init(nonce: nonceBigInt, gasPrice: gasPriceBigInt, gasLimit: gasLimitBigInt, from: from, to: to, value: valueBigInt, data: data)
+    }
   }
   
   public var debugDescription: String {
