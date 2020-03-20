@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import libsecp256k1
+import secp256k1
 
 private let ethSignPrefix = "\u{19}Ethereum Signed Message:\n"
 

@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import libsecp256k1
+import secp256k1
 
 extension secp256k1_ecdsa_recoverable_signature {
   

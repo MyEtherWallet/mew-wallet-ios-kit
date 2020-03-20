@@ -1,7 +1,7 @@
 warning_threshold: 35
 
 excluded:
-- thirdparty
+- .build
 
 disabled_rules:
 - trailing_whitespace
