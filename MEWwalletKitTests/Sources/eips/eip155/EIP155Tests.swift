@@ -6,10 +6,11 @@
 //  Copyright © 2019 MyEtherWallet Inc. All rights reserved.
 //
 
+import Foundation
 import Quick
 import Nimble
 @testable import MEWwalletKit
-import libsecp256k1
+import secp256k1
 
 class EIP155Tests: QuickSpec {
   class TestVector {

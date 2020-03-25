@@ -6,6 +6,7 @@
 //  Copyright © 2019 MyEtherWallet Inc. All rights reserved.
 //
 
+import Foundation
 import Quick
 import Nimble
 import CryptoSwift

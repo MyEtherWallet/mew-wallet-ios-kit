@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import libsecp256k1
+import secp256k1
 
 enum TransactionSignError: Error {
   case invalidChainId

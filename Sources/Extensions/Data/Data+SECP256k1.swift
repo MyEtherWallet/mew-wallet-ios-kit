@@ -7,8 +7,7 @@
 //
 
 import Foundation
-import libsecp256k1
-import CryptoSwift
+import secp256k1
 
 extension Data {
   func secp256k1Verify(context: OpaquePointer/*secp256k1_context*/) -> Bool {
