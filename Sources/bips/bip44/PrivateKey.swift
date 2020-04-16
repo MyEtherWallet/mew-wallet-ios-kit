@@ -8,7 +8,7 @@
 
 import Foundation
 import CryptoSwift
-import libsecp256k1
+import secp256k1
 
 enum PrivateKeyError: Error {
   case invalidData

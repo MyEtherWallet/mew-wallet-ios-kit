@@ -1,0 +1,25 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "CryptoSwift",
+        "repositoryURL": "git@github.com:krzyzanowskim/CryptoSwift.git",
+        "state": {
+          "branch": null,
+          "revision": "a44caef0550c346e0ab9172f7c9a3852c1833599",
+          "version": "1.3.0"
+        }
+      },
+      {
+        "package": "secp256k1",
+        "repositoryURL": "git@github.com:Foboz/secp256k1.swift.git",
+        "state": {
+          "branch": "master",
+          "revision": "7d9633c7dce362ad9ec7d9e977b262eb3480a422",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -3,14 +3,13 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		5625CED12269028A000B6357 /* Data+Zero.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5625CED02269028A000B6357 /* Data+Zero.swift */; };
 		5625CED3226904D5000B6357 /* DataZeroTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5625CED2226904D5000B6357 /* DataZeroTests.swift */; };
 		5625CEDA226905BC000B6357 /* BigInt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5625CED9226905BC000B6357 /* BigInt.swift */; };
-		5625D131226A6314000B6357 /* libsecp256k1.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5625D130226A6302000B6357 /* libsecp256k1.framework */; };
 		5625D134226A6785000B6357 /* BIP44Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5625D133226A6785000B6357 /* BIP44Tests.swift */; };
 		5625D136226A6BBD000B6357 /* Key.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5625D135226A6BBD000B6357 /* Key.swift */; };
 		5625D13D226A7225000B6357 /* Data+Base58.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5625D13C226A7225000B6357 /* Data+Base58.swift */; };
@@ -25,7 +24,6 @@
 		565FFFC122E8ECFA00C42D4F /* StringEthSignTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565FFFC022E8ECFA00C42D4F /* StringEthSignTests.swift */; };
 		565FFFC622E8EE3400C42D4F /* DataEthSignTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565FFFC522E8EE3400C42D4F /* DataEthSignTests.swift */; };
 		565FFFC722E8EF5F00C42D4F /* Data+EthSign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565FFFC322E8EDB000C42D4F /* Data+EthSign.swift */; };
-		566B158A229471A000EDAB4E /* libsecp256k1.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5625D130226A6302000B6357 /* libsecp256k1.framework */; };
 		567A3B6423C75B9600CBAE81 /* Transaction+TokenTransfer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567A3B6323C75B9600CBAE81 /* Transaction+TokenTransfer.swift */; };
 		5698B34D226111F600F713E1 /* MEWwalletKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5698B343226111F600F713E1 /* MEWwalletKit.framework */; };
 		5698B354226111F600F713E1 /* MEWwalletKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 5698B346226111F600F713E1 /* MEWwalletKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -33,10 +31,7 @@
 		5698B36722611C3200F713E1 /* Wordlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5698B36622611C3200F713E1 /* Wordlist.swift */; };
 		5698B37D2261353400F713E1 /* Data+RandomBytes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5698B37C2261353400F713E1 /* Data+RandomBytes.swift */; };
 		5698B3812265080900F713E1 /* DataRandomBytesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5698B3802265080900F713E1 /* DataRandomBytesTests.swift */; };
-		5698B384226508C000F713E1 /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5698B383226508C000F713E1 /* Quick.framework */; };
-		5698B386226508CA00F713E1 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5698B385226508CA00F713E1 /* Nimble.framework */; };
 		5698B38B2265114100F713E1 /* BIP39Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5698B38A2265114100F713E1 /* BIP39Tests.swift */; };
-		5698B38D226519FE00F713E1 /* CryptoSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5698B38C226519FE00F713E1 /* CryptoSwift.framework */; };
 		5698B38F22651C2B00F713E1 /* Data+Bits.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5698B38E22651C2B00F713E1 /* Data+Bits.swift */; };
 		5698B3912265359900F713E1 /* DataBitsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5698B3902265359900F713E1 /* DataBitsTests.swift */; };
 		5698B397226671C000F713E1 /* FixedWidthInteger+Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5698B395226671BC00F713E1 /* FixedWidthInteger+Data.swift */; };
@@ -48,6 +43,8 @@
 		5698B3AC2267DA6000F713E1 /* PrivateKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5698B3AA2267DA5900F713E1 /* PrivateKey.swift */; };
 		5698B3B12267DADC00F713E1 /* PublicKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5698B3AF2267DA8700F713E1 /* PublicKey.swift */; };
 		5698B3B42267F1AD00F713E1 /* DerivationNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5698B3B32267F1AD00F713E1 /* DerivationNode.swift */; };
+		56A2A36B2426C6AC0041F5FB /* secp256k1 in Frameworks */ = {isa = PBXBuildFile; productRef = 56A2A36A2426C6AC0041F5FB /* secp256k1 */; };
+		56A2A36E2426C6D10041F5FB /* CryptoSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 56A2A36D2426C6D10041F5FB /* CryptoSwift */; };
 		56E08C722272442500FC60EF /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56E08C712272442500FC60EF /* Transaction.swift */; };
 		56E08C74227246BF00FC60EF /* Address.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56E08C73227246BF00FC60EF /* Address.swift */; };
 		56E08C7622724B9D00FC60EF /* Transaction+EIP155.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56E08C7522724B9D00FC60EF /* Transaction+EIP155.swift */; };
@@ -74,13 +71,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		5625D12F226A6302000B6357 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5625D12B226A6302000B6357 /* libsecp256k1.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 5625D047226A5A78000B6357;
-			remoteInfo = libsecp256k1;
-		};
 		5698B34E226111F600F713E1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5698B33A226111F600F713E1 /* Project object */;
@@ -94,7 +84,6 @@
 		5625CED02269028A000B6357 /* Data+Zero.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Zero.swift"; sourceTree = "<group>"; };
 		5625CED2226904D5000B6357 /* DataZeroTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataZeroTests.swift; sourceTree = "<group>"; };
 		5625CED9226905BC000B6357 /* BigInt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BigInt.swift; sourceTree = "<group>"; };
-		5625D12B226A6302000B6357 /* libsecp256k1.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = libsecp256k1.xcodeproj; sourceTree = "<group>"; };
 		5625D133226A6785000B6357 /* BIP44Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BIP44Tests.swift; sourceTree = "<group>"; };
 		5625D135226A6BBD000B6357 /* Key.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Key.swift; sourceTree = "<group>"; };
 		5625D13C226A7225000B6357 /* Data+Base58.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Base58.swift"; sourceTree = "<group>"; };
@@ -109,6 +98,7 @@
 		565FFFC022E8ECFA00C42D4F /* StringEthSignTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringEthSignTests.swift; sourceTree = "<group>"; };
 		565FFFC322E8EDB000C42D4F /* Data+EthSign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+EthSign.swift"; sourceTree = "<group>"; };
 		565FFFC522E8EE3400C42D4F /* DataEthSignTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataEthSignTests.swift; sourceTree = "<group>"; };
+		5663070924258CFB00A8BBAF /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		567A3B6323C75B9600CBAE81 /* Transaction+TokenTransfer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Transaction+TokenTransfer.swift"; sourceTree = "<group>"; };
 		5698B343226111F600F713E1 /* MEWwalletKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MEWwalletKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5698B346226111F600F713E1 /* MEWwalletKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MEWwalletKit.h; sourceTree = "<group>"; };
@@ -120,10 +110,7 @@
 		5698B36622611C3200F713E1 /* Wordlist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wordlist.swift; sourceTree = "<group>"; };
 		5698B37C2261353400F713E1 /* Data+RandomBytes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+RandomBytes.swift"; sourceTree = "<group>"; };
 		5698B3802265080900F713E1 /* DataRandomBytesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataRandomBytesTests.swift; sourceTree = "<group>"; };
-		5698B383226508C000F713E1 /* Quick.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Quick.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		5698B385226508CA00F713E1 /* Nimble.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Nimble.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5698B38A2265114100F713E1 /* BIP39Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BIP39Tests.swift; sourceTree = "<group>"; };
-		5698B38C226519FE00F713E1 /* CryptoSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CryptoSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5698B38E22651C2B00F713E1 /* Data+Bits.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Bits.swift"; sourceTree = "<group>"; };
 		5698B3902265359900F713E1 /* DataBitsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataBitsTests.swift; sourceTree = "<group>"; };
 		5698B395226671BC00F713E1 /* FixedWidthInteger+Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FixedWidthInteger+Data.swift"; sourceTree = "<group>"; };
@@ -165,8 +152,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5625D131226A6314000B6357 /* libsecp256k1.framework in Frameworks */,
-				5698B38D226519FE00F713E1 /* CryptoSwift.framework in Frameworks */,
+				56A2A36B2426C6AC0041F5FB /* secp256k1 in Frameworks */,
+				56A2A36E2426C6D10041F5FB /* CryptoSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -174,9 +161,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				566B158A229471A000EDAB4E /* libsecp256k1.framework in Frameworks */,
-				5698B386226508CA00F713E1 /* Nimble.framework in Frameworks */,
-				5698B384226508C000F713E1 /* Quick.framework in Frameworks */,
 				5698B34D226111F600F713E1 /* MEWwalletKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -190,22 +174,6 @@
 				5625CED9226905BC000B6357 /* BigInt.swift */,
 			);
 			path = Classes;
-			sourceTree = "<group>";
-		};
-		5625CEE022694B6C000B6357 /* secp256k1 */ = {
-			isa = PBXGroup;
-			children = (
-				5625D12B226A6302000B6357 /* libsecp256k1.xcodeproj */,
-			);
-			path = secp256k1;
-			sourceTree = "<group>";
-		};
-		5625D12C226A6302000B6357 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				5625D130226A6302000B6357 /* libsecp256k1.framework */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		5625D132226A677A000B6357 /* bip44 */ = {
@@ -271,13 +239,12 @@
 		5698B339226111F600F713E1 = {
 			isa = PBXGroup;
 			children = (
-				5625CEE022694B6C000B6357 /* secp256k1 */,
+				5663070924258CFB00A8BBAF /* Package.swift */,
 				5698B3622261134500F713E1 /* scripts */,
 				5698B35E2261125A00F713E1 /* Sources */,
 				5698B345226111F600F713E1 /* MEWwalletKit */,
 				5698B350226111F600F713E1 /* MEWwalletKitTests */,
 				5698B344226111F600F713E1 /* Products */,
-				5698B382226508C000F713E1 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -376,16 +343,6 @@
 				5625D140226A76E6000B6357 /* Base58Tests.swift */,
 			);
 			path = Extensions;
-			sourceTree = "<group>";
-		};
-		5698B382226508C000F713E1 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				5698B38C226519FE00F713E1 /* CryptoSwift.framework */,
-				5698B385226508CA00F713E1 /* Nimble.framework */,
-				5698B383226508C000F713E1 /* Quick.framework */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		5698B3872265111B00F713E1 /* bip39 */ = {
@@ -550,6 +507,10 @@
 			dependencies = (
 			);
 			name = MEWwalletKit;
+			packageProductDependencies = (
+				56A2A36A2426C6AC0041F5FB /* secp256k1 */,
+				56A2A36D2426C6D10041F5FB /* CryptoSwift */,
+			);
 			productName = MEWwalletKit;
 			productReference = 5698B343226111F600F713E1 /* MEWwalletKit.framework */;
 			productType = "com.apple.product-type.framework";
@@ -599,14 +560,12 @@
 				en,
 			);
 			mainGroup = 5698B339226111F600F713E1;
+			packageReferences = (
+				56A2A3692426C6AC0041F5FB /* XCRemoteSwiftPackageReference "secp256k1.swift" */,
+				56A2A36C2426C6D10041F5FB /* XCRemoteSwiftPackageReference "CryptoSwift" */,
+			);
 			productRefGroup = 5698B344226111F600F713E1 /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 5625D12C226A6302000B6357 /* Products */;
-					ProjectRef = 5625D12B226A6302000B6357 /* libsecp256k1.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				5698B342226111F600F713E1 /* MEWwalletKit */,
@@ -614,16 +573,6 @@
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		5625D130226A6302000B6357 /* libsecp256k1.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = libsecp256k1.framework;
-			remoteRef = 5625D12F226A6302000B6357 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		5698B341226111F600F713E1 /* Resources */ = {
@@ -999,6 +948,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		56A2A3692426C6AC0041F5FB /* XCRemoteSwiftPackageReference "secp256k1.swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "git@github.com:Foboz/secp256k1.swift.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+		56A2A36C2426C6D10041F5FB /* XCRemoteSwiftPackageReference "CryptoSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "git@github.com:krzyzanowskim/CryptoSwift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.3.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		56A2A36A2426C6AC0041F5FB /* secp256k1 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 56A2A3692426C6AC0041F5FB /* XCRemoteSwiftPackageReference "secp256k1.swift" */;
+			productName = secp256k1;
+		};
+		56A2A36D2426C6D10041F5FB /* CryptoSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 56A2A36C2426C6D10041F5FB /* XCRemoteSwiftPackageReference "CryptoSwift" */;
+			productName = CryptoSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 5698B33A226111F600F713E1 /* Project object */;
 }
