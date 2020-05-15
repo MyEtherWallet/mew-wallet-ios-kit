@@ -14,9 +14,9 @@ enum TransactionSignatureError: Error {
 
 internal struct TransactionSignature: CustomDebugStringConvertible {
   //swiftlint:disable identifier_name
-  internal let r: BigInt<UInt8>
-  internal let s: BigInt<UInt8>
-  internal let v: BigInt<UInt8>
+  private(set) internal var r: BigInt<UInt8>
+  private(set) internal var s: BigInt<UInt8>
+  private(set) internal var v: BigInt<UInt8>
   //swiftlint:enable identifier_name
   private let chainID: BigInt<UInt8>
   
@@ -43,6 +43,7 @@ internal struct TransactionSignature: CustomDebugStringConvertible {
     }
     
     self.chainID = chainID ?? BigInt<UInt8>()
+    self._normalize()
   }
   
   //swiftlint:disable identifier_name
@@ -51,6 +52,7 @@ internal struct TransactionSignature: CustomDebugStringConvertible {
     self.s = s
     self.v = v
     self.chainID = chainID ?? BigInt<UInt8>()
+    self._normalize()
   }
   
   init(r: String, s: String, v: String, chainID: BigInt<UInt8>? = nil) throws {
@@ -58,6 +60,7 @@ internal struct TransactionSignature: CustomDebugStringConvertible {
     self.s = BigInt<UInt8>(Data(hex: s).bytes)
     self.v = BigInt<UInt8>(Data(hex: v).bytes)
     self.chainID = chainID ?? BigInt<UInt8>()
+    self._normalize()
   }
   //swiftlint:enable identifier_name
   
@@ -72,17 +75,14 @@ internal struct TransactionSignature: CustomDebugStringConvertible {
     } else {
       normalizedV = self.v - 0x1B
     }
-    var rData = Data(self.r._data)
-    rData.setLength(32)
-    
-    var sData = Data(self.s._data)
-    sData.setLength(32)
+    let rData = self.r.data
+    let sData = self.s.data
     
     let vData: Data
     if normalizedV.isZero {
       vData = Data([0x00])
     } else {
-      vData = Data(normalizedV._data.reversed())
+      vData = normalizedV.reversedData
     }
     
     let signature = rData + sData + vData
@@ -91,14 +91,22 @@ internal struct TransactionSignature: CustomDebugStringConvertible {
     return publicKey
   }
   
+  // MARK: - Private
+  
+  mutating func _normalize() {
+    self.r.dataLength = 32
+    self.s.dataLength = 32
+    self.v.dataLength = 1
+  }
+  
   // MARK: - CustomDebugStringConvertible
   
   var debugDescription: String {
     var description = "Signature\n"
-    description += "r: \(self.r._data.toHexString())\n"
-    description += "s: \(self.s._data.toHexString())\n"
-    description += "v: \(self.v._data.toHexString())\n"
-    description += "chainID: \(self.chainID._data.toHexString())"
+    description += "r: \(self.r.data.toHexString())\n"
+    description += "s: \(self.s.data.toHexString())\n"
+    description += "v: \(self.v.data.toHexString())\n"
+    description += "chainID: \(self.chainID.data.toHexString())"
     return description
   }
 }

@@ -321,35 +321,37 @@ class BIP39Tests: QuickSpec {
   
   override func spec() {
     describe("BIP39 tests") {
-      it("Should pass all test vectors") {
-        for vector in self.testVectors {
-          let entropyBIP39 = BIP39(entropy: vector.entropy, language: vector.language)
-          let mnemonicBIP39 = BIP39(mnemonic: vector.mnemonic, language: vector.language)
-          
-          expect(entropyBIP39.mnemonic).to(equal(vector.mnemonic), description: "Mnemonic failed: \(vector.entropy.toHexString())")
-          expect(mnemonicBIP39.entropy).to(equal(vector.entropy), description: "Entropy failed: \(vector.entropy.toHexString())")
-          
-          do {
-            if case .japanese = vector.language {
-              let password = "㍍ガバヴァぱばぐゞちぢ十人十色"
-              let normalizedPassword = "メートルガバヴァぱばぐゞちぢ十人十色"
-
-              let entropySeedPassword = try entropyBIP39.seed(password: password)
-              let entropySeedNormalizedPassword = try entropyBIP39.seed(password: normalizedPassword)
-              let mnemonicSeedPassword = try mnemonicBIP39.seed(password: password)
-              let mnemonicSeedNormalizedPassword = try mnemonicBIP39.seed(password: normalizedPassword)
-              expect(entropySeedPassword).to(equal(vector.seed), description: "Seed failed: \(vector.entropy.toHexString())")
-              expect(entropySeedNormalizedPassword).to(equal(vector.seed), description: "Seed failed: \(vector.entropy.toHexString())")
-              expect(mnemonicSeedPassword).to(equal(vector.seed), description: "Seed failed: \(vector.entropy.toHexString())")
-              expect(mnemonicSeedNormalizedPassword).to(equal(vector.seed), description: "Seed failed: \(vector.entropy.toHexString())")
-            } else {
-              let entropySeed = try entropyBIP39.seed(password: vector.password ?? "")
-              let mnemonicSeed = try mnemonicBIP39.seed(password: vector.password ?? "")
-              expect(entropySeed).to(equal(vector.seed), description: "Seed failed: \(vector.entropy.toHexString())")
-              expect(mnemonicSeed).to(equal(vector.seed), description: "Seed failed: \(vector.entropy.toHexString())")
+      describe("Should pass all test vectors. Count: \(self.testVectors.count)") {
+        for (idx, vector) in self.testVectors.enumerated() {
+          it("Should pass test vector - \(idx)") {
+            let entropyBIP39 = BIP39(entropy: vector.entropy, language: vector.language)
+            let mnemonicBIP39 = BIP39(mnemonic: vector.mnemonic, language: vector.language)
+            
+            expect(entropyBIP39.mnemonic).to(equal(vector.mnemonic), description: "Mnemonic failed: \(vector.entropy.toHexString())")
+            expect(mnemonicBIP39.entropy).to(equal(vector.entropy), description: "Entropy failed: \(vector.entropy.toHexString())")
+            
+            do {
+              if case .japanese = vector.language {
+                let password = "㍍ガバヴァぱばぐゞちぢ十人十色"
+                let normalizedPassword = "メートルガバヴァぱばぐゞちぢ十人十色"
+                
+                let entropySeedPassword = try entropyBIP39.seed(password: password)
+                let entropySeedNormalizedPassword = try entropyBIP39.seed(password: normalizedPassword)
+                let mnemonicSeedPassword = try mnemonicBIP39.seed(password: password)
+                let mnemonicSeedNormalizedPassword = try mnemonicBIP39.seed(password: normalizedPassword)
+                expect(entropySeedPassword).to(equal(vector.seed), description: "Seed failed: \(vector.entropy.toHexString())")
+                expect(entropySeedNormalizedPassword).to(equal(vector.seed), description: "Seed failed: \(vector.entropy.toHexString())")
+                expect(mnemonicSeedPassword).to(equal(vector.seed), description: "Seed failed: \(vector.entropy.toHexString())")
+                expect(mnemonicSeedNormalizedPassword).to(equal(vector.seed), description: "Seed failed: \(vector.entropy.toHexString())")
+              } else {
+                let entropySeed = try entropyBIP39.seed(password: vector.password ?? "")
+                let mnemonicSeed = try mnemonicBIP39.seed(password: vector.password ?? "")
+                expect(entropySeed).to(equal(vector.seed), description: "Seed failed: \(vector.entropy.toHexString())")
+                expect(mnemonicSeed).to(equal(vector.seed), description: "Seed failed: \(vector.entropy.toHexString())")
+              }
+            } catch let error {
+              fail("Vector failed: \(vector.entropy.toHexString()), error: \(error)")
             }
-          } catch let error {
-            fail("Vector failed: \(vector.entropy.toHexString()), error: \(error)")
           }
         }
       }

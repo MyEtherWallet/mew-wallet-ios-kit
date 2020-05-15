@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import secp256k1
+import Csecp256k1
 
 extension secp256k1_ecdsa_recoverable_signature {
   mutating func data() -> Data {

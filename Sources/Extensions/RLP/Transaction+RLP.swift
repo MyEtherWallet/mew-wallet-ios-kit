@@ -22,7 +22,13 @@ extension Transaction: RLP {
     }
     fields += [self._value, self.data]
     if let signature = self.signature, !forSignature {
-      fields += [BigInt<UInt8>(signature.v._data.reversed()), BigInt<UInt8>(signature.r._data.reversed()), BigInt<UInt8>(signature.s._data.reversed())]
+      var v = BigInt<UInt8>(signature.v.reversedData.bytes)
+      var r = BigInt<UInt8>(signature.r.reversedData.bytes)
+      var s = BigInt<UInt8>(signature.s.reversedData.bytes)
+      r.dataLength = signature.r.dataLength
+      v.dataLength = signature.v.dataLength
+      s.dataLength = signature.s.dataLength
+      fields += [v, r, s]
     } else if let chainID = chainID ?? self.chainID {
       fields += [chainID, 0, 0]
     }

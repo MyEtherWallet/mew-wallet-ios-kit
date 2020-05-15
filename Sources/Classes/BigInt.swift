@@ -91,7 +91,39 @@ struct BigInt<Word: FixedWidthInteger> :
   ///
   /// - `_data` has no trailing zero elements
   /// - If `self == 0`, then `isNegative == false` and `_data == []`
-  internal var _data: [Word] = []
+  private var _data: [Word] = []
+  private var _dataCount: Int?
+  
+  var dataLength: Int {
+    get {
+      return self._dataCount ?? _data.count
+    }
+    set {
+      _dataCount = newValue
+    }
+  }
+  
+  internal var data: Data {
+    guard let _data = self._data as? [UInt8] else {
+      return Data()
+    }
+    var data = Data(_data)
+    if let count = self._dataCount {
+      data.setLength(count, appendFromLeft: false)
+    }
+    return data
+  }
+  
+  internal var reversedData: Data {
+    guard let _data = self._data as? [UInt8] else {
+      return Data()
+    }
+    var data = Data(_data.reversed())
+    if let count = self._dataCount {
+      data.setLength(count, appendFromLeft: false)
+    }
+    return data
+  }
   
   /// A Boolean value indicating whether this instance is negative.
   public private(set) var isNegative = false

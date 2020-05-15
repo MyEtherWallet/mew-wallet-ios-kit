@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import secp256k1
+import Csecp256k1
 
 enum SECP256k1PubkeyError: Error {
   case invalidPrivateKey
