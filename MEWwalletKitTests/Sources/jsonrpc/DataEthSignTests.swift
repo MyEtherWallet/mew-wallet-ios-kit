@@ -10,7 +10,7 @@ import Foundation
 import Quick
 import Nimble
 @testable import MEWwalletKit
-import secp256k1
+import Csecp256k1
 
 class DataEthSignTests: QuickSpec {
   override func spec() {

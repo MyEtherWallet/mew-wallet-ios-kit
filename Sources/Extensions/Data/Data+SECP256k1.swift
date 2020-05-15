@@ -7,17 +7,15 @@
 //
 
 import Foundation
-import secp256k1
+import Csecp256k1
 
 extension Data {
   func secp256k1Verify(context: OpaquePointer/*secp256k1_context*/) -> Bool {
     guard self.count == 32 else { return false }
-    let result = self.withUnsafeBytes { pointer -> Int32 in
-      guard let pointer = pointer.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
-        return 0
-      }
-      return secp256k1_ec_seckey_verify(context, pointer)
-    }
+
+    var seckey = self.bytes
+    let result = secp256k1_ec_seckey_verify(context, &seckey)
+
     return result == 1
   }
   
@@ -25,43 +23,29 @@ extension Data {
     guard self.count == 32, privateKey.count == 32 else { return nil }
     var signature = secp256k1_ecdsa_recoverable_signature()
     
-    let result = self.withUnsafeBytes { dataBufferPointer -> Int32 in
-      guard let dataPointer = dataBufferPointer.baseAddress?.assumingMemoryBound(to: UInt8.self) else { return 0 }
-      return privateKey.withUnsafeBytes { keyBufferPointer -> Int32 in
-        guard let keyPointer = keyBufferPointer.baseAddress?.assumingMemoryBound(to: UInt8.self) else { return 0 }
-        
-        let signaturePointer = UnsafeMutablePointer(&signature)
-        
-        if extraEntropy {
-          guard let extraEntropy = Data.randomBytes(length: 32) else { return 0 }
-          return extraEntropy.withUnsafeBytes { extraEntropyBufferPointer -> Int32 in
-            guard let extraEntropyPointer = extraEntropyBufferPointer.baseAddress?.assumingMemoryBound(to: UInt8.self) else { return 0 }
-            return secp256k1_ecdsa_sign_recoverable(context, signaturePointer, dataPointer, keyPointer, nil, extraEntropyPointer)
-          }
-        } else {
-          return secp256k1_ecdsa_sign_recoverable(context, signaturePointer, dataPointer, keyPointer, nil, nil)
-        }
-      }
+    var data = self.bytes
+    var key = privateKey.bytes
+    
+    let status: Int32
+    if extraEntropy {
+      guard var entropy = Data.randomBytes(length: 32) else { return nil }
+      status = secp256k1_ecdsa_sign_recoverable(context, &signature, &data, &key, secp256k1_nonce_function_rfc6979, &entropy)
+    } else {
+      status = secp256k1_ecdsa_sign_recoverable(context, &signature, &data, &key, secp256k1_nonce_function_rfc6979, nil)
     }
-    guard result != 0 else { return nil }
+    
+    guard status != 0 else { return nil }
     return signature
   }
   
   func secp256k1ParseSignature(context: OpaquePointer/*secp256k1_context*/) -> secp256k1_ecdsa_recoverable_signature? {
     guard self.count == 65 else { return nil }
     var signature = secp256k1_ecdsa_recoverable_signature()
-    var serialized = self[0 ..< 64]
-    //swiftlint:disable identifier_name
+    var serialized = self[0 ..< 64].bytes
+    //swiftlint:disable:next identifier_name
     let v = Int32(self[64])
-    //swiftlint:enable identifier_name
     
-    let result = serialized.withUnsafeMutableBytes { serializedBufferPointer -> Int32 in
-      guard let serializedPointer = serializedBufferPointer.baseAddress?.assumingMemoryBound(to: UInt8.self) else { return 0 }
-      
-      return withUnsafeMutablePointer(to: &signature, { signaturePointer -> Int32 in
-        return secp256k1_ecdsa_recoverable_signature_parse_compact(context, signaturePointer, serializedPointer, v)
-      })
-    }
+    let result = secp256k1_ecdsa_recoverable_signature_parse_compact(context, &signature, &serialized, v)
     
     guard result != 0 else { return nil }
     return signature

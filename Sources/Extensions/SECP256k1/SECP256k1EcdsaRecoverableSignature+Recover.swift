@@ -7,21 +7,15 @@
 //
 
 import Foundation
-import secp256k1
+import Csecp256k1
 
 extension secp256k1_ecdsa_recoverable_signature {
   mutating func recoverPublicKey(from hash: Data, compressed: Bool, context: OpaquePointer /*secp256k1_context*/) -> Data? {
     guard hash.count == 32 else { return nil }
     var publicKey = secp256k1_pubkey()
-    let result = hash.withUnsafeBytes { hashBuffer -> Int32 in
-      guard let hashPointer = hashBuffer.baseAddress?.assumingMemoryBound(to: UInt8.self) else { return 0}
-      
-      return withUnsafePointer(to: &self, { signaturePointer -> Int32 in
-        return withUnsafeMutablePointer(to: &publicKey, { publicKeyPointer -> Int32 in
-          return secp256k1_ecdsa_recover(context, publicKeyPointer, signaturePointer, hashPointer)
-        })
-      })
-    }
+    var hashBytes = hash.bytes
+        
+    let result = secp256k1_ecdsa_recover(context, &publicKey, &self, &hashBytes)
     
     guard result != 0 else { return nil }
     let flags = compressed ? UInt32(SECP256K1_EC_COMPRESSED) : UInt32(SECP256K1_EC_UNCOMPRESSED)

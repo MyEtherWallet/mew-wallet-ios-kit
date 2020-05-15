@@ -16,22 +16,22 @@ public class Transaction: CustomDebugStringConvertible {
   //swiftlint:disable identifier_name
   internal var _nonce: BigInt<UInt8>
   public var nonce: Data {
-    return Data(self._nonce._data.reversed())
+    return self._nonce.reversedData
   }
   
   internal var _gasPrice: BigInt<UInt8>
   public var gasPrice: Data {
-    return Data(self._gasPrice._data.reversed())
+    return self._gasPrice.reversedData
   }
   internal var _gasLimit: BigInt<UInt8>
   public var gasLimit: Data {
-    return Data(self._gasLimit._data.reversed())
+    return self._gasLimit.reversedData
   }
   public var from: Address?
   public var to: Address?
   internal var _value: BigInt<UInt8>
   public var value: Data {
-    return Data(self._value._data.reversed())
+    return self._value.reversedData
   }
   internal(set) public var data: Data
   internal var signature: TransactionSignature?
@@ -114,14 +114,14 @@ public class Transaction: CustomDebugStringConvertible {
   
   public var debugDescription: String {
     var description = "Transaction\n"
-    description += "Nonce: \(self._nonce._data.reversed().toHexString())\n"
-    description += "Gas Price: \(self._gasPrice._data.reversed().toHexString())\n"
-    description += "Gas Limit: \(self._gasLimit._data.reversed().toHexString())\n"
+    description += "Nonce: \(self._nonce.reversedData.toHexString())\n"
+    description += "Gas Price: \(self._gasPrice.reversedData.toHexString())\n"
+    description += "Gas Limit: \(self._gasLimit.reversedData.toHexString())\n"
     description += "From: \(String(describing: self.from)) \n"
     description += "To: \(self.to?.address ?? "")\n"
-    description += "Value: \(self._value._data.reversed().toHexString())\n"
+    description += "Value: \(self._value.reversedData.toHexString())\n"
     description += "Data: \(self.data.toHexString())\n"
-    description += "ChainID: \(self.chainID?._data.reversed().toHexString() ?? "none")\n"
+    description += "ChainID: \(self.chainID?.reversedData.toHexString() ?? "none")\n"
     description += "\(self.signature?.debugDescription ?? "Signature: none")\n"
     description += "Hash: \(self.hash()?.toHexString() ?? "none")"
     return description

@@ -1,0 +1,4 @@
+module NimbleCwlCatchExceptionSupport {
+    umbrella "/Users/foboz/Projects/MEWmobile-iOS/thirdparty/MEWwalletKit/.build/checkouts/Nimble/Carthage/Checkouts/CwlPreconditionTesting/Dependencies/CwlCatchException/Sources/CwlCatchExceptionSupport/include"
+    export *
+}

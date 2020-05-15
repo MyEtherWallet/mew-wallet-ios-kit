@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import secp256k1
+import Csecp256k1
 
 private let ethSignPrefix = "\u{19}Ethereum Signed Message:\n"
 
@@ -53,12 +53,12 @@ internal extension Data {
       let signature = try TransactionSignature(signature: serializedRecoverableSignature)
       var signed = Data()
       if leadingV {
-        signed.append(Data(signature.v._data))
+        signed.append(signature.v.data)
       }
-      signed.append(Data(signature.r._data))
-      signed.append(Data(signature.s._data))
+      signed.append(signature.r.data)
+      signed.append(signature.s.data)
       if !leadingV {
-        signed.append(Data(signature.v._data))
+        signed.append(signature.v.data)
       }
       
       return signed

@@ -11,7 +11,7 @@ import Foundation
 extension Int: RLP, RLPLength {
   func rlpEncode(offset: UInt8?) -> Data? {
     guard let offset = offset else {
-      return Data(BigInt<UInt8>(self)._data.reversed()).rlpEncode()
+      return BigInt<UInt8>(self).reversedData.rlpEncode()
     }
     return self.rlpLengthEncode(offset: offset)
   }
