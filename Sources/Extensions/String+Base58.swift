@@ -28,7 +28,7 @@ extension String {
       j *= radix
     }
     
-    let bytes = result._data
+    let bytes = result.data.bytes
     var prefixData = Data()
     
     for _ in 0 ..< byteString.prefix(while: { i in i == alphabetBytes[0] }).count {

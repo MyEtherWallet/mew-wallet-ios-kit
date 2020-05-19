@@ -10,7 +10,7 @@ import Foundation
 import Quick
 import Nimble
 @testable import MEWwalletKit
-import secp256k1
+import Csecp256k1
 
 class EIP155Tests: QuickSpec {
   class TestVector {
@@ -90,8 +90,6 @@ class EIP155Tests: QuickSpec {
       TestVector(id: 18, nonce: "0x13", gasPrice: "", gasLimit: "0x0493e0", to: "0x0000000000000000000000000000000000000012", data: "0x6d6f6f7365", value: "0x00", r: "0xd0e340578f9d733986f6a55c5401953c90f7ccd46fe72d5588592dd9cbdf1e03", s: "0x01d8d63149bd986f363084ac064e8387850d80e5238cc16ed4d30fd0a5af7261", v: "0x2a", rlp: "0xf8651380830493e094000000000000000000000000000000000000001280856d6f6f73652aa0d0e340578f9d733986f6a55c5401953c90f7ccd46fe72d5588592dd9cbdf1e03a001d8d63149bd986f363084ac064e8387850d80e5238cc16ed4d30fd0a5af7261", sender: "3c24d7329e92f84f08556ceb6df1cdb0104ca49f", hash: nil, chainID: nil),
       //Vitalik_17.json
       TestVector(id: 19, nonce: "0x14", gasPrice: "", gasLimit: "0x0493e0", to: "0x0000000000000000000000000000000000000022", data: "0x6d6f6f7365", value: "0x00", r: "0x4bc84887af29d2b159ee290dee793bdba34079428f48699e9fc92a7e12d4aeaf", s: "0x63b9d78c5a36f96454fe2d5c1eb7c0264f6273afdc0ba28dd9a8f00eadaf7476", v: "0x2a", rlp: "0xf8651480830493e094000000000000000000000000000000000000002280856d6f6f73652aa04bc84887af29d2b159ee290dee793bdba34079428f48699e9fc92a7e12d4aeafa063b9d78c5a36f96454fe2d5c1eb7c0264f6273afdc0ba28dd9a8f00eadaf7476", sender: "3c24d7329e92f84f08556ceb6df1cdb0104ca49f", hash: nil, chainID: nil),
-      //libsecp256k1test.json
-      TestVector(id: 20, nonce: "0", gasPrice: "0x09184e72a000", gasLimit: "0xf388", to: "", data: "0x", value: "0", r: "0x2c", s: "0x04", v: "0x1b", rlp: "0xd1808609184e72a00082f3888080801b2c04", sender: "170ad78f26da62f591fa3fe3d54c30016167cbbf", hash: "ba09edc1275a285fb27bfe82c4eea240a907a0dbaf9e55764b8f318c37d5974f", chainID: nil),
       //Custom chain Id
       TestVector(id: 21, nonce: "0x0", gasPrice: "0x6b49d200", gasLimit: "0x5208", to: "0x7fB1077e28b8C771330D323DBdC42E0623e05E3d", data: "", value: "0x0d6f37360172ac00", r: "0x5118e46bf62e2487f31d5a502c7223126ed3fa9366b95f862ff1c2b8ad598349", s: "0x73e67c4e27010dd728eecd8a6c7717552d20136369eacd0a6e0ba704aa2e1240", v: "0x9d", rlp: "0xf86c80846b49d200825208947fb1077e28b8c771330d323dbdc42e0623e05e3d880d6f37360172ac0080819da05118e46bf62e2487f31d5a502c7223126ed3fa9366b95f862ff1c2b8ad598349a073e67c4e27010dd728eecd8a6c7717552d20136369eacd0a6e0ba704aa2e1240", sender: "7fB1077e28b8C771330D323DBdC42E0623e05E3d", hash: "b02986ef811adcd1790a734c05918a614c7a160de567ae2ed5c353ef85e0c418", chainID: "61")
     ]
@@ -144,9 +142,9 @@ class EIP155Tests: QuickSpec {
         }
         
         expect(transaction?.signature).toNot(beNil())
-        expect(transaction?.signature?.r._data.toHexString()).to(equal("1fff9fa845437523b0a7f334b7d2a0ab14364a3581f898cd1bba3b5909465867"))
-        expect(transaction?.signature?.s._data.toHexString()).to(equal("1415137f53eeddf0687e966f8d59984676d6d92ce88140765ed343db6936679e"))
-        expect(transaction?.signature?.v._data.toHexString()).to(equal("45"))
+        expect(transaction?.signature?.r.data.toHexString()).to(equal("1fff9fa845437523b0a7f334b7d2a0ab14364a3581f898cd1bba3b5909465867"))
+        expect(transaction?.signature?.s.data.toHexString()).to(equal("1415137f53eeddf0687e966f8d59984676d6d92ce88140765ed343db6936679e"))
+        expect(transaction?.signature?.v.data.toHexString()).to(equal("45"))
       }
     }
   }

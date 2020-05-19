@@ -1,0 +1,4 @@
+module Csecp256k1 {
+    umbrella "/Users/foboz/Projects/MEWmobile-iOS/thirdparty/MEWwalletKit/.build/checkouts/Csecp256k1/Sources/Csecp256k1/include"
+    export *
+}

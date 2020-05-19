@@ -16,15 +16,15 @@ let package = Package(
     )
   ],
   dependencies: [
-    .package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", .upToNextMajor(from: "1.0.0")),
-    .package(url: "https://github.com/Foboz/secp256k1.swift.git", .branch("master")),
+    .package(url: "git@github.com:Foboz/CryptoSwift.git", .branch("master")),
+    .package(url: "https://github.com/mxgc/Csecp256k1.git", from: "0.3.0"),
     .package(url: "https://github.com/Quick/Quick.git", .upToNextMajor(from: "2.0.0")),
     .package(url: "https://github.com/Quick/Nimble.git", .upToNextMajor(from: "8.0.0"))
   ],
   targets: [
     .target(
       name: "MEWwalletKit",
-      dependencies: ["CryptoSwift", "secp256k1"],
+      dependencies: ["CryptoSwift", "Csecp256k1"],
       path: "Sources"
     ),
     .testTarget(

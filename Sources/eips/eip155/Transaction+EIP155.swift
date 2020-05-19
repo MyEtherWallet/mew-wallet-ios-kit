@@ -7,13 +7,14 @@
 //
 
 import Foundation
-import secp256k1
+import Csecp256k1
 
 enum TransactionSignError: Error {
   case invalidChainId
   case invalidPublicKey
   case invalidPrivateKey
   case invalidSignature
+  case emptyPublicKey
   case internalError
 }
 
@@ -29,7 +30,7 @@ extension Transaction {
     let signature = try self.eip155sign(privateKey: key, extraEntropy: extraEntropy, context: context)
     guard let serializedSignature = signature.serialized else { throw TransactionSignError.invalidSignature }
     let transactionSignature = try TransactionSignature(signature: serializedSignature, chainID: chainID)
-    guard let recoveredPublicKey = transactionSignature.recoverPublicKey(transaction: self, context: context) else { throw TransactionSignError.invalidSignature }
+    guard let recoveredPublicKey = transactionSignature.recoverPublicKey(transaction: self, context: context) else { throw TransactionSignError.emptyPublicKey }
     guard publicKeyData.secureCompare(recoveredPublicKey) else { throw TransactionSignError.invalidPublicKey }
     self.signature = transactionSignature
   }

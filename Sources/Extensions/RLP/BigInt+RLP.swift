@@ -14,7 +14,7 @@ extension BigInt: RLP, RLPLength where Word == UInt8 {
   
   func rlpEncode(offset: UInt8?) -> Data? {
     guard let offset = offset else {
-      return Data(self._data.reversed()).rlpEncode()
+      return self.reversedData.rlpEncode()
     }
     return self.rlpLengthEncode(offset: offset)
   }
@@ -23,6 +23,6 @@ extension BigInt: RLP, RLPLength where Word == UInt8 {
     guard self < rlpLengthMax else {
       return nil
     }
-    return Data(BigInt<UInt8>(self._data.count + Int(offset) + 55)._data.reversed()) + Data(self._data.reversed())
+    return BigInt<UInt8>(self.dataLength + Int(offset) + 55).reversedData + self.reversedData
   }
 }

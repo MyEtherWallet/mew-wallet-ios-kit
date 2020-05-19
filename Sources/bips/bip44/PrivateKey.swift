@@ -8,7 +8,7 @@
 
 import Foundation
 import CryptoSwift
-import secp256k1
+import Csecp256k1
 
 enum PrivateKeyError: Error {
   case invalidData
@@ -100,24 +100,18 @@ public struct PrivateKey: Key {
 
     let rawKey = BigInt<UInt8>(self.raw)
     
-    var reversedRawKeyData = rawKey._data.reversed() as [UInt8]
-    while reversedRawKeyData.count < 32 {
-      reversedRawKeyData.insert(0x00, at: 0)
-    }
+    var reversedRawKeyData = rawKey.reversedData
+    reversedRawKeyData.setLength(32, appendFromLeft: true)
     
-    var reversedFactorData = factor._data.reversed() as [UInt8]
-    while reversedFactorData.count < 32 {
-      reversedFactorData.insert(0x00, at: 0)
-    }
+    var reversedFactorData = factor.reversedData
+    reversedFactorData.setLength(32, appendFromLeft: true)
     
     //swiftlint:disable:next identifier_name
     let bn = BigInt<UInt8>(reversedRawKeyData) + BigInt<UInt8>(reversedFactorData)
     let calculatedKey = (bn % curveOrder)
     
-    var derivedPrivateKeyDataCandidate = Data(calculatedKey._data.reversed())
-    while derivedPrivateKeyDataCandidate.count < 32 {
-      derivedPrivateKeyDataCandidate.insert(0x00, at: 0)
-    }
+    var derivedPrivateKeyDataCandidate = calculatedKey.reversedData
+    derivedPrivateKeyDataCandidate.setLength(32, appendFromLeft: true)
     derivedPrivateKeyData = derivedPrivateKeyDataCandidate
     derivedChainCode = Data(digest[32 ..< 64])
     
