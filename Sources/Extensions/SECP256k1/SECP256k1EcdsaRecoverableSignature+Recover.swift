@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Csecp256k1
+import MEW_wallet_iOS_secp256k1_package
 
 extension secp256k1_ecdsa_recoverable_signature {
   mutating func recoverPublicKey(from hash: Data, compressed: Bool, context: OpaquePointer /*secp256k1_context*/) -> Data? {

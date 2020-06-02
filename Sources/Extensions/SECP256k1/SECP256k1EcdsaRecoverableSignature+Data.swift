@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Csecp256k1
+import MEW_wallet_iOS_secp256k1_package
 
 extension secp256k1_ecdsa_recoverable_signature {
   mutating func data() -> Data {

@@ -10,7 +10,7 @@ import Foundation
 import Quick
 import Nimble
 @testable import MEWwalletKit
-import Csecp256k1
+import MEW_wallet_iOS_secp256k1_package
 
 class StringEthSignTests: QuickSpec {
   override func spec() {
