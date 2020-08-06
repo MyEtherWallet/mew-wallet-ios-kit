@@ -44,3 +44,9 @@ public struct Address: CustomDebugStringConvertible {
     return self._address
   }
 }
+
+extension Address: Equatable {
+  public static func == (lhs: Address, rhs: Address) -> Bool {
+    return lhs._address.lowercased() == rhs._address.lowercased()
+  }
+}

@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Csecp256k1
+import MEW_wallet_iOS_secp256k1_package
 
 extension Data {
   func secp256k1Verify(context: OpaquePointer/*secp256k1_context*/) -> Bool {
