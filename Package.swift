@@ -11,13 +11,12 @@ let package = Package(
   products: [
     .library(
       name: "MEWwalletKit",
-      type: .dynamic,
       targets: ["MEWwalletKit"]
     )
   ],
   dependencies: [
-    .package(url: "git@github.com:MyEtherWallet/MEW-wallet-iOS-CryptoSwift.git", .branch("feature/spm-dynamic")),
-    .package(url: "git@github.com:MyEtherWallet/MEW-wallet-iOS-secp256k1-package.git", from: "1.0.0"),
+    .package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", .upToNextMajor(from: "1.0.0")),
+    .package(url: "https://github.com/MyEtherWallet/MEW-wallet-iOS-secp256k1-package.git", from: "1.0.0"),
     .package(url: "https://github.com/Quick/Quick.git", .upToNextMajor(from: "2.0.0")),
     .package(url: "https://github.com/Quick/Nimble.git", .upToNextMajor(from: "8.0.0"))
   ],
