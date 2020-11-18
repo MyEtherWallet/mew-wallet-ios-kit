@@ -43,6 +43,7 @@ public enum Network {
   case iolite
   case ether1
   case anonymizedId
+  case kovan
   
   case none
   case custom(name: String, path: String, chainID: UInt32)
@@ -113,6 +114,8 @@ public enum Network {
       self = .ether1
     case "m/1000'/60'/0'/0":
       self = .anonymizedId
+    case "m/44'/42'/0'/0":
+      self = .kovan
     case "":
       self = .none
     default:
@@ -182,6 +185,8 @@ public enum Network {
       return "Ether-1"
     case .anonymizedId:
       return "AnonymizedId"
+    case .kovan:
+      return "Kovan"
     case .none:
       return ""
     case let .custom(name, _, _):
@@ -255,6 +260,8 @@ public enum Network {
       return "m/44'/1313114'/0'/0"
     case .anonymizedId:
       return "m/1000'/60'/0'/0"
+    case .kovan:
+      return "m/44'/42'/0'/0"
     case .none:
       return ""
     case let .custom(_, path, _):
@@ -328,6 +335,8 @@ public enum Network {
       return 1313114
     case .anonymizedId:
       return 1
+    case .kovan:
+      return 42
     case .none:
       return 0
     case let .custom(_, _, chainID):
@@ -361,7 +370,7 @@ public enum Network {
     switch self {
     case .bitcoin:
       return ""
-    case .ethereum, .ropsten, .anonymizedId:
+    case .ethereum, .ropsten, .anonymizedId, .kovan:
       return "0x"
     case .none:
       return ""
@@ -405,7 +414,7 @@ public enum Network {
     switch self {
     case .bitcoin, .litecoin:
       return true
-    case .ethereum, .ropsten, .anonymizedId:
+    case .ethereum, .ropsten, .anonymizedId, .kovan:
       return false
     default:
       return false
@@ -418,6 +427,8 @@ public enum Network {
       return "btc"
     case .ethereum:
       return "eth"
+    case .kovan:
+      return "kov"
     case .ropsten:
       return "rop"
     default:
