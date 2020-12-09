@@ -8,7 +8,12 @@
 
 import Foundation
 
-public typealias NetworkPathProvider = (_ index: UInt32?) -> String
+enum NetworkPathProviderType {
+  case prefix
+  case suffix
+}
+
+public typealias NetworkPathProvider = (type: NetworkPathProviderType, _ index: UInt32?) -> String
 
 public enum Network {
   case bitcoin
@@ -210,7 +215,7 @@ public enum Network {
     switch self {
     case let .custom(_, path, pathProvider, _):
       if let pathProvider = pathProvider {
-        return pathProvider(index)
+        return pathProvider(.prefix, index) + pathProvider(.suffix, nil)
       } else if let index = index {
         return path.appending("/\(index)")
       } else {
@@ -224,6 +229,34 @@ public enum Network {
       }
     default:
       return self.path
+    }
+  }
+  
+  public func pathPrefix() -> String {
+    switch self {
+    case let .custom(_, path, pathProvider, _):
+      if let pathProvider = pathProvider {
+        return pathProvider(.prefix, nil)
+      } else {
+        return path
+      }
+    default:
+      return self.path
+    }
+  }
+  
+  public func pathSuffix() -> Strng {
+    switch self {
+    case let .custom(_, path, pathProvider, _):
+      if let pathProvider = pathProvider {
+        return pathProvider(.suffix, nil)
+      } else {
+        return ""
+      }
+    case .eth2Withdrawal:
+      return "/0"
+    default:
+      return ""
     }
   }
   

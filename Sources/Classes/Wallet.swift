@@ -50,10 +50,10 @@ public final class Wallet<PK: PrivateKey> {
   
   // MARK: - BIP44
   
-  public func derive(_ path: String, index: Int? = nil) throws -> Wallet {
+  public func derive(_ path: String, index: UInt32? = nil) throws -> Wallet {
     var derivationPath = try path.derivationPath(checkHardenedEdge: self.privateKey.hardenedEdge)
     if let index = index {
-      derivationPath.append(.nonHardened(UInt32(index)))
+      derivationPath.append(.nonHardened(index))
     }
     
     let derivedPrivateKey = try self.privateKey.derived(nodes: derivationPath)
