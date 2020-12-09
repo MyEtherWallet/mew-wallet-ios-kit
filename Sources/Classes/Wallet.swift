@@ -19,13 +19,17 @@ public final class Wallet<PK: PrivateKey> {
   }
   
   public static func restore(mnemonic: [String], language: BIP39Wordlist = .english, network: Network = .ethereum) throws -> (BIP39, Wallet) {
-     let bip39 = BIP39(mnemonic: mnemonic, language: language)
-     guard let seed = try bip39.seed() else {
-       throw WalletError.emptySeed
-     }
-     let wallet = try Wallet(seed: seed, network: network)
-     return (bip39, wallet)
-   }
+    let bip39 = BIP39(mnemonic: mnemonic, language: language)
+    return try self.restore(bip39: bip39, network: network)
+  }
+  
+  public static func restore(bip39: BIP39, network: Network = .ethereum) throws -> (BIP39, Wallet) {
+    guard let seed = try bip39.seed() else {
+      throw WalletError.emptySeed
+    }
+    let wallet = try Wallet(seed: seed, network: network)
+    return (bip39, wallet)
+  }
   
   public let privateKey: PK
   
