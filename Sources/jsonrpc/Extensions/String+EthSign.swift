@@ -16,11 +16,11 @@ public extension String {
     return personalMessage.hashPersonalMessage()
   }
   
-  func hashPersonalMessageAndSign(key: PrivateKey, leadingV: Bool) -> Data? {
+  func hashPersonalMessageAndSign(key: PrivateKeyEth1, leadingV: Bool) -> Data? {
     return self.hashPersonalMessage()?.sign(key: key.data(), leadingV: leadingV)
   }
   
-  func sign(key: PrivateKey, leadingV: Bool) -> Data? {
+  func sign(key: PrivateKeyEth1, leadingV: Bool) -> Data? {
     guard let personalMessage = self.data(using: .utf8) else {
       return nil
     }

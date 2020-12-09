@@ -115,7 +115,7 @@ class EIP155Tests: QuickSpec {
                 fail("Can't recover public key. id: \(vector.id)")
                 continue
               }
-              let publicKey = try PublicKey(publicKey: publicKeyData, network: .ethereum)
+              let publicKey = try PublicKeyEth1(publicKey: publicKeyData, index: 0, network: .ethereum)
               expect(publicKey.address()?.address).notTo(beNil())
               let lowercasedAddress = publicKey.address()?.address.lowercased()
               expect(vector.sender).to(equal(lowercasedAddress), description: "Invalid sender. id: \(vector.id)")
@@ -133,7 +133,7 @@ class EIP155Tests: QuickSpec {
         expect(transaction).toNot(beNil())
         expect(transaction?.hash()).to(equal(Data(hex: "0x91e0ad336c23d84f757aa4cde2d0bb557daf5e1ca0a0b850b6431f3277fc167b")))
         
-        let privateKey = PrivateKey(privateKey: Data(hex: "3a0ce9a362c73439adb38c595e739539be1e34d19c5e9f04962c101c86bd7616"), network: .ethereum)
+        let privateKey = PrivateKeyEth1(privateKey: Data(hex: "3a0ce9a362c73439adb38c595e739539be1e34d19c5e9f04962c101c86bd7616"), network: .ethereum)
         do {
           try transaction?.sign(key: privateKey)
         } catch {

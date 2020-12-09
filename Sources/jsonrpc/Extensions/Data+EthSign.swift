@@ -23,7 +23,7 @@ public extension Data {
     return hash
   }
   
-  func sign(key: PrivateKey, leadingV: Bool) -> Data? {
+  func sign(key: PrivateKeyEth1, leadingV: Bool) -> Data? {
     self.sign(key: key.data(), leadingV: leadingV)
   }
 }

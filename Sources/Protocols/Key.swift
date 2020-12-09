@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol Key {
+public protocol Key {
   func string() -> String?
   func extended() -> String?
   func data() -> Data

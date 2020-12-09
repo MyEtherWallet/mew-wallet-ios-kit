@@ -17,19 +17,21 @@ private let hardenedCharacter = "'"
 private let hardenedCharacterSet = CharacterSet(charactersIn: hardenedCharacter)
 private let hardenedEdge: UInt32 = 0x80000000
 
-enum DerivationNode {
+public enum DerivationNode {
   case hardened(UInt32)
   case nonHardened(UInt32)
   
-  init?(component: String) throws {
+  init?(component: String, checkHardenedEdge: Bool) throws {
     guard !component.hasPrefix("m") else {
       return nil
     }
     guard let index = UInt32(component.trimmingCharacters(in: hardenedCharacterSet)) else {
       throw DerivationNodeError.invalidPath
     }
-    guard hardenedEdge & index == 0 else {
-      throw DerivationNodeError.invalidChildIndex
+    if checkHardenedEdge {
+      guard hardenedEdge & index == 0 else {
+        throw DerivationNodeError.invalidChildIndex
+      }
     }
     
     if component.hasSuffix(hardenedCharacter) {
@@ -48,12 +50,12 @@ enum DerivationNode {
     }
   }
   
-  static func nodes(path: String) throws -> [DerivationNode] {
+  static func nodes(path: String, checkHardenedEdge: Bool) throws -> [DerivationNode] {
     var nodes: [DerivationNode] = []
     let components = path.components(separatedBy: "/")
     
     for component in components {
-      if let node = try DerivationNode(component: component) {
+      if let node = try DerivationNode(component: component, checkHardenedEdge: checkHardenedEdge) {
         nodes.append(node)
       }
     }
@@ -63,7 +65,7 @@ enum DerivationNode {
 }
 
 extension DerivationNode: CustomDebugStringConvertible {
-  var debugDescription: String {
+  public var debugDescription: String {
     switch self {
     case let .hardened(index):
       return "\(index)'"
@@ -73,8 +75,8 @@ extension DerivationNode: CustomDebugStringConvertible {
   }
 }
 
-extension String {
-  func derivationPath() throws -> [DerivationNode] {
-    return try DerivationNode.nodes(path: self)
+public extension String {
+  func derivationPath(checkHardenedEdge: Bool) throws -> [DerivationNode] {
+    return try DerivationNode.nodes(path: self, checkHardenedEdge: checkHardenedEdge)
   }
 }

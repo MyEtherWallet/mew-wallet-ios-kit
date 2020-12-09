@@ -8,12 +8,7 @@
 
 import Foundation
 
-public enum WalletError: LocalizedError {
-  case emptySeed
-  case emptyPrivateKey
-}
-
-public final class Wallet {
+public final class Wallet<PK: PrivateKey> {
   public static func generate(bitsOfEntropy: Int = 256, language: BIP39Wordlist = .english, network: Network = .ethereum) throws -> (BIP39, Wallet) {
     let bip39 = try BIP39(bitsOfEntropy: bitsOfEntropy, language: language)
     guard let seed = try bip39.seed() else {
@@ -32,25 +27,23 @@ public final class Wallet {
      return (bip39, wallet)
    }
   
-  public let privateKey: PrivateKey
+  public let privateKey: PK
   
   public init(seed: Data, network: Network = .ethereum) throws {
-    self.privateKey = try PrivateKey(seed: seed, network: network)
+    self.privateKey = try PK(seed: seed, network: network)
   }
   
-  public init(privateKey: PrivateKey) {
+  public init(privateKey: PK) {
     self.privateKey = privateKey
   }
   
   public func derive(_ path: String, index: Int? = nil) throws -> Wallet {
-    var derivationPath = try path.derivationPath()
+    var derivationPath = try path.derivationPath(checkHardenedEdge: self.privateKey.hardenedEdge)
     if let index = index {
       derivationPath.append(.nonHardened(UInt32(index)))
     }
     
-    guard let derivedPrivateKey = self.privateKey.derived(nodes: derivationPath) else {
-      throw WalletError.emptyPrivateKey
-    }
+    let derivedPrivateKey = try self.privateKey.derived(nodes: derivationPath)
     return Wallet(privateKey: derivedPrivateKey)
   }
 }
