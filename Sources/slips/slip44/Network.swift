@@ -8,12 +8,12 @@
 
 import Foundation
 
-enum NetworkPathProviderType {
+public enum NetworkPathProviderType {
   case prefix
   case suffix
 }
 
-public typealias NetworkPathProvider = (type: NetworkPathProviderType, _ index: UInt32?) -> String
+public typealias NetworkPathProvider = (_ type: NetworkPathProviderType, _ index: UInt32?) -> String
 
 public enum Network {
   case bitcoin
@@ -245,7 +245,7 @@ public enum Network {
     }
   }
   
-  public func pathSuffix() -> Strng {
+  public func pathSuffix() -> String {
     switch self {
     case let .custom(_, path, pathProvider, _):
       if let pathProvider = pathProvider {
