@@ -46,4 +46,11 @@ public final class Wallet<PK: PrivateKey> {
     let derivedPrivateKey = try self.privateKey.derived(nodes: derivationPath)
     return Wallet(privateKey: derivedPrivateKey)
   }
+  
+  public func derive(_ network: Network, index: UInt32? = nil) throws -> Wallet {
+    let path = network.path(index: index)
+    let derivationPath = try path.derivationPath(checkHardenedEdge: self.privateKey.hardenedEdge)
+    let derivedPrivateKey = try self.privateKey.derived(nodes: derivationPath)
+    return Wallet(privateKey: derivedPrivateKey)
+  }
 }

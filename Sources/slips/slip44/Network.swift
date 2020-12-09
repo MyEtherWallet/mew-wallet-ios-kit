@@ -8,6 +8,8 @@
 
 import Foundation
 
+public typealias NetworkPathProvider = (_ index: UInt32?) -> String
+
 public enum Network {
   case bitcoin
   case litecoin
@@ -44,11 +46,13 @@ public enum Network {
   case ether1
   case anonymizedId
   case kovan
+  case goerli
+  case eth2Withdrawal
   
   case none
-  case custom(name: String, path: String, chainID: UInt32)
+  case custom(name: String, path: String, pathProvider: NetworkPathProvider?, chainID: UInt32)
   
-  public init(path: String) {
+  public init(path: String, pathProvider: NetworkPathProvider? = nil, chainID: UInt32 = 0) {
     switch path {
     case "m/0'/0'/0'":
       self = .singularDTV
@@ -116,10 +120,14 @@ public enum Network {
       self = .anonymizedId
     case "m/44'/42'/0'/0":
       self = .kovan
+    case "m/44'/5'/0'/0":
+      self = .goerli
+    case "m/12381/3600":
+      self = .eth2Withdrawal
     case "":
       self = .none
     default:
-      self = .custom(name: path, path: path, chainID: 0)
+      self = .custom(name: path, path: path, pathProvider: pathProvider, chainID: chainID)
     }
   }
   
@@ -187,10 +195,35 @@ public enum Network {
       return "AnonymizedId"
     case .kovan:
       return "Kovan"
+    case .goerli:
+      return "Goerli"
+    case .eth2Withdrawal:
+      return "Eth 2.0"
     case .none:
       return ""
-    case let .custom(name, _, _):
+    case let .custom(name, _, _, _):
       return name
+    }
+  }
+  
+  public func path(index: UInt32?) -> String {
+    switch self {
+    case let .custom(_, path, pathProvider, _):
+      if let pathProvider = pathProvider {
+        return pathProvider(index)
+      } else if let index = index {
+        return path.appending("/\(index)")
+      } else {
+        return path
+      }
+    case .eth2Withdrawal:
+      if let index = index {
+        return self.path.appending("/\(index)/0")
+      } else {
+        return self.path
+      }
+    default:
+      return self.path
     }
   }
   
@@ -262,9 +295,13 @@ public enum Network {
       return "m/1000'/60'/0'/0"
     case .kovan:
       return "m/44'/42'/0'/0"
+    case .goerli:
+      return "m/44'/5'/0'/0"
+    case .eth2Withdrawal:
+      return "m/12381/3600"
     case .none:
       return ""
-    case let .custom(_, path, _):
+    case let .custom(_, path, _, _):
       return path
     }
   }
@@ -337,9 +374,13 @@ public enum Network {
       return 1
     case .kovan:
       return 42
+    case .goerli:
+      return 5
+    case .eth2Withdrawal:
+      return 3660
     case .none:
       return 0
-    case let .custom(_, _, chainID):
+    case let .custom(_, _, _, chainID):
       return chainID
     }
   }
@@ -370,7 +411,7 @@ public enum Network {
     switch self {
     case .bitcoin:
       return ""
-    case .ethereum, .ropsten, .anonymizedId, .kovan:
+    case .ethereum, .ropsten, .anonymizedId, .kovan, .goerli:
       return "0x"
     case .none:
       return ""
@@ -414,7 +455,7 @@ public enum Network {
     switch self {
     case .bitcoin, .litecoin:
       return true
-    case .ethereum, .ropsten, .anonymizedId, .kovan:
+    case .ethereum, .ropsten, .anonymizedId, .kovan, .goerli:
       return false
     default:
       return false
@@ -429,6 +470,8 @@ public enum Network {
       return "eth"
     case .kovan:
       return "kov"
+    case .goerli:
+      return "goe"
     case .ropsten:
       return "rop"
     default:
