@@ -14,7 +14,7 @@ private let SECRET_KEY_LENGHT = 32
 public struct SecretKeyEth2 {
   private let raw: Data
   private let index: UInt32
-  private let network: Network
+  public let network: Network
   
   public init(privateKey: Data, index: UInt32, network: Network) {
     self.raw = privateKey

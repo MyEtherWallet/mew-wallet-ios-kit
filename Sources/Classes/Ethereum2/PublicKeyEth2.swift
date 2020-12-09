@@ -11,7 +11,7 @@ import Foundation
 public struct PublicKeyEth2: PublicKey {
   private let raw: Data
   private let index: UInt32
-  private let network: Network
+  public let network: Network
 
   init(publicKey: Data, compressed: Bool?, index: UInt32, network: Network) throws {
     self.raw = publicKey

@@ -9,6 +9,9 @@
 import Foundation
 
 public final class Wallet<PK: PrivateKey> {
+  
+  // MARK: - Static methods
+  
   public static func generate(bitsOfEntropy: Int = 256, language: BIP39Wordlist = .english, network: Network = .ethereum) throws -> (BIP39, Wallet) {
     let bip39 = try BIP39(bitsOfEntropy: bitsOfEntropy, language: language)
     guard let seed = try bip39.seed() else {
@@ -31,7 +34,11 @@ public final class Wallet<PK: PrivateKey> {
     return (bip39, wallet)
   }
   
+  // MARK: - Properties
+  
   public let privateKey: PK
+  
+  // MARK: - Lifecycle
   
   public init(seed: Data, network: Network = .ethereum) throws {
     self.privateKey = try PK(seed: seed, network: network)
@@ -40,6 +47,8 @@ public final class Wallet<PK: PrivateKey> {
   public init(privateKey: PK) {
     self.privateKey = privateKey
   }
+  
+  // MARK: - BIP44
   
   public func derive(_ path: String, index: Int? = nil) throws -> Wallet {
     var derivationPath = try path.derivationPath(checkHardenedEdge: self.privateKey.hardenedEdge)
@@ -51,7 +60,8 @@ public final class Wallet<PK: PrivateKey> {
     return Wallet(privateKey: derivedPrivateKey)
   }
   
-  public func derive(_ network: Network, index: UInt32? = nil) throws -> Wallet {
+  public func derive(_ network: Network? = nil, index: UInt32? = nil) throws -> Wallet {
+    let network = network ?? self.privateKey.network
     let path = network.path(index: index)
     let derivationPath = try path.derivationPath(checkHardenedEdge: self.privateKey.hardenedEdge)
     let derivedPrivateKey = try self.privateKey.derived(nodes: derivationPath)

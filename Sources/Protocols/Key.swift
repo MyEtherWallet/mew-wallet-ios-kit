@@ -9,6 +9,7 @@
 import Foundation
 
 public protocol Key {
+  var network: Network { get }
   func string() -> String?
   func extended() -> String?
   func data() -> Data

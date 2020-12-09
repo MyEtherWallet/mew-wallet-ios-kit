@@ -39,7 +39,7 @@ public struct PublicKeyEth1: PublicKey {
   private let depth: UInt8
   private let fingerprint: Data
   private let index: UInt32
-  private let network: Network
+  public let network: Network
   private let config: PublicKeyEth1Config
   
   init(privateKey: Data, compressed: Bool = false, chainCode: Data, depth: UInt8, fingerprint: Data, index: UInt32, network: Network) throws {

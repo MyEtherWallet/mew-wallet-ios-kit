@@ -18,7 +18,7 @@ public struct PrivateKeyEth1 {
   private let depth: UInt8
   private let fingerprint: Data
   private let index: UInt32
-  internal let network: Network
+  public let network: Network
   
   private init(privateKey: Data, chainCode: Data, depth: UInt8, fingerprint: Data, index: UInt32, network: Network) {
     self.raw = privateKey
