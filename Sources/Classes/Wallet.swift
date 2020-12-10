@@ -23,15 +23,16 @@ public final class Wallet<PK: PrivateKey> {
   
   public static func restore(mnemonic: [String], language: BIP39Wordlist = .english, network: Network = .ethereum) throws -> (BIP39, Wallet) {
     let bip39 = BIP39(mnemonic: mnemonic, language: language)
-    return try self.restore(bip39: bip39, network: network)
+    let wallet = try self.restore(bip39: bip39, network: network)
+    return (bip39, wallet)
   }
   
-  public static func restore(bip39: BIP39, network: Network = .ethereum) throws -> (BIP39, Wallet) {
+  public static func restore(bip39: BIP39, network: Network = .ethereum) throws -> Wallet {
     guard let seed = try bip39.seed() else {
       throw WalletError.emptySeed
     }
     let wallet = try Wallet(seed: seed, network: network)
-    return (bip39, wallet)
+    return wallet
   }
   
   // MARK: - Properties

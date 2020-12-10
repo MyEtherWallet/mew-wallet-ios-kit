@@ -247,7 +247,7 @@ public enum Network {
   
   public func pathSuffix() -> String {
     switch self {
-    case let .custom(_, path, pathProvider, _):
+    case let .custom(_, _, pathProvider, _):
       if let pathProvider = pathProvider {
         return pathProvider(.suffix, nil)
       } else {
