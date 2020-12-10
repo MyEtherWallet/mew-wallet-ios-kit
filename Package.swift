@@ -19,7 +19,7 @@ let package = Package(
     .package(url: "https://github.com/MyEtherWallet/MEW-wallet-iOS-secp256k1-package.git", from: "1.0.0"),
     .package(url: "https://github.com/Quick/Quick.git", .upToNextMajor(from: "3.0.0")),
     .package(url: "https://github.com/Quick/Nimble.git", .upToNextMajor(from: "9.0.0")),
-    .package(url: "https://github.com/Foboz/bls-eth-swift.git", .branch("master"))
+    .package(url: "https://github.com/MyEtherWallet/bls-eth-swift.git", .upToNextMajor(from: "1.0.0"))
   ],
   targets: [
     .target(
