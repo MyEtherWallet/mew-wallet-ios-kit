@@ -9,14 +9,13 @@
 import Foundation
 import bls_framework
 
-private let PUBLIC_KEY_SERIALIZED_LENGTH = 1024
 private let PUBLIC_KEY_LENGHT = 48
 
 extension blsPublicKey {
   mutating func serialize() -> Data {
-    var bytes = Data(count: PUBLIC_KEY_SERIALIZED_LENGTH).bytes
-    blsPublicKeySerialize(&bytes, PUBLIC_KEY_SERIALIZED_LENGTH, &self)
+    var bytes = Data(count: PUBLIC_KEY_LENGHT).bytes
+    blsPublicKeySerialize(&bytes, PUBLIC_KEY_LENGHT, &self)
     
-    return Data([UInt8](bytes.prefix(PUBLIC_KEY_LENGHT)))
+    return Data(bytes)
   }
 }
