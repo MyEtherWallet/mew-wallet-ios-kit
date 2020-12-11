@@ -228,7 +228,11 @@ public enum Network {
         return self.path
       }
     default:
-      return self.path
+      if let index = index {
+        return self.path.appending("/\(index)")
+      } else {
+        return self.path
+      }
     }
   }
   
