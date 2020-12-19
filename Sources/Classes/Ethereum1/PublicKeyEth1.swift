@@ -1,5 +1,5 @@
 //
-//  PublicKey.swift
+//  PublicKeyEth1.swift
 //  MEWwalletKitTests
 //
 //  Created by Mikhail Nikanorov on 4/17/19.
@@ -9,12 +9,7 @@
 import Foundation
 import MEW_wallet_iOS_secp256k1_package
 
-enum PublicKeyError: Error {
-  case invalidPrivateKey
-  case internalError
-}
-
-private struct PublicKeyConstants {
+private struct PublicKeyEth1Constants {
   static let compressedKeySize = 33
   static let decompressedKeySize = 65
   
@@ -22,15 +17,15 @@ private struct PublicKeyConstants {
   static let decompressedFlags = UInt32(SECP256K1_EC_UNCOMPRESSED)
 }
 
-private struct PublicKeyConfig {
+private struct PublicKeyEth1Config {
   private let compressed: Bool
   
   var keySize: Int {
-    return self.compressed ? PublicKeyConstants.compressedKeySize : PublicKeyConstants.decompressedKeySize
+    return self.compressed ? PublicKeyEth1Constants.compressedKeySize : PublicKeyEth1Constants.decompressedKeySize
   }
   
   var keyFlags: UInt32 {
-    return self.compressed ? PublicKeyConstants.compressedFlags : PublicKeyConstants.decompressedFlags
+    return self.compressed ? PublicKeyEth1Constants.compressedFlags : PublicKeyEth1Constants.decompressedFlags
   }
   
   init(compressed: Bool) {
@@ -38,17 +33,17 @@ private struct PublicKeyConfig {
   }
 }
 
-public struct PublicKey: Key {
+public struct PublicKeyEth1: PublicKey {
   private let raw: Data
   private let chainCode: Data
   private let depth: UInt8
   private let fingerprint: Data
   private let index: UInt32
-  private let network: Network
-  private let config: PublicKeyConfig
+  public let network: Network
+  private let config: PublicKeyEth1Config
   
   init(privateKey: Data, compressed: Bool = false, chainCode: Data, depth: UInt8, fingerprint: Data, index: UInt32, network: Network) throws {
-    self.config = PublicKeyConfig(compressed: compressed)
+    self.config = PublicKeyEth1Config(compressed: compressed)
     guard var context = secp256k1_context_create(UInt32(SECP256K1_CONTEXT_SIGN)) else {
       throw PublicKeyError.internalError
     }
@@ -67,23 +62,26 @@ public struct PublicKey: Key {
     self.network = network
   }
   
-  init(publicKey: Data, compressed: Bool = false, network: Network) throws {
-    self.config = PublicKeyConfig(compressed: compressed)
+  init(publicKey: Data, compressed: Bool? = false, index: UInt32, network: Network) throws {
+    guard let compressed = compressed else {
+      throw PublicKeyError.invalidConfiguration
+    }
+    self.config = PublicKeyEth1Config(compressed: compressed)
     self.raw = publicKey
     self.chainCode = Data()
     self.depth = 0
     self.fingerprint = Data()
-    self.index = 0
+    self.index = index
     self.network = network
   }
-  
-  // MARK: - Key
-  
-  func string() -> String? {
+}
+
+extension PublicKeyEth1: Key {
+  public func string() -> String? {
     return self.raw.toHexString()
   }
   
-  func extended() -> String? {
+  public func extended() -> String? {
     guard let alphabet = self.network.alphabet else {
       return nil
     }
@@ -104,10 +102,10 @@ public struct PublicKey: Key {
     return self.raw
   }
   
-  func address() -> Address? {
+  public func address() -> Address? {
     switch self.network {
     case .bitcoin, .litecoin:
-      guard self.raw.count == PublicKeyConstants.compressedKeySize else {
+      guard self.raw.count == PublicKeyEth1Constants.compressedKeySize else {
         return nil
       }
       guard let alphabet = self.network.alphabet else {
@@ -123,7 +121,7 @@ public struct PublicKey: Key {
       }
       return Address(raw: stringAddress)
     default:
-      guard self.raw.count == PublicKeyConstants.decompressedKeySize else {
+      guard self.raw.count == PublicKeyEth1Constants.decompressedKeySize else {
         return nil
       }
       let publicKey = self.raw
