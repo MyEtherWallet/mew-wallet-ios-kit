@@ -128,7 +128,7 @@ class EIP155Tests: QuickSpec {
       it("Should sign transaction and returns the expected signature") {
         let transaction = try? Transaction(nonce: "0x03", gasPrice: "0x3b9aca00", gasLimit: "0x7530",
                                            to: Address(raw: "0xb414031Aa4838A69e27Cb2AE31E709Bcd674F0Cb"), value: "0x64", data: Data([]))
-        transaction?.chainID = BigInt<UInt8>(0x11)
+        transaction?.chainID = MEWBigInt<UInt8>(0x11)
         
         expect(transaction).toNot(beNil())
         expect(transaction?.hash()).to(equal(Data(hex: "0x91e0ad336c23d84f757aa4cde2d0bb557daf5e1ca0a0b850b6431f3277fc167b")))

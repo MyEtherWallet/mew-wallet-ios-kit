@@ -11,8 +11,8 @@ import Foundation
 extension Data {
   func encodeBase58(alphabet: String) -> Data? {
     let alphabetBytes = alphabet.bytes
-    var value = BigInt<UInt8>(self.reversed())
-    let radix = BigInt<UInt8>(alphabet.count)
+    var value = MEWBigInt<UInt8>(self.reversed())
+    let radix = MEWBigInt<UInt8>(alphabet.count)
     
     var result: [UInt8] = []
     result.reserveCapacity(bytes.count)

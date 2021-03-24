@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CryptoSwift
 
 public struct Address: CustomDebugStringConvertible {
   public struct Ethereum {
@@ -17,6 +18,10 @@ public struct Address: CustomDebugStringConvertible {
   public var address: String {
     return self._address
   }
+    
+    public var data: Data {
+        return Data(hex: address)
+    }
   
   public init?(data: Data, prefix: String? = nil) {
     self.init(address: data.toHexString(), prefix: prefix)

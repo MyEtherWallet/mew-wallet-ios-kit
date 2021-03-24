@@ -80,7 +80,7 @@ extension FixedWidthInteger {
 /// The `_BigInt` type is fully generic on the size of its "word" -- the
 /// `BigInt` alias uses the system's word-sized `UInt` as its word type, but
 /// any word size should work properly.
-struct BigInt<Word: FixedWidthInteger> :
+struct MEWBigInt<Word: FixedWidthInteger> :
   BinaryInteger, SignedInteger, CustomStringConvertible,
   CustomDebugStringConvertible
   where Word.Magnitude == Word
@@ -153,7 +153,7 @@ struct BigInt<Word: FixedWidthInteger> :
     if source < 0 as T {
       if source.bitWidth <= UInt64.bitWidth {
         let sourceMag = Int(truncatingIfNeeded: source).magnitude
-        self = BigInt(sourceMag)
+        self = MEWBigInt(sourceMag)
         self.isNegative = true
         return
       } else {
@@ -212,12 +212,12 @@ struct BigInt<Word: FixedWidthInteger> :
       randomBits.quotientAndRemainder(dividingBy: Word.bitWidth)
     
     // Get the bits for any full words.
-    self._data = (0..<words).map({ _ in BigInt._randomWord() })
+    self._data = (0..<words).map({ _ in MEWBigInt._randomWord() })
     
     // Get another random number - the highest bit will determine the sign,
     // while the lower `Word.bitWidth - 1` bits are available for any leftover
     // bits in `randomBits`.
-    let word = BigInt._randomWord()
+    let word = MEWBigInt._randomWord()
     if extraBits != 0 {
       let mask = ~((~0 as Word) << Word(extraBits))
       _data.append(word & mask)
@@ -403,16 +403,16 @@ struct BigInt<Word: FixedWidthInteger> :
   
   //===--- Numeric --------------------------------------------------------===//
   
-  public typealias Magnitude = BigInt
+  public typealias Magnitude = MEWBigInt
   
-  public var magnitude: BigInt {
+  public var magnitude: MEWBigInt {
     var result = self
     result.isNegative = false
     return result
   }
   
   /// Adds `rhs` to this instance, ignoring any signs.
-  mutating func _unsignedAdd(_ rhs: BigInt) {
+  mutating func _unsignedAdd(_ rhs: MEWBigInt) {
     defer { _checkInvariants() }
     
     let commonCount = Swift.min(_data.count, rhs._data.count)
@@ -457,7 +457,7 @@ struct BigInt<Word: FixedWidthInteger> :
   ///
   /// - Precondition: `rhs.magnitude <= self.magnitude` (unchecked)
   /// - Precondition: `rhs._data.count <= self._data.count`
-  mutating func _unsignedSubtract(_ rhs: BigInt) {
+  mutating func _unsignedSubtract(_ rhs: MEWBigInt) {
     precondition(rhs._data.count <= _data.count)
     
     var carry: Word = 0
@@ -475,7 +475,7 @@ struct BigInt<Word: FixedWidthInteger> :
     _standardize()
   }
   
-  public static func +=(lhs: inout BigInt, rhs: BigInt) {
+  public static func +=(lhs: inout MEWBigInt, rhs: MEWBigInt) {
     defer { lhs._checkInvariants() }
     if lhs.isNegative == rhs.isNegative {
       lhs._unsignedAdd(rhs)
@@ -484,7 +484,7 @@ struct BigInt<Word: FixedWidthInteger> :
     }
   }
   
-  public static func -=(lhs: inout BigInt, rhs: BigInt) {
+  public static func -=(lhs: inout MEWBigInt, rhs: MEWBigInt) {
     defer { lhs._checkInvariants() }
     
     // Subtracting something of the opposite sign just adds magnitude.
@@ -509,7 +509,7 @@ struct BigInt<Word: FixedWidthInteger> :
     }
   }
   
-  public static func *=(lhs: inout BigInt, rhs: BigInt) {
+  public static func *=(lhs: inout MEWBigInt, rhs: MEWBigInt) {
     // If either `lhs` or `rhs` is zero, the result is zero.
     guard !lhs.isZero && !rhs.isZero else {
       lhs = 0
@@ -574,7 +574,7 @@ struct BigInt<Word: FixedWidthInteger> :
   
   /// Divides this instance by `rhs`, returning the remainder.
   @discardableResult
-  mutating func _internalDivide(by rhs: BigInt) -> BigInt {
+  mutating func _internalDivide(by rhs: MEWBigInt) -> MEWBigInt {
     precondition(!rhs.isZero, "Divided by zero")
     defer { _checkInvariants() }
     
@@ -594,9 +594,9 @@ struct BigInt<Word: FixedWidthInteger> :
     
     var tempSelf = self.magnitude
     let n = tempSelf.bitWidth - rhs.magnitude.bitWidth
-    var quotient: BigInt = 0
+    var quotient: MEWBigInt = 0
     var tempRHS = rhs.magnitude << n
-    var tempQuotient: BigInt = 1 << n
+    var tempQuotient: MEWBigInt = 1 << n
     
     for _ in (0...n).reversed() {
       if tempRHS._compareMagnitude(to: tempSelf) != .greaterThan {
@@ -618,37 +618,37 @@ struct BigInt<Word: FixedWidthInteger> :
     return tempSelf
   }
   
-  public static func /=(lhs: inout BigInt, rhs: BigInt) {
+  public static func /=(lhs: inout MEWBigInt, rhs: MEWBigInt) {
     lhs._internalDivide(by: rhs)
   }
   
   // FIXME: Remove once default implementations are provided:
   
-  public static func +(_ lhs: BigInt, _ rhs: BigInt) -> BigInt {
+  public static func +(_ lhs: MEWBigInt, _ rhs: MEWBigInt) -> MEWBigInt {
     var lhs = lhs
     lhs += rhs
     return lhs
   }
   
-  public static func -(_ lhs: BigInt, _ rhs: BigInt) -> BigInt {
+  public static func -(_ lhs: MEWBigInt, _ rhs: MEWBigInt) -> MEWBigInt {
     var lhs = lhs
     lhs -= rhs
     return lhs
   }
   
-  public static func *(_ lhs: BigInt, _ rhs: BigInt) -> BigInt {
+  public static func *(_ lhs: MEWBigInt, _ rhs: MEWBigInt) -> MEWBigInt {
     var lhs = lhs
     lhs *= rhs
     return lhs
   }
   
-  public static func /(_ lhs: BigInt, _ rhs: BigInt) -> BigInt {
+  public static func /(_ lhs: MEWBigInt, _ rhs: MEWBigInt) -> MEWBigInt {
     var lhs = lhs
     lhs /= rhs
     return lhs
   }
   
-  public static func %(_ lhs: BigInt, _ rhs: BigInt) -> BigInt {
+  public static func %(_ lhs: MEWBigInt, _ rhs: MEWBigInt) -> MEWBigInt {
     var lhs = lhs
     lhs %= rhs
     return lhs
@@ -762,20 +762,20 @@ struct BigInt<Word: FixedWidthInteger> :
     return i * Word.bitWidth + _data[i].trailingZeroBitCount
   }
   
-  public static func %=(lhs: inout BigInt, rhs: BigInt) {
+  public static func %=(lhs: inout MEWBigInt, rhs: MEWBigInt) {
     defer { lhs._checkInvariants() }
     lhs = lhs._internalDivide(by: rhs)
   }
   
-  public func quotientAndRemainder(dividingBy rhs: BigInt) ->
-    (BigInt, BigInt)
+  public func quotientAndRemainder(dividingBy rhs: MEWBigInt) ->
+    (MEWBigInt, MEWBigInt)
   {
     var x = self
     let r = x._internalDivide(by: rhs)
     return (x, r)
   }
   
-  public static func &=(lhs: inout BigInt, rhs: BigInt) {
+  public static func &=(lhs: inout MEWBigInt, rhs: MEWBigInt) {
     var lhsTemp = lhs._dataAsTwosComplement()
     let rhsTemp = rhs._dataAsTwosComplement()
     
@@ -799,10 +799,10 @@ struct BigInt<Word: FixedWidthInteger> :
       lhsTemp[i] &= rhsTemp[i]
     }
     
-    lhs = BigInt(_twosComplementData: lhsTemp)
+    lhs = MEWBigInt(_twosComplementData: lhsTemp)
   }
   
-  public static func |=(lhs: inout BigInt, rhs: BigInt) {
+  public static func |=(lhs: inout MEWBigInt, rhs: MEWBigInt) {
     var lhsTemp = lhs._dataAsTwosComplement()
     let rhsTemp = rhs._dataAsTwosComplement()
     
@@ -834,10 +834,10 @@ struct BigInt<Word: FixedWidthInteger> :
       lhsTemp[i] |= rhsTemp[i]
     }
     
-    lhs = BigInt(_twosComplementData: lhsTemp)
+    lhs = MEWBigInt(_twosComplementData: lhsTemp)
   }
   
-  public static func ^=(lhs: inout BigInt, rhs: BigInt) {
+  public static func ^=(lhs: inout MEWBigInt, rhs: MEWBigInt) {
     var lhsTemp = lhs._dataAsTwosComplement()
     let rhsTemp = rhs._dataAsTwosComplement()
     
@@ -869,16 +869,16 @@ struct BigInt<Word: FixedWidthInteger> :
       lhsTemp[i] ^= rhsTemp[i]
     }
     
-    lhs = BigInt(_twosComplementData: lhsTemp)
+    lhs = MEWBigInt(_twosComplementData: lhsTemp)
   }
   
-  public static prefix func ~(x: BigInt) -> BigInt {
+  public static prefix func ~(x: MEWBigInt) -> MEWBigInt {
     return -x - 1
   }
   
   //===--- SignedNumeric --------------------------------------------------===//
   
-  public static prefix func -(x: inout BigInt) {
+  public static prefix func -(x: inout MEWBigInt) {
     defer { x._checkInvariants() }
     guard x._data.count > 0 else { return }
     x.isNegative = !x.isNegative
@@ -886,18 +886,18 @@ struct BigInt<Word: FixedWidthInteger> :
   
   //===--- Strideable -----------------------------------------------------===//
   
-  public func distance(to other: BigInt) -> BigInt {
+  public func distance(to other: MEWBigInt) -> MEWBigInt {
     return other - self
   }
   
-  public func advanced(by n: BigInt) -> BigInt {
+  public func advanced(by n: MEWBigInt) -> MEWBigInt {
     return self + n
   }
   
   //===--- Other arithmetic -----------------------------------------------===//
   
   /// Returns the greatest common divisor for this value and `other`.
-  public func greatestCommonDivisor(with other: BigInt) -> BigInt {
+  public func greatestCommonDivisor(with other: MEWBigInt) -> MEWBigInt {
     // Quick return if either is zero
     if other.isZero {
       return magnitude
@@ -939,7 +939,7 @@ struct BigInt<Word: FixedWidthInteger> :
   }
   
   /// Returns the lowest common multiple for this value and `other`.
-  public func lowestCommonMultiple(with other: BigInt) -> BigInt {
+  public func lowestCommonMultiple(with other: MEWBigInt) -> MEWBigInt {
     let gcd = greatestCommonDivisor(with: other)
     if _compareMagnitude(to: other) == .lessThan {
       return ((self / gcd) * other).magnitude
@@ -1015,12 +1015,12 @@ struct BigInt<Word: FixedWidthInteger> :
         : Unicode.Scalar(lettersStart + x)!
     }
     
-    let radix = BigInt(radix)
+    let radix = MEWBigInt(radix)
     var result: [Unicode.Scalar] = []
     
     var x = self.magnitude
     while !x.isZero {
-      let remainder: BigInt
+      let remainder: MEWBigInt
       (x, remainder) = x.quotientAndRemainder(dividingBy: radix)
       result.append(toLetter(UInt32(remainder)))
     }
@@ -1068,7 +1068,7 @@ struct BigInt<Word: FixedWidthInteger> :
   
   /// Returns whether this instance is less than, greather than, or equal to
   /// the given value.
-  func _compare(to rhs: BigInt) -> _ComparisonResult {
+  func _compare(to rhs: MEWBigInt) -> _ComparisonResult {
     // Negative values are less than positive values
     guard isNegative == rhs.isNegative else {
       return isNegative ? .lessThan : .greaterThan
@@ -1086,7 +1086,7 @@ struct BigInt<Word: FixedWidthInteger> :
   
   /// Returns whether the magnitude of this instance is less than, greather
   /// than, or equal to the magnitude of the given value.
-  func _compareMagnitude(to rhs: BigInt) -> _ComparisonResult {
+  func _compareMagnitude(to rhs: MEWBigInt) -> _ComparisonResult {
     guard _data.count == rhs._data.count else {
       return _data.count < rhs._data.count ? .lessThan : .greaterThan
     }
@@ -1099,11 +1099,11 @@ struct BigInt<Word: FixedWidthInteger> :
     return .equal
   }
   
-  public static func ==(lhs: BigInt, rhs: BigInt) -> Bool {
+  public static func ==(lhs: MEWBigInt, rhs: MEWBigInt) -> Bool {
     return lhs._compare(to: rhs) == .equal
   }
   
-  public static func < (lhs: BigInt, rhs: BigInt) -> Bool {
+  public static func < (lhs: MEWBigInt, rhs: MEWBigInt) -> Bool {
     return lhs._compare(to: rhs) == .lessThan
   }
   
@@ -1126,7 +1126,7 @@ struct BigInt<Word: FixedWidthInteger> :
     data.removeFirst(Swift.min(data.count, words))
   }
   
-  public static func <<= <RHS : BinaryInteger>(lhs: inout BigInt, rhs: RHS) {
+  public static func <<= <RHS : BinaryInteger>(lhs: inout MEWBigInt, rhs: RHS) {
     defer { lhs._checkInvariants() }
     guard rhs != 0 else { return }
     guard rhs > 0 else {
@@ -1139,7 +1139,7 @@ struct BigInt<Word: FixedWidthInteger> :
     // We can add `rhs / bits` extra words full of zero at the low end.
     let extraWords = Int(rhs / wordWidth)
     lhs._data.reserveCapacity(lhs._data.count + extraWords + 1)
-    BigInt._shiftLeft(&lhs._data, byWords: extraWords)
+    MEWBigInt._shiftLeft(&lhs._data, byWords: extraWords)
     
     // Each existing word will need to be shifted left by `rhs % bits`.
     // For each pair of words, we'll use the high `offset` bits of the
@@ -1164,7 +1164,7 @@ struct BigInt<Word: FixedWidthInteger> :
     lhs._standardize()
   }
   
-  public static func >>= <RHS : BinaryInteger>(lhs: inout BigInt, rhs: RHS) {
+  public static func >>= <RHS : BinaryInteger>(lhs: inout MEWBigInt, rhs: RHS) {
     defer { lhs._checkInvariants() }
     guard rhs != 0 else { return }
     guard rhs > 0 else {
@@ -1178,7 +1178,7 @@ struct BigInt<Word: FixedWidthInteger> :
     // We can remove `rhs / bits` full words at the low end.
     // If that removes the entirety of `_data`, we're done.
     let wordsToRemove = Int(rhs / wordWidth)
-    BigInt._shiftRight(&tempData, byWords: wordsToRemove)
+    MEWBigInt._shiftRight(&tempData, byWords: wordsToRemove)
     guard tempData.count != 0 else {
       lhs = lhs.isNegative ? -1 : 0
       return
@@ -1194,7 +1194,7 @@ struct BigInt<Word: FixedWidthInteger> :
     // If there's no offset, we're finished, as `rhs` was a multiple of
     // `Word.bitWidth`.
     guard lowOffset != 0 else {
-      lhs = BigInt(_twosComplementData: tempData)
+      lhs = MEWBigInt(_twosComplementData: tempData)
       return
     }
     
@@ -1206,7 +1206,7 @@ struct BigInt<Word: FixedWidthInteger> :
     
     // Finally, shift the highest word and standardize the result.
     tempData[tempData.count - 1] >>= lowOffset
-    lhs = BigInt(_twosComplementData: tempData)
+    lhs = MEWBigInt(_twosComplementData: tempData)
   }
 }
 

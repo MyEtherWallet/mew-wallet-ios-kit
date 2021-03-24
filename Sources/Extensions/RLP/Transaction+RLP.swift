@@ -13,7 +13,7 @@ extension Transaction: RLP {
     return self.rlpData().rlpEncode()
   }
   
-  internal func rlpData(chainID: BigInt<UInt8>? = nil, forSignature: Bool = false) -> [RLP] {
+  internal func rlpData(chainID: MEWBigInt<UInt8>? = nil, forSignature: Bool = false) -> [RLP] {
     var fields: [RLP] = [self._nonce, self._gasPrice, self._gasLimit]
     if let address = self.to?.address {
       fields.append(address)
@@ -22,9 +22,9 @@ extension Transaction: RLP {
     }
     fields += [self._value, self.data]
     if let signature = self.signature, !forSignature {
-      var v = BigInt<UInt8>(signature.v.reversedData.bytes)
-      var r = BigInt<UInt8>(signature.r.reversedData.bytes)
-      var s = BigInt<UInt8>(signature.s.reversedData.bytes)
+      var v = MEWBigInt<UInt8>(signature.v.reversedData.bytes)
+      var r = MEWBigInt<UInt8>(signature.r.reversedData.bytes)
+      var s = MEWBigInt<UInt8>(signature.s.reversedData.bytes)
       r.dataLength = signature.r.dataLength
       v.dataLength = signature.v.dataLength
       s.dataLength = signature.s.dataLength

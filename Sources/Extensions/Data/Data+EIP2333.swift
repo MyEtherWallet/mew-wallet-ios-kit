@@ -30,7 +30,7 @@ extension Data {
   }
   
   func parentSKToLamportPK(index: UInt32) throws -> Data {
-    var salt = BigInt<UInt8>(index).reversedData
+    var salt = MEWBigInt<UInt8>(index).reversedData
     if salt.count < LAMPORT_SALT_MIN_LENGTH {
       salt.setLength(LAMPORT_SALT_MIN_LENGTH, appendFromLeft: true, negative: false)
     }

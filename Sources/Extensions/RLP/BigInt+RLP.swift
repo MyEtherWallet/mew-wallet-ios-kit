@@ -8,9 +8,9 @@
 
 import Foundation
 
-private let rlpLengthMax = BigInt<UInt8>(1) << 256
+private let rlpLengthMax = MEWBigInt<UInt8>(1) << 256
 
-extension BigInt: RLP, RLPLength where Word == UInt8 {
+extension MEWBigInt: RLP, RLPLength where Word == UInt8 {
   
   func rlpEncode(offset: UInt8?) -> Data? {
     guard let offset = offset else {
@@ -23,6 +23,6 @@ extension BigInt: RLP, RLPLength where Word == UInt8 {
     guard self < rlpLengthMax else {
       return nil
     }
-    return BigInt<UInt8>(self.dataLength + Int(offset) + 55).reversedData + self.reversedData
+    return MEWBigInt<UInt8>(self.dataLength + Int(offset) + 55).reversedData + self.reversedData
   }
 }

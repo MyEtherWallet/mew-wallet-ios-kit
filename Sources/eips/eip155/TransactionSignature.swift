@@ -14,13 +14,13 @@ enum TransactionSignatureError: Error {
 
 internal struct TransactionSignature: CustomDebugStringConvertible {
   //swiftlint:disable identifier_name
-  private(set) internal var r: BigInt<UInt8>
-  private(set) internal var s: BigInt<UInt8>
-  private(set) internal var v: BigInt<UInt8>
+  private(set) internal var r: MEWBigInt<UInt8>
+  private(set) internal var s: MEWBigInt<UInt8>
+  private(set) internal var v: MEWBigInt<UInt8>
   //swiftlint:enable identifier_name
-  private let chainID: BigInt<UInt8>
+  private let chainID: MEWBigInt<UInt8>
   
-  var inferedChainID: BigInt<UInt8>? {
+  var inferedChainID: MEWBigInt<UInt8>? {
     if self.r.isZero && self.s.isZero {
       return self.v
     } else if self.v == 27 || self.v == 28 {
@@ -30,36 +30,36 @@ internal struct TransactionSignature: CustomDebugStringConvertible {
     }
   }
   
-  init(signature: Data, chainID: BigInt<UInt8>? = nil) throws {
+  init(signature: Data, chainID: MEWBigInt<UInt8>? = nil) throws {
     guard signature.count == 65 else {
       throw TransactionSignatureError.invalidSignature
     }
-    self.r = BigInt<UInt8>(signature[0 ..< 32])
-    self.s = BigInt<UInt8>(signature[32 ..< 64])
+    self.r = MEWBigInt<UInt8>(signature[0 ..< 32])
+    self.s = MEWBigInt<UInt8>(signature[32 ..< 64])
     if let chainID = chainID {
-      self.v = BigInt<UInt8>(signature[64]) + 35 + chainID + chainID
+      self.v = MEWBigInt<UInt8>(signature[64]) + 35 + chainID + chainID
     } else {
-      self.v = BigInt<UInt8>(signature[64]) + 27
+      self.v = MEWBigInt<UInt8>(signature[64]) + 27
     }
     
-    self.chainID = chainID ?? BigInt<UInt8>()
+    self.chainID = chainID ?? MEWBigInt<UInt8>()
     self._normalize()
   }
   
   //swiftlint:disable identifier_name
-  init(r: BigInt<UInt8>, s: BigInt<UInt8>, v: BigInt<UInt8>, chainID: BigInt<UInt8>? = nil) {
+  init(r: MEWBigInt<UInt8>, s: MEWBigInt<UInt8>, v: MEWBigInt<UInt8>, chainID: MEWBigInt<UInt8>? = nil) {
     self.r = r
     self.s = s
     self.v = v
-    self.chainID = chainID ?? BigInt<UInt8>()
+    self.chainID = chainID ?? MEWBigInt<UInt8>()
     self._normalize()
   }
   
-  init(r: String, s: String, v: String, chainID: BigInt<UInt8>? = nil) throws {
-    self.r = BigInt<UInt8>(Data(hex: r).bytes)
-    self.s = BigInt<UInt8>(Data(hex: s).bytes)
-    self.v = BigInt<UInt8>(Data(hex: v).bytes)
-    self.chainID = chainID ?? BigInt<UInt8>()
+  init(r: String, s: String, v: String, chainID: MEWBigInt<UInt8>? = nil) throws {
+    self.r = MEWBigInt<UInt8>(Data(hex: r).bytes)
+    self.s = MEWBigInt<UInt8>(Data(hex: s).bytes)
+    self.v = MEWBigInt<UInt8>(Data(hex: v).bytes)
+    self.chainID = chainID ?? MEWBigInt<UInt8>()
     self._normalize()
   }
   //swiftlint:enable identifier_name
@@ -67,7 +67,7 @@ internal struct TransactionSignature: CustomDebugStringConvertible {
   func recoverPublicKey(transaction: Transaction, context: OpaquePointer/*secp256k1_context*/) -> Data? {
     guard !self.r.isZero, !self.s.isZero else { return nil }
     let inferedChainID = self.inferedChainID
-    var normalizedV = BigInt<UInt8>(0)
+    var normalizedV = MEWBigInt<UInt8>(0)
     if !self.chainID.isZero {
       normalizedV = self.v - 35 - 2 * self.chainID
     } else if inferedChainID != nil {

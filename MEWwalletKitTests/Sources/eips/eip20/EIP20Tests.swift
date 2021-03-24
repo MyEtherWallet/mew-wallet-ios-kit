@@ -64,14 +64,14 @@ class EIP20Tests: QuickSpec {
           
           switch dataType {
           case let .approve(_, stringAmount):
-            guard let bigInt = BigInt<UInt8>(stringAmount, radix: 16) else {
+            guard let bigInt = MEWBigInt<UInt8>(stringAmount, radix: 16) else {
               fail("Incorrect data")
               return
             }
             let parsedAmount = Decimal(string: bigInt.decimalString)
             expect(parsedAmount).to(equal(amount))
           case let .transfer(_, stringAmount):
-            guard let bigInt = BigInt<UInt8>(stringAmount, radix: 16) else {
+            guard let bigInt = MEWBigInt<UInt8>(stringAmount, radix: 16) else {
               fail("Incorrect data")
               return
             }

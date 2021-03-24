@@ -141,12 +141,12 @@ extension PrivateKeyEth1: BIP32 {
     
     let digest = try Data(HMAC(key: self.chainCode.bytes, variant: .sha512).authenticate(data.bytes))
     
-    let factor = BigInt<UInt8>(digest[0 ..< 32].bytes)
-    guard let curveOrder = BigInt<UInt8>("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141", radix: 16) else {
+    let factor = MEWBigInt<UInt8>(digest[0 ..< 32].bytes)
+    guard let curveOrder = MEWBigInt<UInt8>("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141", radix: 16) else {
       throw PrivateKeyError.invalidData
     }
 
-    let rawKey = BigInt<UInt8>(self.raw)
+    let rawKey = MEWBigInt<UInt8>(self.raw)
     
     var reversedRawKeyData = rawKey.reversedData
     reversedRawKeyData.setLength(32, appendFromLeft: true)
@@ -155,7 +155,7 @@ extension PrivateKeyEth1: BIP32 {
     reversedFactorData.setLength(32, appendFromLeft: true)
     
     //swiftlint:disable:next identifier_name
-    let bn = BigInt<UInt8>(reversedRawKeyData) + BigInt<UInt8>(reversedFactorData)
+    let bn = MEWBigInt<UInt8>(reversedRawKeyData) + MEWBigInt<UInt8>(reversedFactorData)
     let calculatedKey = (bn % curveOrder)
     
     var derivedPrivateKeyDataCandidate = calculatedKey.reversedData
