@@ -47,7 +47,7 @@ extension Data {
       sk = okmBN % r
     }
     
-    var result = sk.reversedData
+    var result = sk.data
     result.setLength(32, appendFromLeft: true, negative: false) // make sure, length == 32
     return result
   }

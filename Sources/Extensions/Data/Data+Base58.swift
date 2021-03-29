@@ -14,10 +14,7 @@ extension Data {
     let alphabetBytes = alphabet.bytes
     var value = BigInt(data: Data(self))
     let radix = BigInt(alphabet.count.bytes)
-    
-    let mewValue = MEWBigInt<UInt8>(self.reversed())
-    let mewRadix = MEWBigInt<UInt8>(alphabet.count)
-    
+        
     var result: [UInt8] = []
     result.reserveCapacity(bytes.count)
     

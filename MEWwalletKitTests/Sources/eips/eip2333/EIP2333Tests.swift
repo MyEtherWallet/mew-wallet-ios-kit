@@ -92,7 +92,7 @@ class EIP2333Tests: QuickSpec {
             do {
               let seedData = Data(hex: vector.seed)
               let wallet = try Wallet<SecretKeyEth2>(seed: seedData)
-              let masterSKdata = Data(wallet.privateKey.data().reversed())
+              let masterSKdata = Data(wallet.privateKey.data())
               guard let masterSK = BigInt(masterSKdata.toHexString(), radix: 16) else {
                 fail("Can't get masterSK")
                 return
@@ -101,14 +101,13 @@ class EIP2333Tests: QuickSpec {
               expect(masterSKDecimal).to(equal(vector.masterSK))
 
               let derivedWallet = try wallet.derive(vector.derivationPath)
-              let childSKdata = Data(derivedWallet.privateKey.data())
+              let childSKdata = derivedWallet.privateKey.data()
               debugPrint(childSKdata.toHexString())
               guard let childSK = BigInt(childSKdata.toHexString(), radix: 16) else {
                 fail("Can't get childSK")
                 return
               }
                 
-              let mewChildSK = MEWBigInt<UInt8>(childSKdata.toHexString(), radix: 16)!
               let childSKDecimal = childSK.decimalString
               expect(childSKDecimal).to(equal(vector.childSK))
               expect(childSKdata.toHexString().lowercased()).to(equal(vector.childSKHex.lowercased()))
