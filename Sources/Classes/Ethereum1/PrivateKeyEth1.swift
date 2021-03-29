@@ -9,6 +9,7 @@
 import Foundation
 import CryptoSwift
 import MEW_wallet_iOS_secp256k1_package
+import BigInt
 
 private let HMACKeyData: [UInt8] = [0x42, 0x69, 0x74, 0x63, 0x6F, 0x69, 0x6E, 0x20, 0x73, 0x65, 0x65, 0x64] //"Bitcoin seed"
 
@@ -61,8 +62,15 @@ extension PrivateKeyEth1: PrivateKey {
   
   public func publicKey(compressed: Bool? = nil) throws -> PublicKeyEth1 {
     let compressed = compressed ?? self.network.publicKeyCompressed
-    let publicKey = try PublicKeyEth1(privateKey: self.raw, compressed: compressed, chainCode: self.chainCode, depth: self.depth,
-                                      fingerprint: self.fingerprint, index: self.index, network: self.network)
+    let publicKey = try PublicKeyEth1(
+        privateKey: self.raw,
+        compressed: compressed,
+        chainCode: self.chainCode,
+        depth: self.depth,
+        fingerprint: self.fingerprint,
+        index: self.index,
+        network: self.network
+    )
     return publicKey
   }
 }
@@ -141,35 +149,31 @@ extension PrivateKeyEth1: BIP32 {
     
     let digest = try Data(HMAC(key: self.chainCode.bytes, variant: .sha512).authenticate(data.bytes))
     
-    let factor = MEWBigInt<UInt8>(digest[0 ..< 32].bytes)
-    guard let curveOrder = MEWBigInt<UInt8>("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141", radix: 16) else {
+    let factor = BigInt(data: Data(digest[0 ..< 32].bytes))
+    guard let curveOrder = BigInt("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141", radix: 16) else {
       throw PrivateKeyError.invalidData
     }
 
-    let rawKey = MEWBigInt<UInt8>(self.raw)
-    
-    var reversedRawKeyData = rawKey.reversedData
-    reversedRawKeyData.setLength(32, appendFromLeft: true)
-    
-    var reversedFactorData = factor.reversedData
-    reversedFactorData.setLength(32, appendFromLeft: true)
-    
+    let rawKey = BigInt(data: self.raw)
+        
     //swiftlint:disable:next identifier_name
-    let bn = MEWBigInt<UInt8>(reversedRawKeyData) + MEWBigInt<UInt8>(reversedFactorData)
+    let bn = rawKey + factor
     let calculatedKey = (bn % curveOrder)
     
-    var derivedPrivateKeyDataCandidate = calculatedKey.reversedData
+    var derivedPrivateKeyDataCandidate = calculatedKey.data
     derivedPrivateKeyDataCandidate.setLength(32, appendFromLeft: true)
     derivedPrivateKeyData = derivedPrivateKeyDataCandidate
     derivedChainCode = Data(digest[32 ..< 64])
     
     let fingerprint = Data(publicKeyData.ripemd160().prefix(4))
-    let derivedPrivateKey = PrivateKeyEth1(privateKey: derivedPrivateKeyData,
-                                       chainCode: derivedChainCode,
-                                       depth: self.depth + 1,
-                                       fingerprint: fingerprint,
-                                       index: derivingIndex,
-                                       network: self.network)
+    let derivedPrivateKey = PrivateKeyEth1(
+        privateKey: derivedPrivateKeyData,
+        chainCode: derivedChainCode,
+        depth: self.depth + 1,
+        fingerprint: fingerprint,
+        index: derivingIndex,
+        network: self.network
+    )
     if nodes.count > 1 {
       return try derivedPrivateKey.derived(nodes: Array(nodes[1 ..< nodes.count]))
     }

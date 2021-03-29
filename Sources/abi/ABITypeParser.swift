@@ -44,13 +44,19 @@ public struct ABITypeParser {
         }
     }
     
-    public static func parseTypeString(_ string:String) throws -> ABI.Element.ParameterType {
+    public static func parseTypeString(_ string: String) throws -> ABI.Element.ParameterType {
         let (type, tail) = recursiveParseType(string)
         guard let t = type, tail == nil else {throw ABI.ParsingError.elementTypeInvalid}
         return t
     }
     
+    private static let typealiases = [
+        "int": "int256",
+        "uint": "uint256"
+    ]
+    
     static func recursiveParseType(_ string: String) -> (type: ABI.Element.ParameterType?, tail: String?) {
+        let string = typealiases[string] ?? string
         let matcher = try! NSRegularExpression(pattern: ABI.TypeParsingExpressions.typeEatingRegex, options: NSRegularExpression.Options.dotMatchesLineSeparators)
         let match = matcher.matches(in: string, options: NSRegularExpression.MatchingOptions.anchored, range: string.fullNSRange)
         guard match.count == 1 else {

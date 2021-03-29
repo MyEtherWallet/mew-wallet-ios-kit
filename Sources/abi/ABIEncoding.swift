@@ -44,14 +44,19 @@ extension ABIEncoder {
         case let v as UInt64:
             return BigUInt(v)
         case let v as Int:
+            if v < 0 { return nil }
             return BigUInt(v)
         case let v as Int8:
+            if v < 0 { return nil }
             return BigUInt(v)
         case let v as Int16:
+            if v < 0 { return nil }
             return BigUInt(v)
         case let v as Int32:
+            if v < 0 { return nil }
             return BigUInt(v)
         case let v as Int64:
+            if v < 0 { return nil }
             return BigUInt(v)
         default:
             return nil

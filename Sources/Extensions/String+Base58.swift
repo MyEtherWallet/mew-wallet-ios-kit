@@ -7,15 +7,16 @@
 //
 
 import Foundation
+import BigInt
 
 extension String {
   func decodeBase58(alphabet: String) -> Data? {
     let alphabetBytes = alphabet.bytes
     
-    var result = MEWBigInt<UInt8>(0)
+    var result = BigInt(0)
     
-    var j = MEWBigInt<UInt8>(1)
-    let radix = MEWBigInt<UInt8>(alphabetBytes.count)
+    var j = BigInt(1)
+    let radix = BigInt(alphabetBytes.count)
     
     let byteString = self.bytes
     let byteStringReversed = byteString.reversed()
@@ -24,7 +25,7 @@ extension String {
       guard let index = alphabetBytes.firstIndex(of: char) else {
         return nil
       }
-      result += j * MEWBigInt<UInt8>(index)
+      result += j * BigInt(index)
       j *= radix
     }
     

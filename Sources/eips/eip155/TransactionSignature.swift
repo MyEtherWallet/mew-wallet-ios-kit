@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import BigInt
 
 enum TransactionSignatureError: Error {
   case invalidSignature
@@ -14,66 +15,67 @@ enum TransactionSignatureError: Error {
 
 internal struct TransactionSignature: CustomDebugStringConvertible {
   //swiftlint:disable identifier_name
-  private(set) internal var r: MEWBigInt<UInt8>
-  private(set) internal var s: MEWBigInt<UInt8>
-  private(set) internal var v: MEWBigInt<UInt8>
+  private(set) internal var r: RLPBigInt
+  private(set) internal var s: RLPBigInt
+  private(set) internal var v: RLPBigInt
   //swiftlint:enable identifier_name
-  private let chainID: MEWBigInt<UInt8>
+  private let chainID: BigInt
   
-  var inferedChainID: MEWBigInt<UInt8>? {
-    if self.r.isZero && self.s.isZero {
-      return self.v
-    } else if self.v == 27 || self.v == 28 {
-      return nil
+  var inferedChainID: BigInt? {
+    if self.r.value.isZero && self.s.value.isZero {
+        return self.v.value
+    } else if self.v.value == 27 || self.v.value == 28 {
+        return nil
     } else {
-      return (self.v - 35) / 2
+        return (self.v.value - 35) / 2
     }
   }
   
-  init(signature: Data, chainID: MEWBigInt<UInt8>? = nil) throws {
+  init(signature: Data, chainID: BigInt? = nil) throws {
     guard signature.count == 65 else {
       throw TransactionSignatureError.invalidSignature
     }
-    self.r = MEWBigInt<UInt8>(signature[0 ..< 32])
-    self.s = MEWBigInt<UInt8>(signature[32 ..< 64])
+    self.r = RLPBigInt(value: BigInt(data: signature[0 ..< 32]))
+    self.s = RLPBigInt(value: BigInt(data: signature[32 ..< 64]))
     if let chainID = chainID {
-      self.v = MEWBigInt<UInt8>(signature[64]) + 35 + chainID + chainID
+        self.v = RLPBigInt(value: BigInt([signature[64]]) + 35 + chainID + chainID)
     } else {
-      self.v = MEWBigInt<UInt8>(signature[64]) + 27
+        self.v = RLPBigInt(value: BigInt([signature[64]]) + 27)
     }
     
-    self.chainID = chainID ?? MEWBigInt<UInt8>()
+    self.chainID = chainID ?? BigInt()
     self._normalize()
   }
   
   //swiftlint:disable identifier_name
-  init(r: MEWBigInt<UInt8>, s: MEWBigInt<UInt8>, v: MEWBigInt<UInt8>, chainID: MEWBigInt<UInt8>? = nil) {
-    self.r = r
-    self.s = s
-    self.v = v
-    self.chainID = chainID ?? MEWBigInt<UInt8>()
+  init(r: BigInt, s: BigInt, v: BigInt, chainID: BigInt? = nil) {
+    self.r = r.toRLP()
+    self.s = s.toRLP()
+    self.v = v.toRLP()
+    self.chainID = chainID ?? BigInt()
     self._normalize()
   }
   
-  init(r: String, s: String, v: String, chainID: MEWBigInt<UInt8>? = nil) throws {
-    self.r = MEWBigInt<UInt8>(Data(hex: r).bytes)
-    self.s = MEWBigInt<UInt8>(Data(hex: s).bytes)
-    self.v = MEWBigInt<UInt8>(Data(hex: v).bytes)
-    self.chainID = chainID ?? MEWBigInt<UInt8>()
+  init(r: String, s: String, v: String, chainID: BigInt? = nil) throws {
+    self.r = BigInt(Data(hex: r).bytes).toRLP()
+    self.s = BigInt(Data(hex: s).bytes).toRLP()
+    self.v = BigInt(Data(hex: v).bytes).toRLP()
+    
+    self.chainID = chainID ?? BigInt()
     self._normalize()
   }
   //swiftlint:enable identifier_name
   
   func recoverPublicKey(transaction: Transaction, context: OpaquePointer/*secp256k1_context*/) -> Data? {
-    guard !self.r.isZero, !self.s.isZero else { return nil }
+    guard !self.r.value.isZero, !self.s.value.isZero else { return nil }
     let inferedChainID = self.inferedChainID
-    var normalizedV = MEWBigInt<UInt8>(0)
+    var normalizedV = BigInt(0)
     if !self.chainID.isZero {
-      normalizedV = self.v - 35 - 2 * self.chainID
+        normalizedV = self.v.value - 35 - 2 * self.chainID
     } else if inferedChainID != nil {
-      normalizedV = self.v - 35 - 2 * inferedChainID!
+        normalizedV = self.v.value - 35 - 2 * inferedChainID!
     } else {
-      normalizedV = self.v - 0x1B
+        normalizedV = self.v.value - 0x1B
     }
     let rData = self.r.data
     let sData = self.s.data
@@ -82,7 +84,7 @@ internal struct TransactionSignature: CustomDebugStringConvertible {
     if normalizedV.isZero {
       vData = Data([0x00])
     } else {
-      vData = normalizedV.reversedData
+        vData = normalizedV.data
     }
     
     let signature = rData + sData + vData

@@ -202,10 +202,7 @@ public func encodeData(
             value: data[field.name]
         )
         encodedTypes.append(result.type)
-        encodedValues.append(result.value)
-        
-        print("\(data[field.name])")
-        print(result)
+        encodedValues.append(result.value)        
     }
         
     let types = try encodedTypes.map {

@@ -8,6 +8,7 @@
 
 import Foundation
 import CryptoSwift
+import BigInt
 
 private let LAMPORT_SALT_MIN_LENGTH = 4
 private let LAMPORT_KEY_SIZE = 8160
@@ -30,7 +31,8 @@ extension Data {
   }
   
   func parentSKToLamportPK(index: UInt32) throws -> Data {
-    var salt = MEWBigInt<UInt8>(index).reversedData
+    var salt = BigInt(index).data
+    
     if salt.count < LAMPORT_SALT_MIN_LENGTH {
       salt.setLength(LAMPORT_SALT_MIN_LENGTH, appendFromLeft: true, negative: false)
     }

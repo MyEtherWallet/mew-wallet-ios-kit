@@ -117,71 +117,6 @@ class EIP712Tests: QuickSpec {
         )
     }()
     
-//    {
-//
-//        "types": {
-//
-//          "EIP712Domain": [{"name": "name", "type": "string"}, {
-//
-//            "name": "version",
-//
-//            "type": "string"
-//
-//          }, {"name": "chainId", "type": "uint256"}, {"name": "verifyingContract", "type": "address"}],
-//
-//          "Bet": [{"name": "roundId", "type": "uint32"}, {"name": "gameType", "type": "uint8"}, {
-//
-//            "name": "number",
-//
-//            "type": "uint256"
-//
-//          }, {"name": "value", "type": "uint256"}, {"name": "balance", "type": "int256"}, {
-//
-//            "name": "serverHash",
-//
-//            "type": "bytes32"
-//
-//          }, {"name": "userHash", "type": "bytes32"}, {"name": "gameId", "type": "uint256"}]
-//
-//        },
-//
-//        "primaryType": "Bet",
-//
-//        "domain": {
-//
-//          "name": "Dicether",
-//
-//          "version": "2",
-//
-//          "chainId": 1,
-//
-//          "verifyingContract": "0xaEc1F783B29Aab2727d7C374Aa55483fe299feFa"
-//
-//        },
-//
-//        "message": {
-//
-//          "roundId": 1,
-//
-//          "gameType": 4,
-//
-//          "num": 1,
-//
-//          "value": "320000000000000",
-//
-//          "balance": "-64000000000000000000",
-//
-//          "serverHash": "0x4ed3c2d4c6acd062a3a61add7ecdb2fcfd988d944ba18e52a0b0d912d7a43cf4",
-//
-//          "userHash": "0x6901562dd98a823e76140dc8728eca225174406eaa6bf0da7b0ab67f6f93de4d",
-//
-//          "gameId": 2393,
-//
-//          "number": 1
-//
-//        }
-//
-//      }
     private var typedMessageWithBytes_v3: TypedMessage = {
         let types: MessageTypes = [
             "EIP712Domain": [
@@ -213,7 +148,7 @@ class EIP712Tests: QuickSpec {
             "gameType": 4,
             "num": 1,
             "value": "320000000000000",
-            "balance": "-64000000000000000000",
+            "balance": "-640000000000000",
             "serverHash": "0x4ed3c2d4c6acd062a3a61add7ecdb2fcfd988d944ba18e52a0b0d912d7a43cf4",
             "userHash": "0x6901562dd98a823e76140dc8728eca225174406eaa6bf0da7b0ab67f6f93de4d",
             "gameId": 2393,
@@ -561,7 +496,7 @@ class EIP712Tests: QuickSpec {
     }
     
     private func executeTestsSignTypeWithBytesV3() {
-        fdescribe("encode data with bytes fields v3") {
+        fdescribe("encode data with bytes32 fields v3") {
             it("should encode data") {
                 do {
                     let expected = """
@@ -576,6 +511,36 @@ class EIP712Tests: QuickSpec {
                     )
                     
                     expect(data.toHexString().stringAddHexPrefix()).to(equal(expected))
+                } catch {
+                    fail(error.localizedDescription)
+                }
+            }
+            
+            it("hash struct message with bytes32") {
+                do {
+                    let expected = "0x4b0bd1f29885f2aa4b88e192db2d43e26f110a0f6d6cc4c2601f20ead89421f9"
+                    let data = try hashStruct(
+                        primaryType: self.typedMessageWithBytes_v3.primaryType,
+                        data: self.typedMessageWithBytes_v3.message,
+                        types: self.typedMessageWithBytes_v3.types,
+                        version: .v3
+                    )
+                    
+                    expect(data.toHexString()).to(equal(expected.stringRemoveHexPrefix()))
+                } catch {
+                    fail(error.localizedDescription)
+                }
+            }
+            
+            it("should sign the message") {
+                let expected = "0xaf453442075953aced4d54ccf5773a486fd03d9c5a853a1163594209ba1c637409acf82e335e464487c375c4438e1bfc56725fd039255d4ddf33f7fcdafebe931b"
+                let pk = "0x5a2ca5de56191208ba8f8d230c29fa2b0d93226743eb00f2fb7a33c9b3305edf"
+                
+                do {
+                    let payload = SignedMessagePayload(data: self.typedMessageWithBytes_v3, signature: nil)
+                    
+                    let signed = try signTypedMessage(privateKey: Data(hex: pk), payload: payload, version: .v4)
+                    expect(signed).to(equal(expected.stringRemoveHexPrefix()))
                 } catch {
                     fail(error.localizedDescription)
                 }

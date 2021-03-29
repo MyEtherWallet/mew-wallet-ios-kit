@@ -9,6 +9,8 @@
 import Foundation
 import Quick
 import Nimble
+import BigInt
+
 @testable import MEWwalletKit
 
 class EIP2333Tests: QuickSpec {
@@ -90,8 +92,8 @@ class EIP2333Tests: QuickSpec {
             do {
               let seedData = Data(hex: vector.seed)
               let wallet = try Wallet<SecretKeyEth2>(seed: seedData)
-              let masterSKdata = wallet.privateKey.data()
-              guard let masterSK = MEWBigInt<UInt8>(masterSKdata.toHexString(), radix: 16) else {
+              let masterSKdata = Data(wallet.privateKey.data().reversed())
+              guard let masterSK = BigInt(masterSKdata.toHexString(), radix: 16) else {
                 fail("Can't get masterSK")
                 return
               }
@@ -99,12 +101,14 @@ class EIP2333Tests: QuickSpec {
               expect(masterSKDecimal).to(equal(vector.masterSK))
 
               let derivedWallet = try wallet.derive(vector.derivationPath)
-              let childSKdata = derivedWallet.privateKey.data()
+              let childSKdata = Data(derivedWallet.privateKey.data())
               debugPrint(childSKdata.toHexString())
-              guard let childSK = MEWBigInt<UInt8>(childSKdata.toHexString(), radix: 16) else {
+              guard let childSK = BigInt(childSKdata.toHexString(), radix: 16) else {
                 fail("Can't get childSK")
                 return
               }
+                
+              let mewChildSK = MEWBigInt<UInt8>(childSKdata.toHexString(), radix: 16)!
               let childSKDecimal = childSK.decimalString
               expect(childSKDecimal).to(equal(vector.childSK))
               expect(childSKdata.toHexString().lowercased()).to(equal(vector.childSKHex.lowercased()))
