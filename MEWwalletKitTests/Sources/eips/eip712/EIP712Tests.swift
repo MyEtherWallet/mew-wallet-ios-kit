@@ -117,7 +117,7 @@ class EIP712Tests: QuickSpec {
         )
     }()
     
-    private var typedMessageWithBytes_v3: TypedMessage = {
+    private var typedMessageWithBytes32_v3: TypedMessage = {
         let types: MessageTypes = [
             "EIP712Domain": [
                 .init(name: "name", type: "string"),
@@ -161,11 +161,58 @@ class EIP712Tests: QuickSpec {
             domain: domain,
             message: message as [String: AnyObject]
         )
-
     }()
+    
+    private var typedMessageWithBytes_v3: TypedMessage = {
+        let types: MessageTypes = [
+            "EIP712Domain": [
+                .init(name: "name", type: "string"),
+                .init(name: "version", type: "string"),
+                .init(name: "chainId", type: "uint256"),
+                .init(name: "verifyingContract", type: "address")
+            ],
+            "Bet": [
+                .init(name: "roundId", type: "uint32"),
+                .init(name: "gameType", type: "uint8"),
+                .init(name: "number", type: "uint256"),
+                .init(name: "value", type: "uint256"),
+                .init(name: "balance", type: "int256"),
+                .init(name: "serverHash", type: "bytes"),
+                .init(name: "userHash", type: "bytes32"),
+                .init(name: "gameId", type: "uint256")
+            ]
+        ]
+        let domain = TypedMessageDomain(
+            name: "Dicether",
+            version: "2",
+            chainId: 1,
+            verifyingContract: "0xaEc1F783B29Aab2727d7C374Aa55483fe299feFa"
+        )
+        
+        let message: [String: Any] = [
+            "roundId": 1,
+            "gameType": 4,
+            "num": 1,
+            "value": "320000000000000",
+            "balance": "-640000000000000",
+            "serverHash": "0x4ed3c2d4c6acd062a3a61add7ecdb2",
+            "userHash": "0x6901562dd98a823e76140dc8728eca225174406eaa6bf0da7b0ab67f6f93de4d",
+            "gameId": 2393,
+            "number": 1
+        ]
+        
+        return TypedMessage(
+            types: types,
+            primaryType: "Bet",
+            domain: domain,
+            message: message as [String: AnyObject]
+        )
+    }()
+
     
     override func spec() {
         executeTestsSignTypeV3()
+        executeTestsSignTypeWithBytes32V3()
         executeTestsSignTypeWithBytesV3()
         executeTestsSignTypeV4()
     }
@@ -495,8 +542,8 @@ class EIP712Tests: QuickSpec {
         }
     }
     
-    private func executeTestsSignTypeWithBytesV3() {
-        fdescribe("encode data with bytes32 fields v3") {
+    private func executeTestsSignTypeWithBytes32V3() {
+        describe("encode data with bytes32 fields v3") {
             it("should encode data") {
                 do {
                     let expected = """
@@ -504,9 +551,9 @@ class EIP712Tests: QuickSpec {
                     """
                     
                     let data = try encodeData(
-                        primaryType: self.typedMessageWithBytes_v3.primaryType,
-                        data: self.typedMessageWithBytes_v3.message,
-                        types: self.typedMessageWithBytes_v3.types,
+                        primaryType: self.typedMessageWithBytes32_v3.primaryType,
+                        data: self.typedMessageWithBytes32_v3.message,
+                        types: self.typedMessageWithBytes32_v3.types,
                         version: .v3
                     )
                     
@@ -520,9 +567,9 @@ class EIP712Tests: QuickSpec {
                 do {
                     let expected = "0x4b0bd1f29885f2aa4b88e192db2d43e26f110a0f6d6cc4c2601f20ead89421f9"
                     let data = try hashStruct(
-                        primaryType: self.typedMessageWithBytes_v3.primaryType,
-                        data: self.typedMessageWithBytes_v3.message,
-                        types: self.typedMessageWithBytes_v3.types,
+                        primaryType: self.typedMessageWithBytes32_v3.primaryType,
+                        data: self.typedMessageWithBytes32_v3.message,
+                        types: self.typedMessageWithBytes32_v3.types,
                         version: .v3
                     )
                     
@@ -537,13 +584,37 @@ class EIP712Tests: QuickSpec {
                 let pk = "0x5a2ca5de56191208ba8f8d230c29fa2b0d93226743eb00f2fb7a33c9b3305edf"
                 
                 do {
-                    let payload = SignedMessagePayload(data: self.typedMessageWithBytes_v3, signature: nil)
+                    let payload = SignedMessagePayload(data: self.typedMessageWithBytes32_v3, signature: nil)
                     
                     let signed = try signTypedMessage(privateKey: Data(hex: pk), payload: payload, version: .v4)
                     expect(signed).to(equal(expected.stringRemoveHexPrefix()))
                 } catch {
                     fail(error.localizedDescription)
                 }
+            }
+        }
+    }
+    
+    func executeTestsSignTypeWithBytesV3() {
+        fdescribe("just simple bytes field type testing") {
+            it("should encode") {
+                do {
+                    let expected = """
+                    0x8347a0ac20020e98d8905ca3305686ec5ece8dddc65888708b6bdb38f98fddda00000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000012309ce540000fffffffffffffffffffffffffffffffffffffffffffffffffffdb9ec63580000f0a6235a818a0f89cd1941df12ddb53d8af3655c419d3283ee350ac6ec9fa2f96901562dd98a823e76140dc8728eca225174406eaa6bf0da7b0ab67f6f93de4d0000000000000000000000000000000000000000000000000000000000000959
+                    """
+                    
+                    let data = try encodeData(
+                        primaryType: self.typedMessageWithBytes_v3.primaryType,
+                        data: self.typedMessageWithBytes_v3.message,
+                        types: self.typedMessageWithBytes_v3.types,
+                        version: .v3
+                    )
+                    
+                    expect(data.toHexString().stringAddHexPrefix()).to(equal(expected))
+                } catch {
+                    fail(error.localizedDescription)
+                }
+
             }
         }
     }

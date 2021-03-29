@@ -140,10 +140,11 @@ public func encodeData(
             throw TypedMessageSignError.unknown("missing value for field \(name) of type \(type)")
         }
         
-        // TODO: Cover with tests
         if type == "bytes" {
-            let bytes = value as! [UInt32]
-            let data = Data(bytes: bytes, count: bytes.count)
+            guard let data = ABIEncoder.convertToData(value) else {
+                throw TypedMessageSignError.unknown("failed to convert value \(value) to data")
+            }
+            
             return (type: "bytes32", value: data.sha3(.keccak256).bytes as AnyObject)
         }
         
