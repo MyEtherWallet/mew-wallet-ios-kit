@@ -35,6 +35,6 @@ extension String {
     for _ in 0 ..< byteString.prefix(while: { i in i == alphabetBytes[0] }).count {
       prefixData += [0x00]
     }
-    return prefixData + Data(bytes.reversed())
+    return prefixData + Data(bytes)
   }
 }
