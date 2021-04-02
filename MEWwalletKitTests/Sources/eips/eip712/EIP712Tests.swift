@@ -596,7 +596,7 @@ class EIP712Tests: QuickSpec {
     }
     
     func executeTestsSignTypeWithBytesV3() {
-        fdescribe("just simple bytes field type testing") {
+        describe("just simple bytes field type testing") {
             it("should encode") {
                 do {
                     let expected = """

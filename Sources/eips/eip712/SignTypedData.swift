@@ -9,12 +9,15 @@ import Foundation
 import CryptoSwift
 
 public enum TypedMessageSignError: Error {
+    case invalidData
     case unknown(String)
     
     func messageError() -> String {
         switch self {
         case .unknown(let string):
             return string
+        case .invalidData:
+            return "Invalid data"
         }
     }
 }
@@ -23,7 +26,7 @@ public enum SignTypedDataVersion {
     case v3, v4
 }
 
-public struct MessageTypeProperty {
+public struct MessageTypeProperty: Codable {
     public let name: String
     public let type: String
 }
@@ -33,6 +36,18 @@ public struct TypedMessageDomain: Codable {
     public let version: String?
     public let chainId: Int?
     public let verifyingContract: String?
+    
+    public init(
+        name: String?,
+        version: String?,
+        chainId: Int?,
+        verifyingContract: String?
+    ) {
+        self.name = name
+        self.version = version
+        self.chainId = chainId
+        self.verifyingContract = verifyingContract
+    }
     
     func encoded() -> [String: AnyObject] {
         guard let data = try? JSONEncoder().encode(self) else {
@@ -49,6 +64,14 @@ public typealias MessageTypes = [String: [MessageTypeProperty]]
 public struct SignedMessagePayload {
     public let data: TypedMessage
     public let signature: String?
+    
+    public init(
+        data: TypedMessage,
+        signature: String?
+    ) {
+        self.data = data
+        self.signature = signature
+    }
 }
 
 public struct TypedMessage {
@@ -56,6 +79,41 @@ public struct TypedMessage {
     public let primaryType: String
     public let domain: TypedMessageDomain
     public let message: [String: AnyObject]
+}
+
+public extension TypedMessage {
+    private enum CodingKeys: String {
+        case types
+        case primaryType
+        case domain
+        case message
+    }
+    
+    init(json: [String: Any]) throws {
+        guard
+            let primaryType = json[CodingKeys.primaryType.rawValue] as? String
+        else {
+            throw TypedMessageSignError.invalidData
+        }
+        
+        let types = (json[CodingKeys.types.rawValue] as? [String: Any]) ?? [:]
+        var messageTypes = MessageTypes()
+        try types.forEach {
+            if let json = $0.value as? [[String: Any]] {
+                let data = try JSONSerialization.data(withJSONObject: json, options: .prettyPrinted)
+                messageTypes[$0.key] = try JSONDecoder().decode([MessageTypeProperty].self, from: data)
+            }
+        }
+        self.types = messageTypes
+        
+        self.primaryType = primaryType
+        
+        let domain = (json[CodingKeys.domain.rawValue] as? [String: Any]) ?? [:]
+        let domainData = try JSONSerialization.data(withJSONObject: domain, options: .prettyPrinted)
+        self.domain = try JSONDecoder().decode(TypedMessageDomain.self, from: domainData)
+        
+        self.message = (json[CodingKeys.message.rawValue] as? [String: AnyObject]) ?? [:]
+    }
 }
 
 public func signTypedMessage(privateKey: Data, payload: SignedMessagePayload, version: SignTypedDataVersion = .v3) throws -> String {
