@@ -116,11 +116,10 @@ public extension TypedMessage {
     }
 }
 
-public func signTypedMessage(privateKey: Data, payload: SignedMessagePayload, version: SignTypedDataVersion = .v3) throws -> String {
+public func signTypedMessage(privateKey: PrivateKeyEth1, payload: SignedMessagePayload, version: SignTypedDataVersion = .v3) throws -> String {
     let message = try hash(message: payload.data, version: version)
     
-    let key = PrivateKeyEth1(privateKey: privateKey)
-    guard let signed = message.sign(key: key, leadingV: false) else {
+    guard let signed = message.sign(key: privateKey, leadingV: false) else {
         throw TypedMessageSignError.unknown("Failed to sign the message")
     }
     
