@@ -9,7 +9,7 @@ import Foundation
 import TweetNacl
 import CryptoSwift
 
-public struct EthEncryptedData {
+public struct EthEncryptedData: Codable {
   let nonce: String
   let ephemPublicKey: String
   let ciphertext: String
