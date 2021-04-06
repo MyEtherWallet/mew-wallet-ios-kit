@@ -10,9 +10,15 @@ import TweetNacl
 import CryptoSwift
 
 public struct EthEncryptedData: Codable {
-  let nonce: String
-  let ephemPublicKey: String
-  let ciphertext: String
+  public let nonce: String
+  public let ephemPublicKey: String
+  public let ciphertext: String
+  
+  public init(nonce: String, ephemPublicKey: String, ciphertext: String) {
+    self.nonce = nonce
+    self.ephemPublicKey = ephemPublicKey
+    self.ciphertext = ciphertext
+  }
 }
 
 public enum EthCryptoError: Error {
