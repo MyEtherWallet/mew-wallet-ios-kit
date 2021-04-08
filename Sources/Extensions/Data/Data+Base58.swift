@@ -7,13 +7,14 @@
 //
 
 import Foundation
+import BigInt
 
 extension Data {
   func encodeBase58(alphabet: String) -> Data? {
     let alphabetBytes = alphabet.bytes
-    var value = BigInt<UInt8>(self.reversed())
-    let radix = BigInt<UInt8>(alphabet.count)
-    
+    var value = BigInt(data: Data(self))
+    let radix = BigInt(alphabet.count.bytes)
+        
     var result: [UInt8] = []
     result.reserveCapacity(bytes.count)
     

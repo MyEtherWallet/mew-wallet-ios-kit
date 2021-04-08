@@ -68,3 +68,17 @@ fastlane/screenshots/**/*.png
 fastlane/test_output
 Package.resolved
 .swiftpm
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.DS_Store
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop

@@ -8,6 +8,7 @@
 
 import Foundation
 import MEW_wallet_iOS_secp256k1_package
+import BigInt
 
 enum TransactionSignError: Error {
   case invalidChainId
@@ -21,7 +22,7 @@ enum TransactionSignError: Error {
 extension Transaction {
   public func sign(key: PrivateKeyEth1, extraEntropy: Bool = false) throws {
     if self.chainID == nil {
-      self.chainID = BigInt<UInt8>(key.network.chainID)
+      self.chainID = BigInt(key.network.chainID)
     }
     guard var context = secp256k1_context_create(UInt32(SECP256K1_CONTEXT_SIGN|SECP256K1_CONTEXT_VERIFY)) else { throw TransactionSignError.internalError }
     defer { secp256k1_context_destroy(context) }
