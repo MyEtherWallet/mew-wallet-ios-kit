@@ -30,7 +30,7 @@ public struct RLPBigInt {
     internal var data: Data {
       var data = Data(_data)
       if let count = self._dataCount {
-        data.setLength(count, appendFromLeft: false)
+        data.setLength(count, appendFromLeft: true)
       }
       return data
     }

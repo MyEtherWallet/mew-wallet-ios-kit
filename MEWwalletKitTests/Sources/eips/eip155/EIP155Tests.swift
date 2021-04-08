@@ -126,7 +126,7 @@ class EIP155Tests: QuickSpec {
           }
         }
       }
-      it("Should sign transaction and returns the expected signature") {
+      it("Should sign transaction and return the expected signature") {
         let transaction = try? Transaction(nonce: "0x03", gasPrice: "0x3b9aca00", gasLimit: "0x7530",
                                            to: Address(raw: "0xb414031Aa4838A69e27Cb2AE31E709Bcd674F0Cb"), value: "0x64", data: Data([]))
         transaction?.chainID = BigInt(0x11)
@@ -146,6 +146,25 @@ class EIP155Tests: QuickSpec {
         expect(transaction?.signature?.r.data.toHexString()).to(equal("1fff9fa845437523b0a7f334b7d2a0ab14364a3581f898cd1bba3b5909465867"))
         expect(transaction?.signature?.s.data.toHexString()).to(equal("1415137f53eeddf0687e966f8d59984676d6d92ce88140765ed343db6936679e"))
         expect(transaction?.signature?.v.data.toHexString()).to(equal("45"))
+      }
+      it("Should sign transaction and return the expected signature 2") {
+        let transaction = try? Transaction(nonce: "0x00", gasPrice: "0x106", gasLimit: "0x33450",
+                                           to: Address(raw: "0x5c5220918B616E583515A7F42b6bE0c967664462"), value: "0xc8", data: Data([]))
+        expect(transaction?.serialize()?.toHexString()).to(equal("e08082010683033450945c5220918b616e583515a7f42b6be0c96766446281c880"))
+        
+        let privateKey = PrivateKeyEth1(privateKey: Data(hex: "009312d3c3a8ac6d00fb2df851e1cb0023becc00cc7a0083b0ae70f4bd0575ae"), network: .ethereum)
+        do {
+          try transaction?.sign(key: privateKey)
+        } catch {
+          fail("Test failed beacuse of exception: \(error)")
+          return
+        }
+
+        expect(transaction?.signature).toNot(beNil())
+        expect(transaction?.signature?.r.data.toHexString()).to(equal("d87153e2fb484f21469785f5b6ab95cc5c3aba5a80487428b63024068633bda2"))
+        expect(transaction?.signature?.s.data.toHexString()).to(equal("002421eb4be1a11ff6071881608f660047604a7f63883326588b4168a3491800"))
+        expect(transaction?.signature?.v.data.toHexString()).to(equal("25"))
+        expect(transaction?.hash()?.toHexString()).to(equal("c15cfff927d92903ab5457cffab366ba43931da9cb466ce837524dea08d28f36"))
       }
     }
   }
