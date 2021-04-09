@@ -11,7 +11,7 @@ import BigInt
 
 extension BigInt {
     func toTwosComplement() -> Data {
-        if (self.sign == BigInt.Sign.plus) {
+        if self.sign == BigInt.Sign.plus {
             return self.magnitude.serialize()
         } else {
             let serializedLength = self.magnitude.serialize().count
@@ -44,7 +44,7 @@ extension BigInt {
 extension BigInt {
     static func fromTwosComplement(data: Data) -> BigInt {
         let isPositive = ((data[0] & 128) >> 7) == 0
-        if (isPositive) {
+        if isPositive {
             let magnitude = BigUInt(data)
             return BigInt(magnitude)
         } else {

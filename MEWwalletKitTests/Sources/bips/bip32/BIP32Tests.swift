@@ -141,10 +141,10 @@ class BIP32Tests: QuickSpec {
       it("Should derive correct private keys") {
         for vector in self.testVectors {
           do {
-            let masterKey = try PrivateKeyEth1(seed: vector.seed, network: .bitcoin)
+            let rootKey = try PrivateKeyEth1(seed: vector.seed, network: .bitcoin)
             let derivationNodes = try vector.path.derivationPath(checkHardenedEdge: true)
             
-            let derivedPrivateKey = try masterKey.derived(nodes: derivationNodes)
+            let derivedPrivateKey = try rootKey.derived(nodes: derivationNodes)
             let derivedPublicKey = try derivedPrivateKey.publicKey(compressed: true)
             
             expect(derivedPrivateKey.extended()).to(equal(vector.privateKey), description: "Derivation path: \(vector.path), seed: \(vector.seed.toHexString())")

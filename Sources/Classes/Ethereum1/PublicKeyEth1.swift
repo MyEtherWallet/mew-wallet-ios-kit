@@ -44,7 +44,7 @@ public struct PublicKeyEth1: PublicKey {
   
   init(privateKey: Data, compressed: Bool = false, chainCode: Data, depth: UInt8, fingerprint: Data, index: UInt32, network: Network) throws {
     self.config = PublicKeyEth1Config(compressed: compressed)
-    guard var context = secp256k1_context_create(UInt32(SECP256K1_CONTEXT_SIGN)) else {
+    guard let context = secp256k1_context_create(UInt32(SECP256K1_CONTEXT_SIGN)) else {
       throw PublicKeyError.internalError
     }
     defer { secp256k1_context_destroy(context) }

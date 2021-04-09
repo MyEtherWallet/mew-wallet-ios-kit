@@ -9,6 +9,7 @@
 import Foundation
 
 public protocol PrivateKey: Key, BIP32 where BIPPK == Self {
+  // swiftlint:disable:next type_name
   associatedtype PK
  
   init(seed: Data, network: Network) throws

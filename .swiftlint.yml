@@ -1,5 +1,8 @@
 warning_threshold: 35
 
+#opt_in_rules:
+#  indentation_width
+
 excluded:
 - .build
 
@@ -52,6 +55,13 @@ type_name:
 
 cyclomatic_complexity:
   ignores_case_statements: true
+  warning: 20
+  error: 30
 
+nesting:
+  type_level: 3
+
+#indentation_width:
+#  indentation_width: 2
 
 reporter: "xcode"
