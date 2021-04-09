@@ -9,12 +9,14 @@
 import Foundation
 import Quick
 import Nimble
+import BigInt
+
 @testable import MEWwalletKit
 
 class EIP2333Tests: QuickSpec {
   struct TestVector {
     let seed: String
-    let masterSK: String
+    let rootSK: String
     let derivationPath: String
     let childSK: String
     let childSKHex: String
@@ -30,27 +32,27 @@ class EIP2333Tests: QuickSpec {
   lazy var testVectors: [TestVector] = {
     let vector: [TestVector] = [
       TestVector(seed: "0xc55257c360c07c72029aebc1b53c05ed0362ada38ead3e3e9efa3708e53495531f09a6987599d18264c1e1c92f2cf141630c7a3c4ab7c81b2f001698e7463b04",
-                 masterSK: "6083874454709270928345386274498605044986640685124978867557563392430687146096",
+                 rootSK: "6083874454709270928345386274498605044986640685124978867557563392430687146096",
                  derivationPath: "m/0",
                  childSK: "20397789859736650942317412262472558107875392172444076792671091975210932703118",
                  childSKHex: "2d18bd6c14e6d15bf8b5085c9b74f3daae3b03cc2014770a599d8c1539e50f8e"),
       TestVector(seed: "0x3141592653589793238462643383279502884197169399375105820974944592",
-                 masterSK: "29757020647961307431480504535336562678282505419141012933316116377660817309383",
+                 rootSK: "29757020647961307431480504535336562678282505419141012933316116377660817309383",
                  derivationPath: "m/3141592653",
                  childSK: "25457201688850691947727629385191704516744796114925897962676248250929345014287",
                  childSKHex: "384843fad5f3d777ea39de3e47a8f999ae91f89e42bffa993d91d9782d152a0f"),
       TestVector(seed: "0x0099FF991111002299DD7744EE3355BBDD8844115566CC55663355668888CC00",
-                 masterSK: "27580842291869792442942448775674722299803720648445448686099262467207037398656",
+                 rootSK: "27580842291869792442942448775674722299803720648445448686099262467207037398656",
                  derivationPath: "m/4294967295",
                  childSK: "29358610794459428860402234341874281240803786294062035874021252734817515685787",
                  childSKHex: "40e86285582f35b28821340f6a53b448588efa575bc4d88c32ef8567b8d9479b"),
       TestVector(seed: "0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3",
-                 masterSK: "19022158461524446591288038168518313374041767046816487870552872741050760015818",
+                 rootSK: "19022158461524446591288038168518313374041767046816487870552872741050760015818",
                  derivationPath: "m/42",
                  childSK: "31372231650479070279774297061823572166496564838472787488249775572789064611981",
                  childSKHex: "455c0dc9fccb3395825d92a60d2672d69416be1c2578a87a7a3d3ced11ebb88d"),
       TestVector(seed: "0xb1d2d33674c04b178d4bcdbcc18659a03bcdc2ab5c189b1ad46c7dec7a322e63ed2f9e71dd958a2dda71489e747785e553aeba07f020f8972cbaa4529e0be1f6",
-                 masterSK: "20622391184523430372800738928649485045191877345701887243502519409331883080447",
+                 rootSK: "20622391184523430372800738928649485045191877345701887243502519409331883080447",
                  derivationPath: "m/0",
                  childSK: "218965949329162110697650570671281069433295889839523449548870205706469257026",
                  childSKHex: "007bee2a75dea2715aa35bfe5b572a75613c86d1d849de8553b282bb0b4e2f42")
@@ -90,21 +92,22 @@ class EIP2333Tests: QuickSpec {
             do {
               let seedData = Data(hex: vector.seed)
               let wallet = try Wallet<SecretKeyEth2>(seed: seedData)
-              let masterSKdata = wallet.privateKey.data()
-              guard let masterSK = BigInt<UInt8>(masterSKdata.toHexString(), radix: 16) else {
-                fail("Can't get masterSK")
+              let rootSKdata = Data(wallet.privateKey.data())
+              guard let rootSK = BigInt(rootSKdata.toHexString(), radix: 16) else {
+                fail("Can't get rootSK")
                 return
               }
-              let masterSKDecimal = masterSK.decimalString
-              expect(masterSKDecimal).to(equal(vector.masterSK))
+              let rootSKDecimal = rootSK.decimalString
+              expect(rootSKDecimal).to(equal(vector.rootSK))
 
               let derivedWallet = try wallet.derive(vector.derivationPath)
               let childSKdata = derivedWallet.privateKey.data()
-              debugPrint(childSKdata.toHexString())
-              guard let childSK = BigInt<UInt8>(childSKdata.toHexString(), radix: 16) else {
+//              debugPrint(childSKdata.toHexString())
+              guard let childSK = BigInt(childSKdata.toHexString(), radix: 16) else {
                 fail("Can't get childSK")
                 return
               }
+                
               let childSKDecimal = childSK.decimalString
               expect(childSKDecimal).to(equal(vector.childSK))
               expect(childSKdata.toHexString().lowercased()).to(equal(vector.childSKHex.lowercased()))
@@ -123,8 +126,8 @@ class EIP2333Tests: QuickSpec {
               let seedData = Data(hex: vector.seed)
               let wallet = try Wallet<SecretKeyEth2>(seed: seedData)
               let derivedWallet = try wallet.derive(vector.derivationPath)
-              let masterSKdata = derivedWallet.privateKey.data()
-              let secretKey = try SecretKeyEth2(privateKey: masterSKdata)
+              let rootSKdata = derivedWallet.privateKey.data()
+              let secretKey = try SecretKeyEth2(privateKey: rootSKdata)
               let publicKey = secretKey.publicKey()?.data()
               expect(publicKey?.toHexString().lowercased()).to(equal(vector.publicKey))
             } catch {

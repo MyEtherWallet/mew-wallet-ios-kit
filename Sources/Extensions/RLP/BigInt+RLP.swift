@@ -7,22 +7,48 @@
 //
 
 import Foundation
+import BigInt
 
-private let rlpLengthMax = BigInt<UInt8>(1) << 256
+private let rlpLengthMax = BigInt(1) << 256
 
-extension BigInt: RLP, RLPLength where Word == UInt8 {
-  
+extension RLPBigInt: RLP, RLPLength {
   func rlpEncode(offset: UInt8?) -> Data? {
     guard let offset = offset else {
-      return self.reversedData.rlpEncode()
+        return self.data.rlpEncode()
     }
+    
     return self.rlpLengthEncode(offset: offset)
   }
   
   func rlpLengthEncode(offset: UInt8) -> Data? {
-    guard self < rlpLengthMax else {
+    guard self.value < rlpLengthMax else {
       return nil
     }
-    return BigInt<UInt8>(self.dataLength + Int(offset) + 55).reversedData + self.reversedData
+    return BigInt(self.dataLength + Int(offset) + 55).data + self.data
   }
+}
+
+extension BigInt {
+    var data: Data {
+        return toTwosComplement()
+    }
+    
+    var reversedData: Data {
+        return Data(data.bytes.reversed())
+    }
+    
+    // takes all data as magnitude without dropping first bytes
+    init(data: Data) {
+        self.init()
+        
+        self.sign = .plus
+        self.magnitude = BigUInt(data)
+    }
+    
+    init(_ bytes: [UInt8]) {
+        self.init()
+        
+        self.sign = .plus
+        self.magnitude = BigUInt(Data(bytes))
+    }
 }

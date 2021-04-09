@@ -6,6 +6,8 @@
 //  Copyright © 2019 MyEtherWallet Inc. All rights reserved.
 //
 
+// swiftlint:disable line_length
+
 import Foundation
 
 public enum BIP39Wordlist {
@@ -19,7 +21,6 @@ public enum BIP39Wordlist {
   case spanish
   case custom(words: [String])
   
-  //swiftlint:disable line_length
   public var words: [String] {
     switch self {
     case .chinese_simplified:
@@ -42,5 +43,4 @@ public enum BIP39Wordlist {
       return words
     }
   }
-  //swiftlint:enable line_length
 }

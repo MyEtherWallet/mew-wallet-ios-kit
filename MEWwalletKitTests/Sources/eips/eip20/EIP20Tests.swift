@@ -6,9 +6,13 @@
 //  Copyright © 2020 MyEtherWallet Inc. All rights reserved.
 //
 
+// swiftlint:disable line_length
+
 import Foundation
 import Quick
 import Nimble
+import BigInt
+
 @testable import MEWwalletKit
 
 class EIP20Tests: QuickSpec {
@@ -64,14 +68,14 @@ class EIP20Tests: QuickSpec {
           
           switch dataType {
           case let .approve(_, stringAmount):
-            guard let bigInt = BigInt<UInt8>(stringAmount, radix: 16) else {
+            guard let bigInt = BigInt(stringAmount, radix: 16) else {
               fail("Incorrect data")
               return
             }
             let parsedAmount = Decimal(string: bigInt.decimalString)
             expect(parsedAmount).to(equal(amount))
           case let .transfer(_, stringAmount):
-            guard let bigInt = BigInt<UInt8>(stringAmount, radix: 16) else {
+            guard let bigInt = BigInt(stringAmount, radix: 16) else {
               fail("Incorrect data")
               return
             }
@@ -82,7 +86,7 @@ class EIP20Tests: QuickSpec {
           }
         }
       }
-      it ("Should generate data correctly") {
+      it("Should generate data correctly") {
         let approve = TransactionType.approve(Address(raw: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"), "0x12d687")
         let transfer = TransactionType.transfer(Address(raw: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"), "0x9fbf1")
         

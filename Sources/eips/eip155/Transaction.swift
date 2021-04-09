@@ -7,39 +7,47 @@
 //
 
 import Foundation
+import BigInt
 
 enum TransactionError: Error {
   case invalidData
 }
 
 public class Transaction: CustomDebugStringConvertible {
-  //swiftlint:disable identifier_name
-  internal var _nonce: BigInt<UInt8>
+  internal var _nonce: BigInt
   public var nonce: Data {
     return self._nonce.reversedData
   }
   
-  internal var _gasPrice: BigInt<UInt8>
+  internal var _gasPrice: BigInt
   public var gasPrice: Data {
     return self._gasPrice.reversedData
   }
-  internal var _gasLimit: BigInt<UInt8>
+  internal var _gasLimit: BigInt
   public var gasLimit: Data {
     return self._gasLimit.reversedData
   }
   public var from: Address?
   public var to: Address?
-  internal var _value: BigInt<UInt8>
+  internal var _value: BigInt
   public var value: Data {
     return self._value.reversedData
   }
   internal(set) public var data: Data
   internal var signature: TransactionSignature?
-  internal var chainID: BigInt<UInt8>?
-  //swiftlint:enable identifier_name
+  internal var chainID: BigInt?
+  // swiftlint:enable identifier_name
   
-  init(nonce: BigInt<UInt8> = BigInt<UInt8>(0x00), gasPrice: BigInt<UInt8> = BigInt<UInt8>(0x00), gasLimit: BigInt<UInt8> = BigInt<UInt8>(0x00),
-       from: Address? = nil, to: Address?, value: BigInt<UInt8> = BigInt<UInt8>(0x00), data: Data = Data(), chainID: BigInt<UInt8>? = nil) {
+  init(
+    nonce: BigInt = BigInt(0x00),
+    gasPrice: BigInt = BigInt(0x00),
+    gasLimit: BigInt = BigInt(0x00),
+    from: Address? = nil,
+    to: Address?,
+    value: BigInt = BigInt(0x00),
+    data: Data = Data(),
+    chainID: BigInt? = nil
+  ) {
     self._nonce = nonce
     self._gasPrice = gasPrice
     self._gasLimit = gasLimit
@@ -50,25 +58,64 @@ public class Transaction: CustomDebugStringConvertible {
     self.chainID = chainID
   }
   
-  public convenience init(nonce: Data = Data([0x00]), gasPrice: Data = Data([0x00]), gasLimit: Data = Data([0x00]), from: Address? = nil, to: Address?,
-                          value: Data = Data([0x00]), data: Data = Data(), chainID: Data?) {
+  public convenience init(
+    nonce: Data = Data([0x00]),
+    gasPrice: Data = Data([0x00]),
+    gasLimit: Data = Data([0x00]),
+    from: Address? = nil,
+    to: Address?,
+    value: Data = Data([0x00]),
+    data: Data = Data(),
+    chainID: Data?
+  ) {
     if let chainID = chainID {
-      self.init(nonce: BigInt<UInt8>(nonce), gasPrice: BigInt<UInt8>(gasPrice), gasLimit: BigInt<UInt8>(gasLimit), to: to,
-      value: BigInt<UInt8>(value), data: data, chainID: BigInt<UInt8>(chainID))
+        self.init(
+            nonce: BigInt(data: nonce),
+            gasPrice: BigInt(data: gasPrice),
+            gasLimit: BigInt(data: gasLimit),
+            to: to,
+            value: BigInt(data: value),
+            data: data,
+            chainID: BigInt(data: chainID)
+        )
     } else {
-      self.init(nonce: BigInt<UInt8>(nonce), gasPrice: BigInt<UInt8>(gasPrice), gasLimit: BigInt<UInt8>(gasLimit), to: to,
-      value: BigInt<UInt8>(value), data: data, chainID: nil)
+        self.init(
+            nonce: BigInt(data: nonce),
+            gasPrice: BigInt(data: gasPrice),
+            gasLimit: BigInt(data: gasLimit),
+            to: to,
+            value: BigInt(data: value),
+            data: data,
+            chainID: nil
+        )
     }
   }
   
-  public convenience init(nonce: String = "0x00", gasPrice: String = "0x00", gasLimit: String = "0x00", from: Address? = nil, to: Address?,
-                          value: String = "0x00", data: Data, chainID: Data? = nil) throws {
-    let nonce = BigInt<UInt8>(Data(hex: nonce.stringWithAlignedHexBytes()).bytes.reversed())
-    let gasPrice = BigInt<UInt8>(Data(hex: gasPrice.stringWithAlignedHexBytes()).bytes.reversed())
-    let gasLimit = BigInt<UInt8>(Data(hex: gasLimit.stringWithAlignedHexBytes()).bytes.reversed())
-    let value = BigInt<UInt8>(Data(hex: value.stringWithAlignedHexBytes()).bytes.reversed())
+  public convenience init(
+    nonce: String = "0x00",
+    gasPrice: String = "0x00",
+    gasLimit: String = "0x00",
+    from: Address? = nil,
+    to: Address?,
+    value: String = "0x00",
+    data: Data,
+    chainID: Data? = nil
+  ) throws {
+    let nonce = BigInt(Data(hex: nonce.stringWithAlignedHexBytes()).bytes)
+    let gasPrice = BigInt(Data(hex: gasPrice.stringWithAlignedHexBytes()).bytes)
+    let gasLimit = BigInt(Data(hex: gasLimit.stringWithAlignedHexBytes()).bytes)
+    let value = BigInt(Data(hex: value.stringWithAlignedHexBytes()).bytes)
     if let chainID = chainID {
-      self.init(nonce: nonce, gasPrice: gasPrice, gasLimit: gasLimit, from: from, to: to, value: value, data: data, chainID: BigInt<UInt8>(chainID))
+        self.init(
+            nonce: nonce,
+            gasPrice: gasPrice,
+            gasLimit: gasLimit,
+            from: from,
+            to: to,
+            value: value,
+            data: data,
+            chainID: BigInt(data: chainID)
+        )
     } else {
       self.init(nonce: nonce, gasPrice: gasPrice, gasLimit: gasLimit, from: from, to: to, value: value, data: data)
     }
@@ -76,39 +123,56 @@ public class Transaction: CustomDebugStringConvertible {
   
   public convenience init(nonce: Decimal? = nil, gasPrice: Decimal?, gasLimit: Decimal?, from: Address? = nil, to: Address?,
                           value: Decimal?, data: Data, chainID: Data? = nil) throws {
-    let nonceBigInt: BigInt<UInt8>
-    let gasPriceBigInt: BigInt<UInt8>
-    let gasLimitBigInt: BigInt<UInt8>
-    let valueBigInt: BigInt<UInt8>
+    let nonceBigInt: BigInt
+    let gasPriceBigInt: BigInt
+    let gasLimitBigInt: BigInt
+    let valueBigInt: BigInt
     
     if let nonceString = (nonce as NSDecimalNumber?)?.stringValue, !nonceString.isEmpty {
-      nonceBigInt = BigInt<UInt8>(nonceString) ?? BigInt<UInt8>(0x00)
+      nonceBigInt = BigInt(nonceString) ?? BigInt(0x00)
     } else {
-      nonceBigInt = BigInt<UInt8>(0x00)
+      nonceBigInt = BigInt(0x00)
     }
     
     if let gasPriceString = (gasPrice as NSDecimalNumber?)?.stringValue {
-      gasPriceBigInt = BigInt<UInt8>(gasPriceString) ?? BigInt<UInt8>(0x00)
+      gasPriceBigInt = BigInt(gasPriceString) ?? BigInt(0x00)
     } else {
-      gasPriceBigInt = BigInt<UInt8>(0x00)
+      gasPriceBigInt = BigInt(0x00)
     }
     
     if let gasLimitString = (gasLimit as NSDecimalNumber?)?.stringValue {
-      gasLimitBigInt = BigInt<UInt8>(gasLimitString) ?? BigInt<UInt8>(0x00)
+      gasLimitBigInt = BigInt(gasLimitString) ?? BigInt(0x00)
     } else {
-      gasLimitBigInt = BigInt<UInt8>(0x00)
+      gasLimitBigInt = BigInt(0x00)
     }
     
     if let valueString = (value as NSDecimalNumber?)?.stringValue {
-      valueBigInt = BigInt<UInt8>(valueString) ?? BigInt<UInt8>(0x00)
+      valueBigInt = BigInt(valueString) ?? BigInt(0x00)
     } else {
-      valueBigInt = BigInt<UInt8>(0x00)
+      valueBigInt = BigInt(0x00)
     }
     
     if let chainID = chainID {
-      self.init(nonce: nonceBigInt, gasPrice: gasPriceBigInt, gasLimit: gasLimitBigInt, from: from, to: to, value: valueBigInt, data: data, chainID: BigInt<UInt8>(chainID))
+        self.init(
+            nonce: nonceBigInt,
+            gasPrice: gasPriceBigInt,
+            gasLimit: gasLimitBigInt,
+            from: from,
+            to: to,
+            value: valueBigInt,
+            data: data,
+            chainID: BigInt(data: chainID)
+        )
     } else {
-      self.init(nonce: nonceBigInt, gasPrice: gasPriceBigInt, gasLimit: gasLimitBigInt, from: from, to: to, value: valueBigInt, data: data)
+      self.init(
+        nonce: nonceBigInt,
+        gasPrice: gasPriceBigInt,
+        gasLimit: gasLimitBigInt,
+        from: from,
+        to: to,
+        value: valueBigInt,
+        data: data
+      )
     }
   }
   
@@ -131,7 +195,7 @@ public class Transaction: CustomDebugStringConvertible {
     return self.rlpData(chainID: self.chainID, forSignature: false).rlpEncode()
   }
   
-  internal func hash(chainID: BigInt<UInt8>? = nil, forSignature: Bool = false) -> Data? {
+  internal func hash(chainID: BigInt? = nil, forSignature: Bool = false) -> Data? {
     return self.rlpData(chainID: chainID, forSignature: forSignature).rlpEncode()?.sha3(.keccak256)
   }
 }
