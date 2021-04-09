@@ -14,7 +14,6 @@ enum TransactionError: Error {
 }
 
 public class Transaction: CustomDebugStringConvertible {
-  //swiftlint:disable identifier_name
   internal var _nonce: BigInt
   public var nonce: Data {
     return self._nonce.reversedData
@@ -37,7 +36,7 @@ public class Transaction: CustomDebugStringConvertible {
   internal(set) public var data: Data
   internal var signature: TransactionSignature?
   internal var chainID: BigInt?
-  //swiftlint:enable identifier_name
+  // swiftlint:enable identifier_name
   
   init(
     nonce: BigInt = BigInt(0x00),

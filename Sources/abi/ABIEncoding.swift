@@ -7,6 +7,8 @@ import Foundation
 import BigInt
 import CryptoSwift
 
+// swiftlint:disable identifier_name
+
 public struct ABIEncoder {
     
 }
@@ -32,7 +34,6 @@ extension ABIEncoder {
             if base16 != nil {
                 return base16!
             }
-            break
         case let v as UInt:
             return BigUInt(v)
         case let v as UInt8:
@@ -79,7 +80,6 @@ extension ABIEncoder {
             if base16 != nil {
                 return base16
             }
-            break
         case let v as UInt:
             return BigInt(v)
         case let v as UInt8:
@@ -135,7 +135,6 @@ extension ABIEncoder {
         return nil
     }
     
-    
     public static func encode(types: [ABI.Element.InOut], values: [AnyObject]) -> Data? {
         guard types.count == values.count else {return nil}
         let params = types.compactMap { (el) -> ABI.Element.ParameterType in
@@ -160,8 +159,8 @@ extension ABIEncoder {
             }
         }
         var headsConcatenated = Data()
-        for h in heads {
-            headsConcatenated.append(h)
+        for head in heads {
+            headsConcatenated.append(head)
         }
         var tailsPointer = BigUInt(headsConcatenated.count)
         headsConcatenated = Data()
@@ -173,7 +172,7 @@ extension ABIEncoder {
                 guard let newHead = tailsPointer.abiEncode(bits: 256) else {return nil}
                 headsConcatenated.append(newHead)
                 tailsConcatenated.append(tail)
-                tailsPointer = tailsPointer + BigUInt(tail.count)
+                tailsPointer += BigUInt(tail.count)
             } else {
                 headsConcatenated.append(head)
                 tailsConcatenated.append(tail)
@@ -182,16 +181,17 @@ extension ABIEncoder {
         return headsConcatenated + tailsConcatenated
     }
     
+    // swiftlint:disable:next function_body_length cyclomatic_complexity
     public static func encodeSingleType(type: ABI.Element.ParameterType, value: AnyObject) -> Data? {
         switch type {
-        case .uint(_):
+        case .uint:
             if let biguint = convertToBigUInt(value) {
                 return biguint.abiEncode(bits: 256)
             }
             if let bigint = convertToBigInt(value) {
                 return bigint.abiEncode(bits: 256)
             }
-        case .int(_):
+        case .int:
             if let biguint = convertToBigUInt(value) {
                 return biguint.abiEncode(bits: 256)
             }
@@ -211,7 +211,7 @@ extension ABIEncoder {
             }
         case .bool:
             if let bool = value as? Bool {
-                if (bool) {
+                if bool {
                     return BigUInt(1).abiEncode(bits: 256)
                 } else {
                     return BigUInt(0).abiEncode(bits: 256)
@@ -226,8 +226,7 @@ extension ABIEncoder {
                 var dataGuess: Data?
                 if string.hasHexPrefix() {
                     dataGuess = Data(hex: string.lowercased())
-                }
-                else {
+                } else {
                     dataGuess = string.data(using: .utf8)
                 }
                 guard let data = dataGuess else {break}
@@ -287,7 +286,7 @@ extension ABIEncoder {
                             guard let newHead = tailsPointer.abiEncode(bits: 256) else {return nil}
                             headsConcatenated.append(newHead)
                             tailsConcatenated.append(tail)
-                            tailsPointer = tailsPointer + BigUInt(tail.count)
+                            tailsPointer += BigUInt(tail.count)
                         } else {
                             headsConcatenated.append(head)
                             tailsConcatenated.append(tail)
@@ -334,7 +333,7 @@ extension ABIEncoder {
                         guard let newHead = tailsPointer.abiEncode(bits: 256) else {return nil}
                         headsConcatenated.append(newHead)
                         tailsConcatenated.append(tail)
-                        tailsPointer = tailsPointer + BigUInt(tail.count)
+                        tailsPointer += BigUInt(tail.count)
                     }
                     let total = headsConcatenated + tailsConcatenated
                     //                    print("Static array of dynamic types encoding :\n" + String(total.toHexString()))
@@ -372,7 +371,7 @@ extension ABIEncoder {
                     guard let newHead = tailsPointer.abiEncode(bits: 256) else {return nil}
                     headsConcatenated.append(newHead)
                     tailsConcatenated.append(tail)
-                    tailsPointer = tailsPointer + BigUInt(tail.count)
+                    tailsPointer += BigUInt(tail.count)
                 } else {
                     headsConcatenated.append(head)
                     tailsConcatenated.append(tail)

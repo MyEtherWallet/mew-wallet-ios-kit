@@ -6,7 +6,7 @@
 //  Copyright © 2021 MyEtherWallet Inc. All rights reserved.
 //
 
-import Foundation
+// swiftlint:disable type_body_length function_body_length force_cast line_length identifier_name
 
 import CryptoSwift
 import Foundation
@@ -79,7 +79,7 @@ class EIP712Tests: QuickSpec {
             ],
             "Group": [
                 .init(name: "name", type: "string"),
-                .init(name: "members", type: "Person[]"),
+                .init(name: "members", type: "Person[]")
             ]
         ]
         let domain = TypedMessageDomain(
@@ -210,7 +210,6 @@ class EIP712Tests: QuickSpec {
         )
     }()
 
-    
     override func spec() {
         executeTestsSignTypeV3()
         executeTestsSignTypeWithBytes32V3()
@@ -235,7 +234,7 @@ class EIP712Tests: QuickSpec {
             it("should typeHash with primaryType Mail") {
                 do {
                     let hash = try hashType(primaryType: "Mail", types: self.typedMessage.types)
-                    let bytes = hash as! Array<UInt8>
+                    let bytes = hash as! [UInt8]
                     let expected = "0xa0cedeb2dc280ba39b857546d74f5549c3a1d7bdc2dd96bf881f76108e23dac2"
                     expect(bytes.toHexString()).to(equal(expected.stringRemoveHexPrefix()))
                 } catch {
@@ -369,7 +368,7 @@ class EIP712Tests: QuickSpec {
             it("should hash type") {
                 do {
                     let hash = try hashType(primaryType: "Person", types: self.typedMessage_v4.types)
-                    let bytes = hash as! Array<UInt8>
+                    let bytes = hash as! [UInt8]
                     let expected = "0xfabfe1ed996349fc6027709802be19d047da1aa5d6894ff5f6486d92db2e6860"
                     expect(bytes.toHexString()).to(equal(expected.stringRemoveHexPrefix()))
                 } catch {
@@ -420,7 +419,7 @@ class EIP712Tests: QuickSpec {
         describe("pass arrays to v3") {
             it("should throw error and say use v4 instead") {
                 do {
-                    let _ = try hashStruct(
+                    _ = try hashStruct(
                         primaryType: "Person",
                         data: self.typedMessage_v4.message["from"] as! [String: AnyObject],
                         types: self.typedMessage_v4.types,

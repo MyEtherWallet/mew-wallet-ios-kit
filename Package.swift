@@ -6,7 +6,8 @@ import PackageDescription
 let package = Package(
   name: "MEWwalletKit",
   platforms: [
-      .iOS(.v11)
+    .iOS(.v11),
+    .macOS(.v10_12)
   ],
   products: [
     .library(
@@ -26,7 +27,7 @@ let package = Package(
   targets: [
     .target(
       name: "MEWwalletKit",
-        dependencies: ["CryptoSwift", "MEW-wallet-iOS-secp256k1-package", "bls-eth-swift", "TweetNacl", "BigInt"],
+      dependencies: ["CryptoSwift", "MEW-wallet-iOS-secp256k1-package", "bls-eth-swift", "TweetNacl", "BigInt"],
       path: "Sources"
     ),
     .testTarget(
@@ -35,6 +36,5 @@ let package = Package(
       path: "MEWwalletKitTests/Sources"
     )
   ],
-    swiftLanguageVersions: [.v4, .v4_2, .v5]
+  swiftLanguageVersions: [.v4, .v4_2, .v5]
 )
-

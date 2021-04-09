@@ -44,7 +44,7 @@ extension secp256k1_pubkey {
   }
   
   mutating func data(context: OpaquePointer/*secp256k1_context*/, flags: UInt32) -> Data? {
-    var serializedKey = UnsafeMutablePointer<UInt8>.allocate(capacity: 65)
+    let serializedKey = UnsafeMutablePointer<UInt8>.allocate(capacity: 65)
     defer {
       serializedKey.deallocate()
     }

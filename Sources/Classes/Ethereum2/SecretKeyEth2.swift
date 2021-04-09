@@ -31,7 +31,7 @@ extension SecretKeyEth2: PrivateKey {
   }
   
   public init(seed: Data, network: Network) throws {
-    self.raw = try seed.deriveMasterSK()
+    self.raw = try seed.deriveRootSK()
     self.index = 0
     self.network = network
   }

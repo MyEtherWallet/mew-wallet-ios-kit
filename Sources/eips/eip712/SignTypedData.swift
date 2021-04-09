@@ -24,6 +24,7 @@ public enum TypedMessageSignError: Error {
 }
 
 public enum SignTypedDataVersion {
+    // swiftlint:disable:next identifier_name
     case v3, v4
 }
 
@@ -184,7 +185,7 @@ public func encodeData(
                 Data(hex: "0x0000000000000000000000000000000000000000000000000000000000000000") :
                 try encodeData(
                     primaryType: type,
-                    data: value as! [String : AnyObject],
+                    data: value as? [String: AnyObject] ?? [:],
                     types: types,
                     version: version
                 ).sha3(.keccak256)
@@ -207,14 +208,17 @@ public func encodeData(
         }
         
         if type == "string" {
-            let string = value as! String
+            guard let string = value as? String else {
+                throw TypedMessageSignError.unknown("failed to convert value \(value) to string")
+            }
+            
             let data = string.data(using: .utf8)!
             
             return (type: "bytes32", value: data.sha3(.keccak256).bytes as AnyObject)
         }
         
         // TODO: check with metamask test cases v4
-        if (type.last == "]") {
+        if type.last == "]" {
             guard version == .v4 else {
                 throw TypedMessageSignError.unknown("Arrays are unimplemented in encoded data; use v4")
             }
@@ -224,11 +228,11 @@ public func encodeData(
             }
             
             let parsedType = String(type[..<index])
-            let array: Array<AnyObject>
+            let array: [AnyObject]
             if let objects = value as? [AnyObject] {
                 array = objects
             } else {
-                array = Array(arrayLiteral: value)
+                array = [AnyObject](arrayLiteral: value)
             }
             let typeValuePairs: [(type: ABI.Element.ParameterType, value: AnyObject)] = try array.map {
                 let encoded = try encodeField(name: name, type: parsedType, value: $0)
@@ -309,7 +313,7 @@ func findTypeDependencies(primaryType: String, types: MessageTypes, results: [St
     let primaryType = primaryType.match(for: "^\\w*") ?? primaryType
     var results = results
     
-    if (results.contains(primaryType)) {
+    if results.contains(primaryType) {
         return results
     }
     

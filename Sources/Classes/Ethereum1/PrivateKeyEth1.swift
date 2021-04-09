@@ -11,7 +11,7 @@ import CryptoSwift
 import MEW_wallet_iOS_secp256k1_package
 import BigInt
 
-private let HMACKeyData: [UInt8] = [0x42, 0x69, 0x74, 0x63, 0x6F, 0x69, 0x6E, 0x20, 0x73, 0x65, 0x65, 0x64] //"Bitcoin seed"
+private let HMACKeyData: [UInt8] = [0x42, 0x69, 0x74, 0x63, 0x6F, 0x69, 0x6E, 0x20, 0x73, 0x65, 0x65, 0x64] // "Bitcoin seed"
 
 public struct PrivateKeyEth1 {
   private let raw: Data
@@ -156,7 +156,7 @@ extension PrivateKeyEth1: BIP32 {
 
     let rawKey = BigInt(data: self.raw)
         
-    //swiftlint:disable:next identifier_name
+    // swiftlint:disable:next identifier_name
     let bn = rawKey + factor
     let calculatedKey = (bn % curveOrder)
     

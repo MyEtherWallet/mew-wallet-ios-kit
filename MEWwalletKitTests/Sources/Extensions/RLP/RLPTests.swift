@@ -6,6 +6,8 @@
 //  Copyright © 2019 MyEtherWallet Inc. All rights reserved.
 //
 
+// swiftlint:disable line_length
+
 import Foundation
 import Quick
 import Nimble
@@ -24,7 +26,6 @@ class RLPTests: QuickSpec {
     }
   }
   lazy var testVectors: [TestVector] = {
-    //swiftlint:disable line_length
     //https://github.com/ethereum/tests/blob/develop/RLPTests/rlptest.json
     let vector: [TestVector] = [
       TestVector("", "0x80"),
@@ -56,7 +57,6 @@ class RLPTests: QuickSpec {
       TestVector([["key1", "val1"], ["key2", "val2"], ["key3", "val3"], ["key4", "val4"]], "0xecca846b6579318476616c31ca846b6579328476616c32ca846b6579338476616c33ca846b6579348476616c34"),
       TestVector(BigInt("115792089237316195423570985008687907853269984665640564039457584007913129639936", radix: 10)!.toRLP(), "0xa1010000000000000000000000000000000000000000000000000000000000000000")
     ]
-    //swiftlint:enable line_length
     return vector
   }()
   

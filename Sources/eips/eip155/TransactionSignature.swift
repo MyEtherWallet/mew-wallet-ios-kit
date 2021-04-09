@@ -14,11 +14,11 @@ enum TransactionSignatureError: Error {
 }
 
 internal struct TransactionSignature: CustomDebugStringConvertible {
-  //swiftlint:disable identifier_name
+  // swiftlint:disable identifier_name
   private(set) internal var r: RLPBigInt
   private(set) internal var s: RLPBigInt
   private(set) internal var v: RLPBigInt
-  //swiftlint:enable identifier_name
+  // swiftlint:enable identifier_name
   private let chainID: BigInt
   
   var inferedChainID: BigInt? {
@@ -47,7 +47,7 @@ internal struct TransactionSignature: CustomDebugStringConvertible {
     self._normalize()
   }
   
-  //swiftlint:disable identifier_name
+  // swiftlint:disable identifier_name
   init(r: BigInt, s: BigInt, v: BigInt, chainID: BigInt? = nil) {
     self.r = r.toRLP()
     self.s = s.toRLP()
@@ -64,7 +64,7 @@ internal struct TransactionSignature: CustomDebugStringConvertible {
     self.chainID = chainID ?? BigInt()
     self._normalize()
   }
-  //swiftlint:enable identifier_name
+  // swiftlint:enable identifier_name
   
   func recoverPublicKey(transaction: Transaction, context: OpaquePointer/*secp256k1_context*/) -> Data? {
     guard !self.r.value.isZero, !self.s.value.isZero else { return nil }
