@@ -31,9 +31,11 @@ extension EthEncryptedData {
                 
         let secretKey = try NaclBox.keyPair(fromSecretKey: data).secretKey
         
-        let nonce = Data(base64Encoded: self.nonce)!
-        let cipherText = Data(base64Encoded: self.ciphertext)!
-        let ephemPublicKey = Data(base64Encoded: self.ephemPublicKey)!
+        guard let nonce = Data(base64Encoded: self.nonce),
+              let cipherText = Data(base64Encoded: self.ciphertext),
+              let ephemPublicKey = Data(base64Encoded: self.ephemPublicKey) else {
+          throw EthCryptoError.decryptionFailed
+        }
         
         let decrypted = try NaclBox.open(
             message: cipherText,

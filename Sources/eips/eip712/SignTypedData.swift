@@ -176,11 +176,10 @@ public func encodeData(
     var encodedTypes = ["bytes32"]
     var encodedValues: [AnyObject] = [try hashType(primaryType: primaryType, types: types)]
     
-    func encodeField(name: String, type: String, value: AnyObject?) throws -> (type: String, value: AnyObject) {
+    func encodeField(name: String, type: String, value: AnyObject) throws -> (type: String, value: AnyObject) {
         if types[type] != nil {
             // value ???
-            let encodedValue = value == nil ?
-                Data(hex: "0x0000000000000000000000000000000000000000000000000000000000000000") :
+            let encodedValue =
                 try encodeData(
                     primaryType: type,
                     data: value as! [String : AnyObject],
@@ -191,10 +190,6 @@ public func encodeData(
                 type: "bytes32",
                 value: encodedValue.bytes as AnyObject
             )
-        }
-        
-        guard let value = value else {
-            throw TypedMessageSignError.unknown("missing value for field \(name) of type \(type)")
         }
         
         if type == "bytes" {
@@ -253,11 +248,11 @@ public func encodeData(
         return (type: type, value: value)
     }
         
-    for field in types[primaryType]! {
+    for field in types[primaryType]! where data[field.name] != nil {
         let result = try encodeField(
             name: field.name,
             type: field.type,
-            value: data[field.name]
+            value: data[field.name]!
         )
         encodedTypes.append(result.type)
         encodedValues.append(result.value)        
