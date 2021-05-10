@@ -84,7 +84,7 @@ internal struct TransactionSignature: CustomDebugStringConvertible {
     if normalizedV.isZero {
       vData = Data([0x00])
     } else {
-        vData = normalizedV.data
+      vData = normalizedV.data
     }
     
     let signature = rData + sData + vData
