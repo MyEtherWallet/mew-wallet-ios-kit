@@ -69,25 +69,27 @@ public class Transaction: CustomDebugStringConvertible {
     chainID: Data?
   ) {
     if let chainID = chainID {
-        self.init(
-            nonce: BigInt(data: nonce),
-            gasPrice: BigInt(data: gasPrice),
-            gasLimit: BigInt(data: gasLimit),
-            to: to,
-            value: BigInt(data: value),
-            data: data,
-            chainID: BigInt(data: chainID)
-        )
+      self.init(
+        nonce: BigInt(data: nonce),
+        gasPrice: BigInt(data: gasPrice),
+        gasLimit: BigInt(data: gasLimit),
+        from: from,
+        to: to,
+        value: BigInt(data: value),
+        data: data,
+        chainID: BigInt(data: chainID)
+      )
     } else {
-        self.init(
-            nonce: BigInt(data: nonce),
-            gasPrice: BigInt(data: gasPrice),
-            gasLimit: BigInt(data: gasLimit),
-            to: to,
-            value: BigInt(data: value),
-            data: data,
-            chainID: nil
-        )
+      self.init(
+        nonce: BigInt(data: nonce),
+        gasPrice: BigInt(data: gasPrice),
+        gasLimit: BigInt(data: gasLimit),
+        from: from,
+        to: to,
+        value: BigInt(data: value),
+        data: data,
+        chainID: nil
+      )
     }
   }
   
@@ -106,16 +108,16 @@ public class Transaction: CustomDebugStringConvertible {
     let gasLimit = BigInt(Data(hex: gasLimit.stringWithAlignedHexBytes()).bytes)
     let value = BigInt(Data(hex: value.stringWithAlignedHexBytes()).bytes)
     if let chainID = chainID {
-        self.init(
-            nonce: nonce,
-            gasPrice: gasPrice,
-            gasLimit: gasLimit,
-            from: from,
-            to: to,
-            value: value,
-            data: data,
-            chainID: BigInt(data: chainID)
-        )
+      self.init(
+        nonce: nonce,
+        gasPrice: gasPrice,
+        gasLimit: gasLimit,
+        from: from,
+        to: to,
+        value: value,
+        data: data,
+        chainID: BigInt(data: chainID)
+      )
     } else {
       self.init(nonce: nonce, gasPrice: gasPrice, gasLimit: gasLimit, from: from, to: to, value: value, data: data)
     }
@@ -153,16 +155,16 @@ public class Transaction: CustomDebugStringConvertible {
     }
     
     if let chainID = chainID {
-        self.init(
-            nonce: nonceBigInt,
-            gasPrice: gasPriceBigInt,
-            gasLimit: gasLimitBigInt,
-            from: from,
-            to: to,
-            value: valueBigInt,
-            data: data,
-            chainID: BigInt(data: chainID)
-        )
+      self.init(
+        nonce: nonceBigInt,
+        gasPrice: gasPriceBigInt,
+        gasLimit: gasLimitBigInt,
+        from: from,
+        to: to,
+        value: valueBigInt,
+        data: data,
+        chainID: BigInt(data: chainID)
+      )
     } else {
       self.init(
         nonce: nonceBigInt,
