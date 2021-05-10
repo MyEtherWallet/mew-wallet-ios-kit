@@ -16,22 +16,22 @@ enum TransactionError: Error {
 public class Transaction: CustomDebugStringConvertible {
   internal var _nonce: BigInt
   public var nonce: Data {
-    return self._nonce.reversedData
+    return self._nonce.data
   }
   
   internal var _gasPrice: BigInt
   public var gasPrice: Data {
-    return self._gasPrice.reversedData
+    return self._gasPrice.data
   }
   internal var _gasLimit: BigInt
   public var gasLimit: Data {
-    return self._gasLimit.reversedData
+    return self._gasLimit.data
   }
   public var from: Address?
   public var to: Address?
   internal var _value: BigInt
   public var value: Data {
-    return self._value.reversedData
+    return self._value.data
   }
   internal(set) public var data: Data
   internal var signature: TransactionSignature?
@@ -178,14 +178,14 @@ public class Transaction: CustomDebugStringConvertible {
   
   public var debugDescription: String {
     var description = "Transaction\n"
-    description += "Nonce: \(self._nonce.reversedData.toHexString())\n"
-    description += "Gas Price: \(self._gasPrice.reversedData.toHexString())\n"
-    description += "Gas Limit: \(self._gasLimit.reversedData.toHexString())\n"
+    description += "Nonce: \(self._nonce.data.toHexString())\n"
+    description += "Gas Price: \(self._gasPrice.data.toHexString())\n"
+    description += "Gas Limit: \(self._gasLimit.data.toHexString())\n"
     description += "From: \(String(describing: self.from)) \n"
     description += "To: \(self.to?.address ?? "")\n"
-    description += "Value: \(self._value.reversedData.toHexString())\n"
+    description += "Value: \(self._value.data.toHexString())\n"
     description += "Data: \(self.data.toHexString())\n"
-    description += "ChainID: \(self.chainID?.reversedData.toHexString() ?? "none")\n"
+    description += "ChainID: \(self.chainID?.data.toHexString() ?? "none")\n"
     description += "\(self.signature?.debugDescription ?? "Signature: none")\n"
     description += "Hash: \(self.hash()?.toHexString() ?? "none")"
     return description

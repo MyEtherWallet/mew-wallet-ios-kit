@@ -33,9 +33,9 @@ extension BigInt {
         return toTwosComplement()
     }
     
-    var reversedData: Data {
-        return Data(data.bytes.reversed())
-    }
+//    var reversedData: Data {
+//        return Data(data.bytes.reversed())
+//    }
     
     // takes all data as magnitude without dropping first bytes
     init(data: Data) {
