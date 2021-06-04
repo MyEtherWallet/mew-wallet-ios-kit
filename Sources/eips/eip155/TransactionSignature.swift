@@ -14,15 +14,15 @@ enum TransactionSignatureError: Error {
 }
 
 internal struct TransactionSignature: CustomDebugStringConvertible {
-  //swiftlint:disable identifier_name
+  // swiftlint:disable identifier_name
   private(set) internal var r: RLPBigInt
   private(set) internal var s: RLPBigInt
   private(set) internal var v: RLPBigInt
-  
+
   internal var signatureYParity: RLPBigInt { v }
   //swiftlint:enable identifier_name
   private let chainID: BigInt
-  
+
   var inferedChainID: BigInt? {
     if self.r.value.isZero && self.s.value.isZero {
         return self.v.value
@@ -32,7 +32,7 @@ internal struct TransactionSignature: CustomDebugStringConvertible {
         return (self.v.value - 35) / 2
     }
   }
-  
+
   init(signature: Data, chainID: BigInt? = nil) throws {
     guard signature.count == 65 else {
       throw TransactionSignatureError.invalidSignature
@@ -44,12 +44,12 @@ internal struct TransactionSignature: CustomDebugStringConvertible {
     } else {
         self.v = RLPBigInt(value: BigInt([signature[64]]) + 27)
     }
-    
+
     self.chainID = chainID ?? BigInt()
     self._normalize()
   }
-  
-  //swiftlint:disable identifier_name
+
+  // swiftlint:disable identifier_name
   init(r: BigInt, s: BigInt, v: BigInt, chainID: BigInt? = nil) {
     self.r = r.toRLP()
     self.s = s.toRLP()
@@ -57,17 +57,17 @@ internal struct TransactionSignature: CustomDebugStringConvertible {
     self.chainID = chainID ?? BigInt()
     self._normalize()
   }
-  
+
   init(r: String, s: String, v: String, chainID: BigInt? = nil) throws {
     self.r = BigInt(Data(hex: r).bytes).toRLP()
     self.s = BigInt(Data(hex: s).bytes).toRLP()
     self.v = BigInt(Data(hex: v).bytes).toRLP()
-    
+
     self.chainID = chainID ?? BigInt()
     self._normalize()
   }
-  //swiftlint:enable identifier_name
-  
+  // swiftlint:enable identifier_name
+
   func recoverPublicKey(transaction: Transaction, context: OpaquePointer/*secp256k1_context*/) -> Data? {
     guard !self.r.value.isZero, !self.s.value.isZero else { return nil }
     let inferedChainID = self.inferedChainID
@@ -81,30 +81,30 @@ internal struct TransactionSignature: CustomDebugStringConvertible {
     }
     let rData = self.r.data
     let sData = self.s.data
-    
+
     let vData: Data
     if normalizedV.isZero {
       vData = Data([0x00])
     } else {
-        vData = normalizedV.data
+      vData = normalizedV.data
     }
-    
+
     let signature = rData + sData + vData
     guard let hash = transaction.hash(chainID: inferedChainID, forSignature: true) else { return nil }
     guard let publicKey = signature.secp256k1RecoverPublicKey(hash: hash, context: context) else { return nil }
     return publicKey
   }
-  
+
   // MARK: - Private
-  
+
   mutating func _normalize() {
     self.r.dataLength = 32
     self.s.dataLength = 32
     self.v.dataLength = 1
   }
-  
+
   // MARK: - CustomDebugStringConvertible
-  
+
   var debugDescription: String {
     var description = "Signature\n"
     description += "r: \(self.r.data.toHexString())\n"

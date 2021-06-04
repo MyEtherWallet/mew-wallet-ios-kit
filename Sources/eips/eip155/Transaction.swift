@@ -17,35 +17,34 @@ public enum EIPTransactionType: String {
   case eip2930 = "0x01"
   case eip1559 = "0x02"
   case legacy = ""
-  
+
   var data: Data { Data(hex: rawValue) }
 }
 
 public class Transaction: CustomDebugStringConvertible {
-  //swiftlint:disable identifier_name
   internal var _nonce: BigInt
   public var nonce: Data {
-    return self._nonce.reversedData
+    return self._nonce.data
   }
-  
+
   internal var _gasLimit: BigInt
   public var gasLimit: Data {
-    return self._gasLimit.reversedData
+    return self._gasLimit.data
   }
   public var from: Address?
   public var to: Address?
   internal var _value: BigInt
   public var value: Data {
-    return self._value.reversedData
+    return self._value.data
   }
   internal(set) public var data: Data
   internal var signature: TransactionSignature?
   internal var chainID: BigInt?
-  
+
   internal(set) public var eipType: EIPTransactionType
-    
+
   //swiftlint:enable identifier_name
-  
+
   init(
     nonce: BigInt = BigInt(0x00),
     gasLimit: BigInt = BigInt(0x00),
@@ -65,16 +64,16 @@ public class Transaction: CustomDebugStringConvertible {
     self.chainID = chainID
     self.eipType = eipType
   }
-  
+
   public var debugDescription: String {
     var description = "Transaction\n"
-    description += "Nonce: \(self._nonce.reversedData.toHexString())\n"
-    description += "Gas Limit: \(self._gasLimit.reversedData.toHexString())\n"
+    description += "Nonce: \(self._nonce.data.toHexString())\n"
+    description += "Gas Limit: \(self._gasLimit.data.toHexString())\n"
     description += "From: \(String(describing: self.from)) \n"
     description += "To: \(self.to?.address ?? "")\n"
-    description += "Value: \(self._value.reversedData.toHexString())\n"
+    description += "Value: \(self._value.data.toHexString())\n"
     description += "Data: \(self.data.toHexString())\n"
-    description += "ChainID: \(self.chainID?.reversedData.toHexString() ?? "none")\n"
+    description += "ChainID: \(self.chainID?.data.toHexString() ?? "none")\n"
     description += "\(self.signature?.debugDescription ?? "Signature: none")\n"
     description += "Hash: \(self.hash()?.toHexString() ?? "none")"
     return description
@@ -83,16 +82,16 @@ public class Transaction: CustomDebugStringConvertible {
   public func serialize() -> Data? {
     return self.rlpData(chainID: self.chainID, forSignature: false).rlpEncode()
   }
-  
+
   internal func hash(chainID: BigInt? = nil, forSignature: Bool = false) -> Data? {
     let typeData = eipType.data
     let rlpData = self.rlpData(chainID: chainID, forSignature: forSignature).rlpEncode()
-    
+
     return rlpData
       .map { typeData + $0 }?
       .sha3(.keccak256)
   }
-  
+
   internal func rlpData(chainID: BigInt? = nil, forSignature: Bool = false) -> [RLP] {
     assertionFailure("Please override it in the subclass if you want to have rlp encoded values")
     return []

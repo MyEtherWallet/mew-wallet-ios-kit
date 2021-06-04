@@ -12,5 +12,5 @@ import BigInt
 extension Transaction: RLP {
   func rlpEncode(offset: UInt8? = nil) -> Data? {
     return self.rlpData().rlpEncode()
-  }  
+  }
 }

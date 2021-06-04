@@ -1,8 +1,9 @@
 //
-//  File.swift
-//  
+//  SignTypedData.swift
+//  MEWwalletKit
 //
 //  Created by Nail Galiaskarov on 3/16/21.
+//  Copyright © 2021 MyEtherWallet Inc. All rights reserved.
 //
 
 import Foundation
@@ -23,6 +24,7 @@ public enum TypedMessageSignError: Error {
 }
 
 public enum SignTypedDataVersion {
+    // swiftlint:disable:next identifier_name
     case v3, v4
 }
 
@@ -176,14 +178,13 @@ public func encodeData(
     var encodedTypes = ["bytes32"]
     var encodedValues: [AnyObject] = [try hashType(primaryType: primaryType, types: types)]
     
-    func encodeField(name: String, type: String, value: AnyObject?) throws -> (type: String, value: AnyObject) {
+    func encodeField(name: String, type: String, value: AnyObject) throws -> (type: String, value: AnyObject) {
         if types[type] != nil {
             // value ???
-            let encodedValue = value == nil ?
-                Data(hex: "0x0000000000000000000000000000000000000000000000000000000000000000") :
+            let encodedValue =
                 try encodeData(
                     primaryType: type,
-                    data: value as! [String : AnyObject],
+                    data: value as? [String: AnyObject] ?? [:],
                     types: types,
                     version: version
                 ).sha3(.keccak256)
@@ -191,10 +192,6 @@ public func encodeData(
                 type: "bytes32",
                 value: encodedValue.bytes as AnyObject
             )
-        }
-        
-        guard let value = value else {
-            throw TypedMessageSignError.unknown("missing value for field \(name) of type \(type)")
         }
         
         if type == "bytes" {
@@ -206,14 +203,17 @@ public func encodeData(
         }
         
         if type == "string" {
-            let string = value as! String
+            guard let string = value as? String else {
+                throw TypedMessageSignError.unknown("failed to convert value \(value) to string")
+            }
+            
             let data = string.data(using: .utf8)!
             
             return (type: "bytes32", value: data.sha3(.keccak256).bytes as AnyObject)
         }
         
         // TODO: check with metamask test cases v4
-        if (type.last == "]") {
+        if type.last == "]" {
             guard version == .v4 else {
                 throw TypedMessageSignError.unknown("Arrays are unimplemented in encoded data; use v4")
             }
@@ -223,11 +223,11 @@ public func encodeData(
             }
             
             let parsedType = String(type[..<index])
-            let array: Array<AnyObject>
+            let array: [AnyObject]
             if let objects = value as? [AnyObject] {
                 array = objects
             } else {
-                array = Array(arrayLiteral: value)
+                array = [AnyObject](arrayLiteral: value)
             }
             let typeValuePairs: [(type: ABI.Element.ParameterType, value: AnyObject)] = try array.map {
                 let encoded = try encodeField(name: name, type: parsedType, value: $0)
@@ -253,11 +253,11 @@ public func encodeData(
         return (type: type, value: value)
     }
         
-    for field in types[primaryType]! {
+    for field in types[primaryType]! where data[field.name] != nil {
         let result = try encodeField(
             name: field.name,
             type: field.type,
-            value: data[field.name]
+            value: data[field.name]!
         )
         encodedTypes.append(result.type)
         encodedValues.append(result.value)        
@@ -308,7 +308,7 @@ func findTypeDependencies(primaryType: String, types: MessageTypes, results: [St
     let primaryType = primaryType.match(for: "^\\w*") ?? primaryType
     var results = results
     
-    if (results.contains(primaryType)) {
+    if results.contains(primaryType) {
         return results
     }
     

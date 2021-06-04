@@ -1,8 +1,9 @@
 //
-//  File.swift
-//  
+//  BigInt+ABI.swift
+//  MEWwalletKit
 //
 //  Created by Nail Galiaskarov on 3/18/21.
+//  Copyright © 2021 MyEtherWallet Inc. All rights reserved.
 //
 
 import Foundation
@@ -10,7 +11,7 @@ import BigInt
 
 extension BigInt {
     func toTwosComplement() -> Data {
-        if (self.sign == BigInt.Sign.plus) {
+        if self.sign == BigInt.Sign.plus {
             return self.magnitude.serialize()
         } else {
             let serializedLength = self.magnitude.serialize().count
@@ -43,7 +44,7 @@ extension BigInt {
 extension BigInt {
     static func fromTwosComplement(data: Data) -> BigInt {
         let isPositive = ((data[0] & 128) >> 7) == 0
-        if (isPositive) {
+        if isPositive {
             let magnitude = BigUInt(data)
             return BigInt(magnitude)
         } else {

@@ -11,7 +11,8 @@ import bls_framework
 import CryptoSwift
 import BigInt
 
-private let HKDFMODR_SALT: [UInt8] = [0x42, 0x4c, 0x53, 0x2d, 0x53, 0x49, 0x47, 0x2d, 0x4b, 0x45, 0x59, 0x47, 0x45, 0x4e, 0x2d, 0x53, 0x41, 0x4c, 0x54, 0x2d] //"BLS-SIG-KEYGEN-SALT-"
+// "BLS-SIG-KEYGEN-SALT-"
+private let HKDFMODR_SALT: [UInt8] = [0x42, 0x4c, 0x53, 0x2d, 0x53, 0x49, 0x47, 0x2d, 0x4b, 0x45, 0x59, 0x47, 0x45, 0x4e, 0x2d, 0x53, 0x41, 0x4c, 0x54, 0x2d]
 
 extension Data {
   mutating func blsSecretKey() throws -> blsSecretKey {
@@ -32,8 +33,10 @@ extension Data {
   
   func hkdfModR(keyInfo: Data = Data()) throws -> Data {
     var salt = HKDFMODR_SALT
+    // swiftlint:disable identifier_name
     var sk = BigInt(0)
     let r = BigInt("52435875175126190479447740508185965837690552500527637822603658699938581184513", radix: 10)!
+    // swiftlint:enable identifier_name
     
     while sk.isZero {
       salt = salt.sha256()

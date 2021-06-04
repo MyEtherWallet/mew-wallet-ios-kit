@@ -1,8 +1,9 @@
 //
-//  File.swift
-//  
+//  RLPBigInt.swift
+//  MEWwalletKit
 //
 //  Created by Nail Galiaskarov on 3/25/21.
+//  Copyright © 2021 MyEtherWallet Inc. All rights reserved.
 //
 
 import Foundation
@@ -29,7 +30,7 @@ public struct RLPBigInt {
     internal var data: Data {
       var data = Data(_data)
       if let count = self._dataCount {
-        data.setLength(count, appendFromLeft: false)
+        data.setLength(count, appendFromLeft: true)
       }
       return data
     }

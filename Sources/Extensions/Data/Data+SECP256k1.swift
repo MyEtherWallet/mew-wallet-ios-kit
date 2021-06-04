@@ -42,7 +42,7 @@ extension Data {
     guard self.count == 65 else { return nil }
     var signature = secp256k1_ecdsa_recoverable_signature()
     var serialized = self[0 ..< 64].bytes
-    //swiftlint:disable:next identifier_name
+    // swiftlint:disable:next identifier_name
     let v = Int32(self[64])
     
     let result = secp256k1_ecdsa_recoverable_signature_parse_compact(context, &signature, &serialized, v)
@@ -63,7 +63,7 @@ extension Data {
   }
   
   public func secp256k1Multiply(privateKey: Data) -> Data? {
-    guard var context = secp256k1_context_create(UInt32(SECP256K1_CONTEXT_SIGN|SECP256K1_CONTEXT_VERIFY)) else {
+    guard let context = secp256k1_context_create(UInt32(SECP256K1_CONTEXT_SIGN|SECP256K1_CONTEXT_VERIFY)) else {
       return nil
     }
     
@@ -88,7 +88,7 @@ extension Data {
   }
   
   public func secp256k1ExtractPublicKey() -> Data? {
-    guard var context = secp256k1_context_create(UInt32(SECP256K1_CONTEXT_SIGN|SECP256K1_CONTEXT_VERIFY)) else {
+    guard let context = secp256k1_context_create(UInt32(SECP256K1_CONTEXT_SIGN|SECP256K1_CONTEXT_VERIFY)) else {
       return nil
     }
     

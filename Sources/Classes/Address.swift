@@ -41,7 +41,7 @@ public struct Address: CustomDebugStringConvertible {
   
   public init?(ethereumAddress: String) {
     let value = ethereumAddress.stringAddHexPrefix()
-    guard value.count == Address.Ethereum.length, value.isHex(), let address = value.eip55() else { return nil } //42 = 0x + 20bytes
+    guard value.count == Address.Ethereum.length, value.isHex(), let address = value.eip55() else { return nil } // 42 = 0x + 20bytes
     self._address = address
   }
   

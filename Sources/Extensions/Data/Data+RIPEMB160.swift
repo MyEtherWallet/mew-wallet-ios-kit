@@ -5,7 +5,8 @@
 //  Created by Mikhail Nikanorov on 4/22/19.
 //  Copyright © 2019 MyEtherWallet Inc. All rights reserved.
 //
-//swiftlint:disable large_tuple identifier_name function_body_length comma
+
+// swiftlint:disable large_tuple identifier_name function_body_length comma
 
 import Foundation
 

@@ -1,8 +1,9 @@
 //
-//  File.swift
-//  
+//  BigInt+Utils.swift
+//  MEWwalletKit
 //
 //  Created by Nail Galiaskarov on 3/25/21.
+//  Copyright © 2021 MyEtherWallet Inc. All rights reserved.
 //
 
 import Foundation

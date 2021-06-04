@@ -24,7 +24,6 @@ extension ABI {
         static var arrayEatingRegex = "^(\\[([1-9][0-9]*)?\\])?.*$"
     }
     
-    
     fileprivate enum ElementType: String {
         case function
         case constructor
@@ -44,7 +43,7 @@ extension ABI.Record {
     }
 }
 
-fileprivate func parseToElement(from abiRecord: ABI.Record, type: ABI.ElementType) throws -> ABI.Element {
+private func parseToElement(from abiRecord: ABI.Record, type: ABI.ElementType) throws -> ABI.Element {
     switch type {
     case .function:
         let function = try parseFunction(abiRecord: abiRecord)
@@ -62,13 +61,13 @@ fileprivate func parseToElement(from abiRecord: ABI.Record, type: ABI.ElementTyp
     
 }
 
-fileprivate func parseFunction(abiRecord:ABI.Record) throws -> ABI.Element.Function {
-    let inputs = try abiRecord.inputs?.map({ (input:ABI.Input) throws -> ABI.Element.InOut in
+private func parseFunction(abiRecord: ABI.Record) throws -> ABI.Element.Function {
+    let inputs = try abiRecord.inputs?.map({ (input: ABI.Input) throws -> ABI.Element.InOut in
         let nativeInput = try input.parse()
         return nativeInput
     })
     let abiInputs = inputs != nil ? inputs! : [ABI.Element.InOut]()
-    let outputs = try abiRecord.outputs?.map({ (output:ABI.Output) throws -> ABI.Element.InOut in
+    let outputs = try abiRecord.outputs?.map({ (output: ABI.Output) throws -> ABI.Element.InOut in
         let nativeOutput = try output.parse()
         return nativeOutput
     })
@@ -81,27 +80,27 @@ fileprivate func parseFunction(abiRecord:ABI.Record) throws -> ABI.Element.Funct
     return functionElement
 }
 
-fileprivate func parseFallback(abiRecord:ABI.Record) throws -> ABI.Element.Fallback {
+private func parseFallback(abiRecord: ABI.Record) throws -> ABI.Element.Fallback {
     let payable = (abiRecord.stateMutability == "payable" || abiRecord.payable!)
     var constant = abiRecord.constant == true
-    if (abiRecord.stateMutability == "view" || abiRecord.stateMutability == "pure") {
+    if abiRecord.stateMutability == "view" || abiRecord.stateMutability == "pure" {
         constant = true
     }
     let functionElement = ABI.Element.Fallback(constant: constant, payable: payable)
     return functionElement
 }
 
-fileprivate func parseConstructor(abiRecord:ABI.Record) throws -> ABI.Element.Constructor {
-    let inputs = try abiRecord.inputs?.map({ (input:ABI.Input) throws -> ABI.Element.InOut in
+private func parseConstructor(abiRecord: ABI.Record) throws -> ABI.Element.Constructor {
+    let inputs = try abiRecord.inputs?.map({ (input: ABI.Input) throws -> ABI.Element.InOut in
         let nativeInput = try input.parse()
         return nativeInput
     })
     let abiInputs = inputs != nil ? inputs! : [ABI.Element.InOut]()
     var payable = false
-    if (abiRecord.payable != nil) {
+    if abiRecord.payable != nil {
         payable = abiRecord.payable!
     }
-    if (abiRecord.stateMutability == "payable") {
+    if abiRecord.stateMutability == "payable" {
         payable = true
     }
     let constant = false
@@ -109,8 +108,8 @@ fileprivate func parseConstructor(abiRecord:ABI.Record) throws -> ABI.Element.Co
     return functionElement
 }
 
-fileprivate func parseEvent(abiRecord:ABI.Record) throws -> ABI.Element.Event {
-    let inputs = try abiRecord.inputs?.map({ (input:ABI.Input) throws -> ABI.Element.Event.Input in
+private func parseEvent(abiRecord: ABI.Record) throws -> ABI.Element.Event {
+    let inputs = try abiRecord.inputs?.map({ (input: ABI.Input) throws -> ABI.Element.Event.Input in
         let nativeInput = try input.parseForEvent()
         return nativeInput
     })
@@ -133,18 +132,17 @@ extension ABI.Input {
             let type = ABI.Element.ParameterType.tuple(types: components!)
             let nativeInput = ABI.Element.InOut(name: name, type: type)
             return nativeInput
-        }
-        else {
+        } else {
             let nativeInput = ABI.Element.InOut(name: name, type: parameterType)
             return nativeInput
         }
     }
     
-    func parseForEvent() throws -> ABI.Element.Event.Input{
+    func parseForEvent() throws -> ABI.Element.Event.Input {
         let name = self.name != nil ? self.name! : ""
         let parameterType = try ABITypeParser.parseTypeString(self.type)
         let indexed = self.indexed == true
-        return ABI.Element.Event.Input(name:name, type: parameterType, indexed: indexed)
+        return ABI.Element.Event.Input(name: name, type: parameterType, indexed: indexed)
     }
 }
 
@@ -182,5 +180,3 @@ extension ABI.Output {
         }
     }
 }
-
-

@@ -28,18 +28,16 @@ extension ABI.Element {
             case .dynamicBytes:
                 return false
             case .array(type: let type, length: let length):
-                if (length == 0) {
+                if length == 0 {
                     return false
                 }
-                if (!type.isStatic) {
+                if !type.isStatic {
                     return false
                 }
                 return true
             case .tuple(types: let types):
-                for t in types {
-                    if (!t.isStatic) {
-                        return false
-                    }
+                for type in types where !type.isStatic {
+                    return false
                 }
                 return true
             case .bytes(length: _):
@@ -60,7 +58,7 @@ extension ABI.Element {
         
         var isTuple: Bool {
             switch self {
-            case .tuple(_):
+            case .tuple:
                 return true
             default:
                 return false
@@ -90,9 +88,9 @@ extension ABI.Element {
                 if !self.isStatic {
                     return 32
                 }
-                var sum: UInt64 = 0;
-                for t in types {
-                    sum = sum + t.memoryUsage
+                var sum: UInt64 = 0
+                for type in types {
+                    sum += type.memoryUsage
                 }
                 return sum
             default:
@@ -129,7 +127,7 @@ extension ABI.Element {
         var arraySize: ABI.Element.ArraySize {
             switch self {
             case .array(type: _, length: let length):
-                if (length == 0) {
+                if length == 0 {
                     return ArraySize.dynamicSize
                 }
                 return ArraySize.staticSize(length)
@@ -138,12 +136,10 @@ extension ABI.Element {
             }
         }
     }
-    
-    
 }
 
 extension ABI.Element.ParameterType: Equatable {
-    public static func ==(lhs: ABI.Element.ParameterType, rhs: ABI.Element.ParameterType) -> Bool {
+    public static func == (lhs: ABI.Element.ParameterType, rhs: ABI.Element.ParameterType) -> Bool {
         switch (lhs, rhs) {
         case let (.uint(length1), .uint(length2)):
             return length1 == length2
@@ -194,7 +190,6 @@ extension ABI.Element.Event {
     }
 }
 
-
 extension ABI.Element.ParameterType: ABIEncoding {
     public var abiRepresentation: String {
         switch self {
@@ -213,7 +208,7 @@ extension ABI.Element.ParameterType: ABIEncoding {
         case .function:
             return "function"
         case .array(type: let type, length: let length):
-            if (length == 0) {
+            if length == 0 {
                 return  "\(type.abiRepresentation)[]"
             }
             return "\(type.abiRepresentation)[\(length)]"
@@ -237,10 +232,8 @@ extension ABI.Element.ParameterType: ABIValidation {
         case .array(type: let type, _):
             return type.isValid
         case .tuple(types: let types):
-            for t in types {
-                if (!t.isValid) {
-                    return false
-                }
+            for type in types where !type.isValid {
+                return false
             }
             return true
         default:

@@ -15,7 +15,7 @@ private let LAMPORT_KEY_SIZE = 8160
 private let LAMPORT_CHUNK_SIZE = 32
 
 extension Data {
-  func deriveMasterSK() throws -> Data {
+  func deriveRootSK() throws -> Data {
     guard self.count >= 32 else {
       throw EIP2333Error.wrongSize
     }
@@ -45,8 +45,8 @@ extension Data {
     let lamport01 = lamport0 + lamport1
     var lamportPK = Data()
     
-    lamportPK = lamport01.reduce(lamportPK) { (result, it) -> Data in
-      lamportPK.append(it.sha256())
+    lamportPK = lamport01.reduce(lamportPK) { (_, nextPartialResult) -> Data in
+      lamportPK.append(nextPartialResult.sha256())
       return lamportPK
     }
     return lamportPK.sha256()

@@ -7,6 +7,8 @@ import Foundation
 import BigInt
 import CryptoSwift
 
+// swiftlint:disable identifier_name
+
 public struct ABIDecoder {
     
 }
@@ -27,12 +29,13 @@ extension ABIDecoder {
             let (v, c) = decodeSignleType(type: types[i], data: data, pointer: consumed)
             guard let valueUnwrapped = v, let consumedUnwrapped = c else {return nil}
             toReturn.append(valueUnwrapped)
-            consumed = consumed + consumedUnwrapped
+            consumed += consumedUnwrapped
         }
         guard toReturn.count == types.count else {return nil}
         return toReturn
     }
     
+    // swiftlint:disable:next function_body_length cyclomatic_complexity
     public static func decodeSignleType(type: ABI.Element.ParameterType, data: Data, pointer: UInt64 = 0) -> (value: AnyObject?, bytesConsumed: UInt64?) {
         let (elData, nextPtr) = followTheData(type: type, data: data, pointer: pointer)
         guard let elementItself = elData, let nextElementPointer = nextPtr else {
@@ -115,13 +118,13 @@ extension ABIDecoder {
                     let length = UInt64(BigUInt(dataSlice))
                     guard elementItself.count >= 32 + subType.memoryUsage*length else {break}
                     dataSlice = elementItself[32 ..< 32 + subType.memoryUsage*length]
-                    var subpointer: UInt64 = 32;
+                    var subpointer: UInt64 = 32
                     var toReturn = [AnyObject]()
                     for _ in 0 ..< length {
                         let (v, c) = decodeSignleType(type: subType, data: elementItself, pointer: subpointer)
                         guard let valueUnwrapped = v, let consumedUnwrapped = c else {break}
                         toReturn.append(valueUnwrapped)
-                        subpointer = subpointer + consumedUnwrapped
+                        subpointer += consumedUnwrapped
                     }
                     return (toReturn as AnyObject, type.memoryUsage)
                 } else {
@@ -131,14 +134,14 @@ extension ABIDecoder {
                     let length = UInt64(BigUInt(dataSlice))
                     guard elementItself.count >= 32 else {break}
                     dataSlice = Data(elementItself[32 ..< elementItself.count])
-                    var subpointer: UInt64 = 0;
+                    var subpointer: UInt64 = 0
                     var toReturn = [AnyObject]()
                     //                    print("Dynamic array sub element itself: \n" + dataSlice.toHexString())
                     for _ in 0 ..< length {
                         let (v, c) = decodeSignleType(type: subType, data: dataSlice, pointer: subpointer)
                         guard let valueUnwrapped = v, let consumedUnwrapped = c else {break}
                         toReturn.append(valueUnwrapped)
-                        subpointer = subpointer + consumedUnwrapped
+                        subpointer += consumedUnwrapped
                     }
                     return (toReturn as AnyObject, nextElementPointer)
                 }
@@ -146,12 +149,12 @@ extension ABIDecoder {
                 //                print("Static array element itself: \n" + elementItself.toHexString())
                 guard length == staticLength else {break}
                 var toReturn = [AnyObject]()
-                var consumed:UInt64 = 0
+                var consumed: UInt64 = 0
                 for _ in 0 ..< length {
                     let (v, c) = decodeSignleType(type: subType, data: elementItself, pointer: consumed)
                     guard let valueUnwrapped = v, let consumedUnwrapped = c else {return (nil, nil)}
                     toReturn.append(valueUnwrapped)
-                    consumed = consumed + consumedUnwrapped
+                    consumed += consumedUnwrapped
                 }
                 if subType.isStatic {
                     return (toReturn as AnyObject, consumed)
@@ -164,12 +167,12 @@ extension ABIDecoder {
         case .tuple(types: let subTypes):
             //            print("Tuple element itself: \n" + elementItself.toHexString())
             var toReturn = [AnyObject]()
-            var consumed:UInt64 = 0
+            var consumed: UInt64 = 0
             for i in 0 ..< subTypes.count {
                 let (v, c) = decodeSignleType(type: subTypes[i], data: elementItself, pointer: consumed)
                 guard let valueUnwrapped = v, let consumedUnwrapped = c else {return (nil, nil)}
                 toReturn.append(valueUnwrapped)
-                consumed = consumed + consumedUnwrapped
+                consumed += consumedUnwrapped
             }
             //            print("Tuple element is: \n" + String(describing: toReturn))
             if type.isStatic {
@@ -223,7 +226,7 @@ extension ABIDecoder {
         }
     }
     
-    public static func decodeLog(event: ABI.Element.Event, eventLogTopics: [Data], eventLogData: Data) -> [String:Any]? {
+    public static func decodeLog(event: ABI.Element.Event, eventLogTopics: [Data], eventLogData: Data) -> [String: Any]? {
         if event.topic != eventLogTopics[0] && !event.anonymous {
             return nil
         }
@@ -234,7 +237,7 @@ extension ABIDecoder {
         let indexedInputs = event.inputs.filter { (inp) -> Bool in
             return inp.indexed
         }
-        if (logs.count == 1 && indexedInputs.count > 0) {
+        if logs.count == 1 && indexedInputs.count > 0 {
             return nil
         }
         let nonIndexedInputs = event.inputs.filter { (inp) -> Bool in
@@ -271,7 +274,7 @@ extension ABIDecoder {
                 if el.name != "" {
                     eventContent[el.name] = value
                 }
-                indexedInputCounter = indexedInputCounter + 1
+                indexedInputCounter += 1
             } else {
                 let name = "\(i)"
                 let value = nonIndexedValues[nonIndexedInputCounter]
@@ -279,7 +282,7 @@ extension ABIDecoder {
                 if el.name != "" {
                     eventContent[el.name] = value
                 }
-                nonIndexedInputCounter = nonIndexedInputCounter + 1
+                nonIndexedInputCounter += 1
             }
         }
         return eventContent

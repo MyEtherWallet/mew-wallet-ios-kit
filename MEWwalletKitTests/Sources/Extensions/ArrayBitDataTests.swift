@@ -17,8 +17,8 @@ class ArrayBitDataTests: QuickSpec {
     describe("ArrayBit+Data tests") {
       let bitsLong: [Bit] = [.zero, .one, .zero, .one, .zero, .one, .zero, .one,
                              .one, .one, .one, .one, .one, .one, .one, .one,
-                             .one, .zero, .one, .zero, .one, .zero, .one, .zero] //0b01010101_11111111_10101010
-      let bitsShort: [Bit] = [.one, .one, .zero, .one] //0b00001101
+                             .one, .zero, .one, .zero, .one, .zero, .one, .zero] // 0b01010101_11111111_10101010
+      let bitsShort: [Bit] = [.one, .one, .zero, .one] // 0b00001101
       
       it("Should return correct bytes") {
         let bytesLong: [UInt8] = bitsLong.bytes
@@ -44,7 +44,7 @@ class ArrayBitDataTests: QuickSpec {
                              .one, .one, .one, .one, .zero, .zero, .zero, .zero,
                              .zero, .zero, .zero, .zero, .one, .one, .one, .one,
                              .one, .one, .one, .one, .zero, .zero, .zero, .zero,
-                             .zero, .zero, .zero, .zero, .one, .one, .one, .one] //64bit-value
+                             .zero, .zero, .zero, .zero, .one, .one, .one, .one] // 64bit-value
         let value64 = bits64.uint64()
         let checkValue: UInt64 = 0b11110000_00001111_11110000_00001111_11110000_00001111_11110000_00001111
         expect(value64).to(equal(checkValue))

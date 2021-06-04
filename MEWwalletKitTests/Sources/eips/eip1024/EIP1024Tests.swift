@@ -1,11 +1,10 @@
 //
-//  File.swift
-//  
+//  EIP1024Tests.swift
+//  MEWwalletKitTests
 //
 //  Created by Nail Galiaskarov on 3/12/21.
+//  Copyright © 2021 MyEtherWallet Inc. All rights reserved.
 //
-
-import Foundation
 
 import Foundation
 import Quick
