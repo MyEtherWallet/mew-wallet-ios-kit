@@ -18,6 +18,8 @@ internal struct TransactionSignature: CustomDebugStringConvertible {
   private(set) internal var r: RLPBigInt
   private(set) internal var s: RLPBigInt
   private(set) internal var v: RLPBigInt
+  
+  internal var signatureYParity: RLPBigInt { v }
   //swiftlint:enable identifier_name
   private let chainID: BigInt
   

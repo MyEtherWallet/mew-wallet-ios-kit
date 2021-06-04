@@ -27,10 +27,26 @@ class EIP155Tests: QuickSpec {
       self.id = id
       if let chainID = chainID {
         //swiftlint:disable force_try
-        self.transaction = try! Transaction(nonce: nonce, gasPrice: gasPrice, gasLimit: gasLimit, to: Address(raw: to), value: value, data: Data(hex: data), chainID: Data(hex: chainID))
+        self.transaction = try! LegacyTransaction(
+          nonce: nonce,
+          gasPrice: gasPrice,
+          gasLimit: gasLimit,
+          to: Address(raw: to),
+          value: value,
+          data: Data(hex: data),
+          chainID: Data(hex: chainID)
+        )
       } else {
         //swiftlint:disable force_try
-        self.transaction = try! Transaction(nonce: nonce, gasPrice: gasPrice, gasLimit: gasLimit, to: Address(raw: to), value: value, data: Data(hex: data), chainID: nil)
+        self.transaction = try! LegacyTransaction(
+          nonce: nonce,
+          gasPrice: gasPrice,
+          gasLimit: gasLimit,
+          to: Address(raw: to),
+          value: value,
+          data: Data(hex: data),
+          chainID: nil
+        )
       }
       
       //swiftlint:disable force_try
@@ -127,7 +143,7 @@ class EIP155Tests: QuickSpec {
         }
       }
       it("Should sign transaction and returns the expected signature") {
-        let transaction = try? Transaction(nonce: "0x03", gasPrice: "0x3b9aca00", gasLimit: "0x7530",
+        let transaction = try? LegacyTransaction(nonce: "0x03", gasPrice: "0x3b9aca00", gasLimit: "0x7530",
                                            to: Address(raw: "0xb414031Aa4838A69e27Cb2AE31E709Bcd674F0Cb"), value: "0x64", data: Data([]))
         transaction?.chainID = BigInt(0x11)
         
