@@ -11,7 +11,7 @@ import BigInt
 public final class LegacyTransaction: Transaction {
   internal var _gasPrice: BigInt
   public var gasPrice: Data {
-    return self._gasPrice.reversedData
+    return self._gasPrice.data
   }
     
   init(
@@ -174,14 +174,14 @@ public final class LegacyTransaction: Transaction {
   
   public override var debugDescription: String {
     var description = "Transaction\n"
-    description += "Nonce: \(self._nonce.reversedData.toHexString())\n"
-    description += "Gas Price: \(self._gasPrice.reversedData.toHexString())\n"
-    description += "Gas Limit: \(self._gasLimit.reversedData.toHexString())\n"
+    description += "Nonce: \(self._nonce.data.toHexString())\n"
+    description += "Gas Price: \(self._gasPrice.data.toHexString())\n"
+    description += "Gas Limit: \(self._gasLimit.data.toHexString())\n"
     description += "From: \(String(describing: self.from)) \n"
     description += "To: \(self.to?.address ?? "")\n"
-    description += "Value: \(self._value.reversedData.toHexString())\n"
+    description += "Value: \(self._value.data.toHexString())\n"
     description += "Data: \(self.data.toHexString())\n"
-    description += "ChainID: \(self.chainID?.reversedData.toHexString() ?? "none")\n"
+    description += "ChainID: \(self.chainID?.data.toHexString() ?? "none")\n"
     description += "\(self.signature?.debugDescription ?? "Signature: none")\n"
     description += "Hash: \(self.hash()?.toHexString() ?? "none")"
     return description

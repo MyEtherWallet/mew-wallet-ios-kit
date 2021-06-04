@@ -11,12 +11,12 @@ import BigInt
 public final class EIP1559Transaction: Transaction {
   internal var _maxPriorityFeePerGas: BigInt
   public var maxPriorityFeePerGas: Data {
-    return _maxPriorityFeePerGas.reversedData
+    return _maxPriorityFeePerGas.data
   }
 
   internal var _maxFeePerGas: BigInt
   public var maxFeePerGas: Data {
-    return _maxFeePerGas.reversedData
+    return _maxFeePerGas.data
   }
 
   init(
@@ -197,15 +197,15 @@ public final class EIP1559Transaction: Transaction {
   
   public override var debugDescription: String {
     var description = "Transaction\n"
-    description += "Nonce: \(self._nonce.reversedData.toHexString())\n"
-    description += "Max Priority Fee Per Gas: \(self._maxPriorityFeePerGas.reversedData.toHexString())\n"
-    description += "Max Fee Per Gas: \(self._maxFeePerGas.reversedData.toHexString())\n"
-    description += "Gas Limit: \(self._gasLimit.reversedData.toHexString())\n"
+    description += "Nonce: \(self._nonce.data.toHexString())\n"
+    description += "Max Priority Fee Per Gas: \(self._maxPriorityFeePerGas.data.toHexString())\n"
+    description += "Max Fee Per Gas: \(self._maxFeePerGas.data.toHexString())\n"
+    description += "Gas Limit: \(self._gasLimit.data.toHexString())\n"
     description += "From: \(String(describing: self.from)) \n"
     description += "To: \(self.to?.address ?? "")\n"
-    description += "Value: \(self._value.reversedData.toHexString())\n"
+    description += "Value: \(self._value.data.toHexString())\n"
     description += "Data: \(self.data.toHexString())\n"
-    description += "ChainID: \(self.chainID?.reversedData.toHexString() ?? "none")\n"
+    description += "ChainID: \(self.chainID?.data.toHexString() ?? "none")\n"
     description += "\(self.signature?.debugDescription ?? "Signature: none")\n"
     description += "Hash: \(self.hash()?.toHexString() ?? "none")"
     return description
