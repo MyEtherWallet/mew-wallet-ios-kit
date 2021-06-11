@@ -8,12 +8,9 @@
 import Foundation
 import BigInt
 
-public class LegacyTransaction: Transaction {
-  internal var _gasPrice: BigInt
-  public var gasPrice: Data {
-    return self._gasPrice.data
-  }
-    
+public final class EIP2930Transaction: LegacyTransaction {
+  private(set) public var accessList: [AccessList]
+  
   init(
     nonce: BigInt = BigInt(0x00),
     gasPrice: BigInt = BigInt(0x00),
@@ -22,23 +19,24 @@ public class LegacyTransaction: Transaction {
     to: Address?,
     value: BigInt = BigInt(0x00),
     data: Data = Data(),
-    chainID: BigInt? = nil,
-    eipType: EIPTransactionType = .legacy
+    accessList: [AccessList]?,
+    chainID: BigInt? = nil
   ) {
-    _gasPrice = gasPrice
+    self.accessList = accessList ?? [.empty]
     
     super.init(
       nonce: nonce,
+      gasPrice: gasPrice,
       gasLimit: gasLimit,
       from: from,
       to: to,
       value: value,
       data: data,
       chainID: chainID,
-      eipType: eipType
+      eipType: .eip2930
     )
   }
-  
+
   public convenience init(
     nonce: Data = Data([0x00]),
     gasPrice: Data = Data([0x00]),
@@ -47,28 +45,30 @@ public class LegacyTransaction: Transaction {
     to: Address?,
     value: Data = Data([0x00]),
     data: Data = Data(),
+    accessList: [AccessList]?,
     chainID: Data?
   ) {
     if let chainID = chainID {
-        self.init(
-            nonce: BigInt(data: nonce),
-            gasPrice: BigInt(data: gasPrice),
-            gasLimit: BigInt(data: gasLimit),
-            to: to,
-            value: BigInt(data: value),
-            data: data,
-            chainID: BigInt(data: chainID)
-        )
+      self.init(
+        nonce: BigInt(data: nonce),
+        gasPrice: BigInt(data: gasPrice),
+        to: to,
+        value: BigInt(data: value),
+        data: data,
+        accessList: accessList,
+        chainID: BigInt(data: chainID)
+      )
     } else {
-        self.init(
-            nonce: BigInt(data: nonce),
-            gasPrice: BigInt(data: gasPrice),
-            gasLimit: BigInt(data: gasLimit),
-            to: to,
-            value: BigInt(data: value),
-            data: data,
-            chainID: nil
-        )
+      self.init(
+        nonce: BigInt(data: nonce),
+        gasPrice: BigInt(data: gasPrice),
+        gasLimit: BigInt(data: gasLimit),
+        to: to,
+        value: BigInt(data: value),
+        data: data,
+        accessList: accessList,
+        chainID: nil
+      )
     }
   }
 
@@ -80,6 +80,7 @@ public class LegacyTransaction: Transaction {
     to: Address?,
     value: String = "0x00",
     data: Data,
+    accessList: [AccessList]?,
     chainID: Data? = nil
   ) throws {
     let nonce = BigInt(Data(hex: nonce.stringWithAlignedHexBytes()).bytes)
@@ -87,16 +88,17 @@ public class LegacyTransaction: Transaction {
     let gasLimit = BigInt(Data(hex: gasLimit.stringWithAlignedHexBytes()).bytes)
     let value = BigInt(Data(hex: value.stringWithAlignedHexBytes()).bytes)
     if let chainID = chainID {
-        self.init(
-            nonce: nonce,
-            gasPrice: gasPrice,
-            gasLimit: gasLimit,
-            from: from,
-            to: to,
-            value: value,
-            data: data,
-            chainID: BigInt(data: chainID)
-        )
+      self.init(
+        nonce: nonce,
+        gasPrice: gasPrice,
+        gasLimit: gasLimit,
+        from: from,
+        to: to,
+        value: value,
+        data: data,
+        accessList: accessList,
+        chainID: BigInt(data: chainID)
+      )
     } else {
       self.init(
         nonce: nonce,
@@ -105,7 +107,8 @@ public class LegacyTransaction: Transaction {
         from: from,
         to: to,
         value: value,
-        data: data
+        data: data,
+        accessList: accessList
       )
     }
   }
@@ -118,6 +121,7 @@ public class LegacyTransaction: Transaction {
     to: Address?,
     value: Decimal?,
     data: Data,
+    accessList: [AccessList]?,
     chainID: Data? = nil
   ) throws {
     let nonceBigInt: BigInt
@@ -130,7 +134,7 @@ public class LegacyTransaction: Transaction {
     } else {
       nonceBigInt = BigInt(0x00)
     }
-
+    
     if let gasPriceString = (gasPrice as NSDecimalNumber?)?.stringValue {
       gasPriceBigInt = BigInt(gasPriceString) ?? BigInt(0x00)
     } else {
@@ -150,16 +154,17 @@ public class LegacyTransaction: Transaction {
     }
 
     if let chainID = chainID {
-        self.init(
-            nonce: nonceBigInt,
-            gasPrice: gasPriceBigInt,
-            gasLimit: gasLimitBigInt,
-            from: from,
-            to: to,
-            value: valueBigInt,
-            data: data,
-            chainID: BigInt(data: chainID)
-        )
+      self.init(
+        nonce: nonceBigInt,
+        gasPrice: gasPriceBigInt,
+        gasLimit: gasLimitBigInt,
+        from: from,
+        to: to,
+        value: valueBigInt,
+        data: data,
+        accessList: accessList,
+        chainID: BigInt(data: chainID)
+      )
     } else {
       self.init(
         nonce: nonceBigInt,
@@ -168,46 +173,65 @@ public class LegacyTransaction: Transaction {
         from: from,
         to: to,
         value: valueBigInt,
-        data: data
+        data: data,
+        accessList: accessList
       )
     }
   }
   
   public override var debugDescription: String {
     var description = "Transaction\n"
+    description += "EIPType: \(self.eipType.data.toHexString())\n"
     description += "Nonce: \(self._nonce.data.toHexString())\n"
-    description += "Gas Price: \(self._gasPrice.data.toHexString())\n"
+    description += "Gas price: \(self._gasPrice.data.toHexString())\n"
     description += "Gas Limit: \(self._gasLimit.data.toHexString())\n"
     description += "From: \(String(describing: self.from)) \n"
     description += "To: \(self.to?.address ?? "")\n"
     description += "Value: \(self._value.data.toHexString())\n"
     description += "Data: \(self.data.toHexString())\n"
+    description += "Access list: \n"
+    accessList.forEach {
+      description += "address: \($0.address?.address ?? "")\n"
+      for slot in ($0.slots ?? []) {
+        description += "slot: \(slot.toHexString() ?? "")\n"
+      }
+    }
+
     description += "ChainID: \(self.chainID?.data.toHexString() ?? "none")\n"
     description += "\(self.signature?.debugDescription ?? "Signature: none")\n"
     description += "Hash: \(self.hash()?.toHexString() ?? "none")"
     return description
   }
-
   
-  internal override func rlpData(chainID: BigInt?, forSignature: Bool = false) -> [RLP] {
-    var fields: [RLP] = [self._nonce.toRLP(), self._gasPrice.toRLP(), self._gasLimit.toRLP()]
-    if let address = self.to?.address {
+  //
+  // Creates and returns rlp array with order:
+  // rlp([chainId, nonce, gasPrice, gasLimit, to, value, data, accessList, signatureYParity, signatureR, signatureS])
+  //
+  internal override func rlpData(chainID: BigInt? = nil, forSignature: Bool = false) -> [RLP] {
+    guard let chainID = chainID else {
+      return []
+    }
+  
+    var fields: [RLP] = [chainID.toRLP(), _nonce.toRLP(), _gasPrice.toRLP(), _gasLimit.toRLP()]
+    if let address = to?.address {
       fields.append(address)
     } else {
       fields.append("")
     }
-    fields += [self._value.toRLP(), self.data]
-    if let signature = self.signature, !forSignature {
-        var v = RLPBigInt(value: BigInt(signature.v.data.bytes))
-        var r = RLPBigInt(value: BigInt(signature.r.data.bytes))
-        var s = RLPBigInt(value: BigInt(signature.s.data.bytes))
-        
-        r.dataLength = signature.r.dataLength
-        v.dataLength = signature.v.dataLength
-        s.dataLength = signature.s.dataLength
-        fields += [v, r, s]
-    } else if let chainID = chainID ?? self.chainID {
-        fields += [chainID.toRLP(), 0, 0]
+    fields += [_value.toRLP(), data]
+    
+    let list = accessList.filter { $0.address != nil && $0.slots != nil }
+    fields.append(list as [RLP])
+
+    if let signature = signature, !forSignature {
+      var signatureYParity = RLPBigInt(value: BigInt(signature.signatureYParity.data.bytes))
+      var r = RLPBigInt(value: BigInt(signature.r.data.bytes))
+      var s = RLPBigInt(value: BigInt(signature.s.data.bytes))
+      
+      r.dataLength = signature.r.dataLength
+      signatureYParity.dataLength = signature.signatureYParity.dataLength
+      s.dataLength = signature.s.dataLength
+      fields += [signatureYParity, r, s]
     }
     return fields
   }

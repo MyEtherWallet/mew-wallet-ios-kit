@@ -19,7 +19,7 @@ internal struct TransactionSignature: CustomDebugStringConvertible {
   private(set) internal var s: RLPBigInt
   private(set) internal var v: RLPBigInt
 
-  internal var signatureYParity: RLPBigInt { v }
+  private(set) internal var signatureYParity: RLPBigInt
   //swiftlint:enable identifier_name
   private let chainID: BigInt
 
@@ -39,6 +39,8 @@ internal struct TransactionSignature: CustomDebugStringConvertible {
     }
     self.r = RLPBigInt(value: BigInt(data: signature[0 ..< 32]))
     self.s = RLPBigInt(value: BigInt(data: signature[32 ..< 64]))
+    self.signatureYParity = RLPBigInt(value: BigInt([signature[64]]))
+    
     if let chainID = chainID {
         self.v = RLPBigInt(value: BigInt([signature[64]]) + 35 + chainID + chainID)
     } else {
@@ -54,6 +56,7 @@ internal struct TransactionSignature: CustomDebugStringConvertible {
     self.r = r.toRLP()
     self.s = s.toRLP()
     self.v = v.toRLP()
+    self.signatureYParity = v.toRLP()
     self.chainID = chainID ?? BigInt()
     self._normalize()
   }
@@ -62,6 +65,7 @@ internal struct TransactionSignature: CustomDebugStringConvertible {
     self.r = BigInt(Data(hex: r).bytes).toRLP()
     self.s = BigInt(Data(hex: s).bytes).toRLP()
     self.v = BigInt(Data(hex: v).bytes).toRLP()
+    self.signatureYParity = self.v
 
     self.chainID = chainID ?? BigInt()
     self._normalize()

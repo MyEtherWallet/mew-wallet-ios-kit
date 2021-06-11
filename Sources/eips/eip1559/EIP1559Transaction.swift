@@ -18,6 +18,7 @@ public final class EIP1559Transaction: Transaction {
   public var maxFeePerGas: Data {
     return _maxFeePerGas.data
   }
+  private(set) public var accessList: [AccessList]
 
   init(
     nonce: BigInt = BigInt(0x00),
@@ -28,10 +29,12 @@ public final class EIP1559Transaction: Transaction {
     to: Address?,
     value: BigInt = BigInt(0x00),
     data: Data = Data(),
+    accessList: [AccessList]?,
     chainID: BigInt? = nil
   ) {
     _maxPriorityFeePerGas = maxPriorityFeePerGas
     _maxFeePerGas = maxFeePerGas
+    self.accessList = accessList ?? [.empty]
     
     super.init(
       nonce: nonce,
@@ -54,29 +57,32 @@ public final class EIP1559Transaction: Transaction {
     to: Address?,
     value: Data = Data([0x00]),
     data: Data = Data(),
+    accessList: [AccessList]?,
     chainID: Data?
   ) {
     if let chainID = chainID {
-        self.init(
-            nonce: BigInt(data: nonce),
-            maxPriorityFeePerGas: BigInt(data: maxPriorityFeePerGas),
-            maxFeePerGas: BigInt(data: maxFeePerGas),
-            to: to,
-            value: BigInt(data: value),
-            data: data,
-            chainID: BigInt(data: chainID)
-        )
+      self.init(
+        nonce: BigInt(data: nonce),
+        maxPriorityFeePerGas: BigInt(data: maxPriorityFeePerGas),
+        maxFeePerGas: BigInt(data: maxFeePerGas),
+        to: to,
+        value: BigInt(data: value),
+        data: data,
+        accessList: accessList,
+        chainID: BigInt(data: chainID)
+      )
     } else {
-        self.init(
-            nonce: BigInt(data: nonce),
-            maxPriorityFeePerGas: BigInt(data: maxPriorityFeePerGas),
-            maxFeePerGas: BigInt(data: maxFeePerGas),
-            gasLimit: BigInt(data: gasLimit),
-            to: to,
-            value: BigInt(data: value),
-            data: data,
-            chainID: nil
-        )
+      self.init(
+        nonce: BigInt(data: nonce),
+        maxPriorityFeePerGas: BigInt(data: maxPriorityFeePerGas),
+        maxFeePerGas: BigInt(data: maxFeePerGas),
+        gasLimit: BigInt(data: gasLimit),
+        to: to,
+        value: BigInt(data: value),
+        data: data,
+        accessList: accessList,
+        chainID: nil
+      )
     }
   }
 
@@ -89,6 +95,7 @@ public final class EIP1559Transaction: Transaction {
     to: Address?,
     value: String = "0x00",
     data: Data,
+    accessList: [AccessList]?,
     chainID: Data? = nil
   ) throws {
     let nonce = BigInt(Data(hex: nonce.stringWithAlignedHexBytes()).bytes)
@@ -106,6 +113,7 @@ public final class EIP1559Transaction: Transaction {
         to: to,
         value: value,
         data: data,
+        accessList: accessList,
         chainID: BigInt(data: chainID)
       )
     } else {
@@ -117,7 +125,8 @@ public final class EIP1559Transaction: Transaction {
         from: from,
         to: to,
         value: value,
-        data: data
+        data: data,
+        accessList: accessList
       )
     }
   }
@@ -131,6 +140,7 @@ public final class EIP1559Transaction: Transaction {
     to: Address?,
     value: Decimal?,
     data: Data,
+    accessList: [AccessList]?,
     chainID: Data? = nil
   ) throws {
     let nonceBigInt: BigInt
@@ -179,6 +189,7 @@ public final class EIP1559Transaction: Transaction {
         to: to,
         value: valueBigInt,
         data: data,
+        accessList: accessList,
         chainID: BigInt(data: chainID)
       )
     } else {
@@ -190,13 +201,15 @@ public final class EIP1559Transaction: Transaction {
         from: from,
         to: to,
         value: valueBigInt,
-        data: data
+        data: data,
+        accessList: accessList
       )
     }
   }
   
   public override var debugDescription: String {
     var description = "Transaction\n"
+    description += "EIPType: \(self.eipType.data.toHexString())\n"
     description += "Nonce: \(self._nonce.data.toHexString())\n"
     description += "Max Priority Fee Per Gas: \(self._maxPriorityFeePerGas.data.toHexString())\n"
     description += "Max Fee Per Gas: \(self._maxFeePerGas.data.toHexString())\n"
@@ -205,6 +218,13 @@ public final class EIP1559Transaction: Transaction {
     description += "To: \(self.to?.address ?? "")\n"
     description += "Value: \(self._value.data.toHexString())\n"
     description += "Data: \(self.data.toHexString())\n"
+    description += "Access list: \n"
+    accessList.forEach {
+      description += "address: \($0.address?.address ?? "")\n"
+      for slot in ($0.slots ?? []) {
+        description += "slot: \(slot.toHexString() ?? "")\n"
+      }
+    }
     description += "ChainID: \(self.chainID?.data.toHexString() ?? "none")\n"
     description += "\(self.signature?.debugDescription ?? "Signature: none")\n"
     description += "Hash: \(self.hash()?.toHexString() ?? "none")"
@@ -221,16 +241,17 @@ public final class EIP1559Transaction: Transaction {
     }
   
     var fields: [RLP] = [chainID.toRLP(), _nonce.toRLP(), _maxPriorityFeePerGas.toRLP(), _maxFeePerGas.toRLP(), _gasLimit.toRLP()]
-    if let address = self.to?.address {
+    if let address = to?.address {
       fields.append(address)
     } else {
       fields.append("")
     }
-    fields += [self._value.toRLP(), self.data]
+    fields += [_value.toRLP(), data]
     
-    // TODO: Add Access list
-    
-    if let signature = self.signature, !forSignature {
+    let list = accessList.filter { $0.address != nil && $0.slots != nil }
+    fields.append(list as [RLP])
+
+    if let signature = signature, !forSignature {
       var signatureYParity = RLPBigInt(value: BigInt(signature.signatureYParity.data.bytes))
       var r = RLPBigInt(value: BigInt(signature.r.data.bytes))
       var s = RLPBigInt(value: BigInt(signature.s.data.bytes))

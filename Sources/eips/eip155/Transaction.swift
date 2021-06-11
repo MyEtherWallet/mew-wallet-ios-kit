@@ -16,7 +16,7 @@ enum TransactionError: Error {
 public enum EIPTransactionType: String {
   case eip2930 = "0x01"
   case eip1559 = "0x02"
-  case legacy = ""
+  case legacy = "0x"
 
   var data: Data { Data(hex: rawValue) }
 }
@@ -80,7 +80,11 @@ public class Transaction: CustomDebugStringConvertible {
   }
 
   public func serialize() -> Data? {
-    return self.rlpData(chainID: self.chainID, forSignature: false).rlpEncode()
+    let typeData = eipType.data
+    let rlpData = self.rlpData(chainID: self.chainID, forSignature: false).rlpEncode()
+    return rlpData.map {
+      typeData + $0
+    }
   }
 
   internal func hash(chainID: BigInt? = nil, forSignature: Bool = false) -> Data? {
