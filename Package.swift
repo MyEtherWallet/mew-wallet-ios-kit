@@ -22,12 +22,12 @@ let package = Package(
     .package(url: "https://github.com/Quick/Nimble.git", .upToNextMajor(from: "9.0.0")),
     .package(url: "https://github.com/MyEtherWallet/bls-eth-swift.git", .upToNextMajor(from: "1.0.0")),
     .package(url: "https://github.com/attaswift/BigInt.git", from: "5.2.1"),
-    .package(name: "TweetNacl", url: "https://github.com/bitmark-inc/tweetnacl-swiftwrap.git", .branch("master")) 
+    .package(name: "MEWwalletTweetNacl", url: "https://github.com/MyEtherWallet/mew-wallet-ios-tweetnacl.git", .upToNextMajor(from: "1.0.0"))
   ],
   targets: [
     .target(
       name: "MEWwalletKit",
-      dependencies: ["CryptoSwift", "MEW-wallet-iOS-secp256k1-package", "bls-eth-swift", "TweetNacl", "BigInt"],
+      dependencies: ["CryptoSwift", "MEW-wallet-iOS-secp256k1-package", "bls-eth-swift", "MEWwalletTweetNacl", "BigInt"],
       path: "Sources"
     ),
     .testTarget(
