@@ -34,14 +34,6 @@ public struct RLPBigInt {
       }
       return data
     }
-    
-    internal var reversedData: Data {
-      var data = Data(_data.reversed())
-      if let count = self._dataCount {
-        data.setLength(count, appendFromLeft: false)
-      }
-      return data
-    }
 
     private var _data: [UInt8] {
         return value.toTwosComplement().bytes

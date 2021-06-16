@@ -12,7 +12,7 @@ import BigInt
 extension Int: RLP, RLPLength {
   func rlpEncode(offset: UInt8?) -> Data? {
     guard let offset = offset else {
-        return BigInt(self).toRLP().reversedData.rlpEncode()
+        return BigInt(self).toRLP().rlpEncode(offset: offset)
     }
     return self.rlpLengthEncode(offset: offset)
   }
