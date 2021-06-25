@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import TweetNacl
+import MEWwalletTweetNacl
 import CryptoSwift
 
 public struct EthEncryptedData: Codable {
@@ -30,7 +30,7 @@ extension EthEncryptedData {
     public func decrypt(privateKey: String) throws -> String {
         let data = Data(hex: privateKey)
                 
-        let secretKey = try NaclBox.keyPair(fromSecretKey: data).secretKey
+        let secretKey = try TweetNacl.keyPair(fromSecretKey: data).secretKey
         
         guard let nonce = Data(base64Encoded: self.nonce),
               let cipherText = Data(base64Encoded: self.ciphertext),
@@ -38,7 +38,7 @@ extension EthEncryptedData {
           throw EthCryptoError.decryptionFailed
         }
         
-        let decrypted = try NaclBox.open(
+        let decrypted = try TweetNacl.open(
             message: cipherText,
             nonce: nonce,
             publicKey: ephemPublicKey,
@@ -55,7 +55,7 @@ extension EthEncryptedData {
 
 extension PrivateKeyEth1 {
   public func eth_publicKey() throws -> String {
-    let publicKey = try NaclBox.keyPair(fromSecretKey: data()).publicKey
+    let publicKey = try TweetNacl.keyPair(fromSecretKey: data()).publicKey
     
     return publicKey.toHexString()
   }

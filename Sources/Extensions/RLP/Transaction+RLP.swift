@@ -23,16 +23,7 @@ extension Transaction: RLP {
     }
     fields += [self._value.toRLP(), self.data]
     if let signature = self.signature, !forSignature {
-        // swiftlint:disable identifier_name
-        var v = RLPBigInt(value: BigInt(signature.v.data.bytes))
-        var r = RLPBigInt(value: BigInt(signature.r.data.bytes))
-        var s = RLPBigInt(value: BigInt(signature.s.data.bytes))
-        // swiftlint:enable identifier_name
-      
-        r.dataLength = signature.r.dataLength
-        v.dataLength = signature.v.dataLength
-        s.dataLength = signature.s.dataLength
-        fields += [v, r, s]
+        fields += [signature.v, signature.r, signature.s]
     } else if let chainID = chainID ?? self.chainID {
         fields += [chainID.toRLP(), 0, 0]
     }

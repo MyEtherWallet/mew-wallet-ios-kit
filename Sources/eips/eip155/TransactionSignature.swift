@@ -44,7 +44,6 @@ internal struct TransactionSignature: CustomDebugStringConvertible {
     }
     
     self.chainID = chainID ?? BigInt()
-    self._normalize()
   }
   
   // swiftlint:disable identifier_name
@@ -53,7 +52,6 @@ internal struct TransactionSignature: CustomDebugStringConvertible {
     self.s = s.toRLP()
     self.v = v.toRLP()
     self.chainID = chainID ?? BigInt()
-    self._normalize()
   }
   
   init(r: String, s: String, v: String, chainID: BigInt? = nil) throws {
@@ -62,7 +60,6 @@ internal struct TransactionSignature: CustomDebugStringConvertible {
     self.v = BigInt(Data(hex: v).bytes).toRLP()
     
     self.chainID = chainID ?? BigInt()
-    self._normalize()
   }
   // swiftlint:enable identifier_name
   
@@ -87,18 +84,10 @@ internal struct TransactionSignature: CustomDebugStringConvertible {
       vData = normalizedV.data
     }
     
-    let signature = rData + sData + vData
+    let signature = rData.setLengthLeft(32) + sData.setLengthLeft(32) + vData.setLengthLeft(1)
     guard let hash = transaction.hash(chainID: inferedChainID, forSignature: true) else { return nil }
     guard let publicKey = signature.secp256k1RecoverPublicKey(hash: hash, context: context) else { return nil }
     return publicKey
-  }
-  
-  // MARK: - Private
-  
-  mutating func _normalize() {
-    self.r.dataLength = 32
-    self.s.dataLength = 32
-    self.v.dataLength = 1
   }
   
   // MARK: - CustomDebugStringConvertible
