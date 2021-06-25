@@ -156,9 +156,10 @@ class EIP155Tests: QuickSpec {
 
         expect(transaction?.signature).toNot(beNil())
         expect(transaction?.signature?.r.data.toHexString()).to(equal("d87153e2fb484f21469785f5b6ab95cc5c3aba5a80487428b63024068633bda2"))
-        expect(transaction?.signature?.s.data.toHexString()).to(equal("002421eb4be1a11ff6071881608f660047604a7f63883326588b4168a3491800"))
+        expect(transaction?.signature?.s.data.toHexString()).to(equal("2421eb4be1a11ff6071881608f660047604a7f63883326588b4168a3491800"))
         expect(transaction?.signature?.v.data.toHexString()).to(equal("25"))
-        expect(transaction?.hash()?.toHexString()).to(equal("c15cfff927d92903ab5457cffab366ba43931da9cb466ce837524dea08d28f36"))
+        expect(transaction?.serialize()?.toHexString()).to(equal("f8628082010683033450945c5220918b616e583515a7f42b6be0c96766446281c88025a0d87153e2fb484f21469785f5b6ab95cc5c3aba5a80487428b63024068633bda29f2421eb4be1a11ff6071881608f660047604a7f63883326588b4168a3491800"))
+        expect(transaction?.hash()?.toHexString()).to(equal("a048f58d4da25b8d91c2691cd3527074ef4ac52f520cb63c40b1fe50a2abf906"))
       }
     }
   }
