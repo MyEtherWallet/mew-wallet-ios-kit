@@ -193,7 +193,7 @@ public final class EIP2930Transaction: LegacyTransaction {
     accessList.forEach {
       description += "address: \($0.address?.address ?? "")\n"
       for slot in ($0.slots ?? []) {
-        description += "slot: \(slot.toHexString() ?? "")\n"
+        description += "slot: \(slot.toHexString())\n"
       }
     }
 
@@ -224,14 +224,7 @@ public final class EIP2930Transaction: LegacyTransaction {
     fields.append(list as [RLP])
 
     if let signature = signature, !forSignature {
-      var signatureYParity = RLPBigInt(value: BigInt(signature.signatureYParity.data.bytes))
-      var r = RLPBigInt(value: BigInt(signature.r.data.bytes))
-      var s = RLPBigInt(value: BigInt(signature.s.data.bytes))
-      
-      r.dataLength = signature.r.dataLength
-      signatureYParity.dataLength = signature.signatureYParity.dataLength
-      s.dataLength = signature.s.dataLength
-      fields += [signatureYParity, r, s]
+      fields += [signature.signatureYParity, signature.r, signature.s]
     }
     return fields
   }
