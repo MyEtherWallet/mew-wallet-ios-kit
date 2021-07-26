@@ -165,6 +165,7 @@ class EIP155Tests: QuickSpec {
         expect(transaction?.serialize()?.toHexString()).to(equal("e08082010683033450945c5220918b616e583515a7f42b6be0c96766446281c880"))
 
         let privateKey = PrivateKeyEth1(privateKey: Data(hex: "009312d3c3a8ac6d00fb2df851e1cb0023becc00cc7a0083b0ae70f4bd0575ae"), network: .ethereum)
+        expect(privateKey.address()?.address.lowercased()).to(equal("0x5c5220918b616e583515a7f42b6be0c967664462"))
         do {
           try transaction?.sign(key: privateKey)
         } catch {
