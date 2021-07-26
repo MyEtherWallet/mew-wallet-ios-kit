@@ -1,19 +1,9 @@
 //
-//  File.swift
-//  
-//
-//  Created by Nail Galiaskarov on 6/8/21.
-//
-
-import Foundation
-
-//
 //  EIP1559Tests.swift
 //  MEWwalletKitTests
 //
+//  Created by Nail Galiaskarov on 6/8/21.
 //
-
-// swiftlint:disable identifier_name line_length force_try
 
 import Foundation
 import Quick
