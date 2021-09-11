@@ -82,8 +82,11 @@ private struct EIP681CodeParser {
     
     var code = EIP681Code(targetAddress)
     
-    if let type = match.eip681Type(in: encoding) {
-      code.type = EIP681Code.CodeType(rawValue: type.lowercased()) ?? .pay
+    if let value = match.eip681Type(in: encoding) {
+      guard let type = EIP681Code.CodeType(rawValue: value.lowercased()) else {
+        return nil
+      }
+      code.type = type
     }
     
     if let chainId = match.eip681ChainID(in: encoding) {

@@ -23,6 +23,7 @@ class EIP681Tests: QuickSpec {
       "ethereum:custom-/atransfer?address=0xeeee00000000000000000000000000000000eeee",
       "ethereum:custom-0xcccc00000000000000000000000000000000cccc/atransfer?address=0xeeee00000000000000000000000000000000eeee",
       "ethereum:custom-0xcccc00000000000000000000000000000000cccc/atransfer",
+      "ethereum:pay-0xcccc00000000000000000000000000000000cccc/atransfer",
       "ethereum:0xeeee00000000000000000000000000000000eeee",
       "ethereum:0xeeee00000000000000000000000000000000eeee?value=1.23e20",
       "ethereum:0xcccc00000000000000000000000000000000cccc@123/customfunction?key=value&key2=value2",
@@ -109,26 +110,14 @@ class EIP681Tests: QuickSpec {
       }
       it("should parse link from test vector 7 of (\(self.testVectors.count)") {
         let code = EIP681Code(self.testVectors[6])
-        expect(code).toNot(beNil())
-        expect(code!.type).to(equal(.pay))
-        expect(code!.targetAddress).toNot(beNil())
-        expect(code!.targetAddress).to(equal(Address(ethereumAddress: "0xcccc00000000000000000000000000000000cccc")))
-        expect(code!.chainID).to(beNil())
-        expect(code!.receipientAddress).to(beNil())
-        expect(code!.value).to(beNil())
-        expect(code!.gasLimit).to(beNil())
-        expect(code!.functionName).to(equal("atransfer"))
-        expect(code!.function).to(equal(.init(name: "atransfer",
-                                              inputs: [.init(name: "0", type: .address)],
-                                              outputs: [],
-                                              constant: false,
-                                              payable: false)))
-        expect(code!.parameters).to(equal([
-          EIP681Code.Parameter(type: .address, value: Address(ethereumAddress: "0xeeee00000000000000000000000000000000eeee") as AnyObject)
-        ]))
+        expect(code).to(beNil())
       }
       it("should parse link from test vector 8 of (\(self.testVectors.count)") {
         let code = EIP681Code(self.testVectors[7])
+        expect(code).to(beNil())
+      }
+      it("should parse link from test vector 9 of (\(self.testVectors.count)") {
+        let code = EIP681Code(self.testVectors[8])
         expect(code).toNot(beNil())
         expect(code!.type).to(equal(.pay))
         expect(code!.targetAddress).toNot(beNil())
@@ -141,8 +130,8 @@ class EIP681Tests: QuickSpec {
         expect(code!.function).toNot(beNil())
         expect(code!.parameters).to(beEmpty())
       }
-      it("should parse link from test vector 9 of (\(self.testVectors.count)") {
-        let code = EIP681Code(self.testVectors[8])
+      it("should parse link from test vector 10 of (\(self.testVectors.count)") {
+        let code = EIP681Code(self.testVectors[9])
         expect(code).toNot(beNil())
         expect(code!.type).to(equal(.pay))
         expect(code!.targetAddress).toNot(beNil())
@@ -155,8 +144,8 @@ class EIP681Tests: QuickSpec {
         expect(code!.function).to(beNil())
         expect(code!.parameters).to(beEmpty())
       }
-      it("should parse link from test vector 10 of (\(self.testVectors.count)") {
-        let code = EIP681Code(self.testVectors[9])
+      it("should parse link from test vector 11 of (\(self.testVectors.count)") {
+        let code = EIP681Code(self.testVectors[10])
         expect(code).toNot(beNil())
         expect(code!.type).to(equal(.pay))
         expect(code!.targetAddress).toNot(beNil())
@@ -169,8 +158,8 @@ class EIP681Tests: QuickSpec {
         expect(code!.function).to(beNil())
         expect(code!.parameters).to(beEmpty())
       }
-      it("should parse link from test vector 11 of (\(self.testVectors.count)") {
-        let code = EIP681Code(self.testVectors[10])
+      it("should parse link from test vector 12 of (\(self.testVectors.count)") {
+        let code = EIP681Code(self.testVectors[11])
         expect(code).toNot(beNil())
         expect(code!.type).to(equal(.pay))
         expect(code!.targetAddress).toNot(beNil())
@@ -187,16 +176,16 @@ class EIP681Tests: QuickSpec {
                                               payable: false)))
         expect(code!.parameters).to(beEmpty())
       }
-      it("should parse link from test vector 12 of (\(self.testVectors.count)") {
-        let code = EIP681Code(self.testVectors[11])
-        expect(code).to(beNil())
-      }
       it("should parse link from test vector 13 of (\(self.testVectors.count)") {
         let code = EIP681Code(self.testVectors[12])
         expect(code).to(beNil())
       }
       it("should parse link from test vector 14 of (\(self.testVectors.count)") {
         let code = EIP681Code(self.testVectors[13])
+        expect(code).to(beNil())
+      }
+      it("should parse link from test vector 15 of (\(self.testVectors.count)") {
+        let code = EIP681Code(self.testVectors[14])
         expect(code).to(beNil())
       }
     }
