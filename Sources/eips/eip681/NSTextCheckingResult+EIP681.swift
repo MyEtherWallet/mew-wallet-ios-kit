@@ -3,7 +3,7 @@
 //  MEWwalletKit
 //
 //  Created by Mikhail Nikanorov on 9/10/21.
-//  Copyright © 2019 MyEtherWallet Inc. All rights reserved.
+//  Copyright © 2021 MyEtherWallet Inc. All rights reserved.
 //
 
 import Foundation
@@ -17,11 +17,11 @@ enum EIP681Groups: String {
 }
 
 internal extension NSTextCheckingResult {
-  var typeRange: NSRange?         { range(named: .type) }
-  var targetRange: NSRange?       { range(named: .target) }
-  var chainIDRange: NSRange?      { range(named: .chainID) }
-  var functionNameRange: NSRange? { range(named: .functionName) }
-  var parametersRange: NSRange?   { range(named: .parameters) }
+  private var typeRange: NSRange?         { range(named: .type) }
+  private var targetRange: NSRange?       { range(named: .target) }
+  private var chainIDRange: NSRange?      { range(named: .chainID) }
+  private var functionNameRange: NSRange? { range(named: .functionName) }
+  private var parametersRange: NSRange?   { range(named: .parameters) }
   
   func eip681Type(in string: String) -> String?         { value(of: .type, in: string) }
   func eip681Target(in string: String) -> String?       { value(of: .target, in: string) }
