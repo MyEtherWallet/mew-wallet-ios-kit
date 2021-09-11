@@ -1,5 +1,5 @@
 //
-//  EIP61.swift
+//  EIP67.swift
 //  MEWwalletKit
 //
 //  Created by Mikhail Nikanorov on 9/11/21.
@@ -9,12 +9,12 @@
 import Foundation
 import BigInt
 
-public struct EIP61Code {
+public struct EIP67Code {
   public struct Parameter: Equatable {
     public var type: ABI.Element.ParameterType
     public var value: AnyObject
     
-    public static func == (lhs: EIP61Code.Parameter, rhs: EIP61Code.Parameter) -> Bool {
+    public static func == (lhs: EIP67Code.Parameter, rhs: EIP67Code.Parameter) -> Bool {
       switch (lhs.value, rhs.value) {
       case let (lhsValue as Address, rhsValue as Address): return lhsValue == rhsValue && lhs.type == rhs.type
       case let (lhsValue as BigInt, rhsValue as BigInt): return lhsValue == rhsValue && lhs.type == rhs.type
@@ -41,12 +41,12 @@ public struct EIP61Code {
   }
   
   public init?(_ data: Data) {
-    guard let val = EIP61CodeParser.parse(data) else { return nil }
+    guard let val = EIP67CodeParser.parse(data) else { return nil }
     self = val
   }
   
   public init?(_ string: String) {
-    guard let val = EIP61CodeParser.parse(string) else { return nil }
+    guard let val = EIP67CodeParser.parse(string) else { return nil }
     self = val
   }
 }
@@ -54,28 +54,28 @@ public struct EIP61Code {
 // MARK: - Parser
 
 
-private struct EIP61CodeParser {
-  static func parse(_ data: Data) -> EIP61Code? {
+private struct EIP67CodeParser {
+  static func parse(_ data: Data) -> EIP67Code? {
     guard let string = String(data: data, encoding: .utf8) else { return nil }
     return parse(string)
   }
 
-  static func parse(_ string: String) -> EIP61Code? {
+  static func parse(_ string: String) -> EIP67Code? {
     guard let encoding = string.removingPercentEncoding,
-          let matcher: NSRegularExpression = .eip61 else { return nil }
+          let matcher: NSRegularExpression = .eip67 else { return nil }
     
     let matches = matcher.matches(in: encoding, options: .anchored, range: encoding.fullNSRange)
     
     guard matches.count == 1,
           let match = matches.first else { return nil }
     
-    guard let target = match.eip61Target(in: encoding),
+    guard let target = match.eip67Target(in: encoding),
           let targetAddress = Address(ethereumAddress: target) else { return nil }
     
-    var code = EIP61Code(targetAddress)
+    var code = EIP67Code(targetAddress)
     var inputs: [ABI.Element.InOut] = []
     
-    guard var parameters = match.eip61Parameters(in: encoding)?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+    guard var parameters = match.eip67Parameters(in: encoding)?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
       code.function = _buildFunction(code: code, inputs: inputs)
       return code
     }
@@ -202,7 +202,7 @@ private struct EIP61CodeParser {
     return code
   }
   
-  private static func _buildFunction(code: EIP61Code, inputs: [ABI.Element.InOut]) -> ABI.Element.Function? {
+  private static func _buildFunction(code: EIP67Code, inputs: [ABI.Element.InOut]) -> ABI.Element.Function? {
     guard let functionName = code.functionName else { return nil }
     return ABI.Element.Function(name: functionName,
                                 inputs: inputs,

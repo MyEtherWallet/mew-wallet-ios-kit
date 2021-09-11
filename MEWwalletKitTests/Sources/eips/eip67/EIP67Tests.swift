@@ -1,5 +1,5 @@
 //
-//  EIP61Tests.swift
+//  EIP67Tests.swift
 //  MEWwalletKitTests
 //
 //  Created by Mikhail Nikanorov on 9/11/21.
@@ -12,7 +12,7 @@ import Nimble
 import BigInt
 @testable import MEWwalletKit
 
-class EIP61Tests: QuickSpec {
+class EIP67Tests: QuickSpec {
   lazy var testVectors: [String] = {
     return [
       "ethereum:0xeeee00000000000000000000000000000000eeee?gas=100000&data=0xa9059cbb00000000000000000000000000000000000000000000000000000000deadbeef0000000000000000000000000000000000000000000000000000000000000005",
@@ -24,9 +24,9 @@ class EIP61Tests: QuickSpec {
   }()
     
   override func spec() {
-    describe("EIP-61 parsing") {
+    describe("EIP-67 parsing") {
       it("should parse link from test vector 1 of (\(self.testVectors.count)") {
-        let code = EIP61Code(self.testVectors[0])
+        let code = EIP67Code(self.testVectors[0])
         expect(code).toNot(beNil())
         expect(code!.targetAddress).toNot(beNil())
         expect(code!.targetAddress).to(equal(Address(ethereumAddress: "0xeeee00000000000000000000000000000000eeee")))
@@ -39,7 +39,7 @@ class EIP61Tests: QuickSpec {
         expect(code!.parameters).to(beEmpty())
       }
       it("should parse link from test vector 2 of (\(self.testVectors.count)") {
-        let code = EIP61Code(self.testVectors[1])
+        let code = EIP67Code(self.testVectors[1])
         expect(code).toNot(beNil())
         expect(code!.targetAddress).toNot(beNil())
         expect(code!.targetAddress).to(equal(Address(ethereumAddress: "0xeeee00000000000000000000000000000000eeee")))
@@ -57,12 +57,12 @@ class EIP61Tests: QuickSpec {
                                               payable: false)))
 
         expect(code!.parameters).to(equal([
-          EIP61Code.Parameter(type: .address, value: Address(ethereumAddress: "0xeeee00000000000000000000000000000000eeee") as AnyObject),
-          EIP61Code.Parameter(type: .uint(bits: 256), value: BigUInt("5") as AnyObject)
+          EIP67Code.Parameter(type: .address, value: Address(ethereumAddress: "0xeeee00000000000000000000000000000000eeee") as AnyObject),
+          EIP67Code.Parameter(type: .uint(bits: 256), value: BigUInt("5") as AnyObject)
         ]))
       }
       it("should parse link from test vector 3 of (\(self.testVectors.count)") {
-        let code = EIP61Code(self.testVectors[2])
+        let code = EIP67Code(self.testVectors[2])
         expect(code).toNot(beNil())
         expect(code!.targetAddress).toNot(beNil())
         expect(code!.targetAddress).to(equal(Address(ethereumAddress: "0xeeee00000000000000000000000000000000eeee")))
@@ -74,11 +74,11 @@ class EIP61Tests: QuickSpec {
         expect(code!.parameters).to(beEmpty())
       }
       it("should parse link from test vector 4 of (\(self.testVectors.count)") {
-        let code = EIP61Code(self.testVectors[3])
+        let code = EIP67Code(self.testVectors[3])
         expect(code).toNot(beNil())
       }
       it("should parse link from test vector 5 of (\(self.testVectors.count)") {
-        let code = EIP61Code(self.testVectors[4])
+        let code = EIP67Code(self.testVectors[4])
         expect(code).to(beNil())
       }
     }
