@@ -70,11 +70,13 @@ public extension ABI {
       }
     }
     
+    public typealias InOutName = String
+    
     public struct InOut: Equatable {
-      public let name: String
+      public let name: InOutName
       public let type: ParameterType
       
-      public init(name: String, type: ParameterType) {
+      public init(name: InOutName, type: ParameterType) {
         self.name = name
         self.type = type
       }
