@@ -9,32 +9,21 @@
 import Foundation
 import BigInt
 
-public struct EIP67Code {
-  public struct Parameter: Equatable {
-    public var type: ABI.Element.ParameterType
-    public var value: AnyObject
-    
-    public static func == (lhs: EIP67Code.Parameter, rhs: EIP67Code.Parameter) -> Bool {
-      switch (lhs.value, rhs.value) {
-      case let (lhsValue as Address, rhsValue as Address): return lhsValue == rhsValue && lhs.type == rhs.type
-      case let (lhsValue as BigInt, rhsValue as BigInt): return lhsValue == rhsValue && lhs.type == rhs.type
-      case let (lhsValue as BigUInt, rhsValue as BigUInt): return lhsValue == rhsValue && lhs.type == rhs.type
-      case let (lhsValue as String, rhsValue as String): return lhsValue == rhsValue && lhs.type == rhs.type
-      case let (lhsValue as Data, rhsValue as Data): return lhsValue == rhsValue && lhs.type == rhs.type
-      case let (lhsValue as Bool, rhsValue as Bool): return lhsValue == rhsValue && lhs.type == rhs.type
-      default: return false
-      }
-    }
-  }
+public struct EIP67Code: EIPQRCode {
   
   // MARK: - Properties
+  
   public var targetAddress: Address
-  public var value: BigInt?
-  public var gasLimit: BigInt?
-  public var data: Data?
+  public var recipientAddress: Address?
+  public var chainID: BigInt? { return nil }
+  public var type: EIPQRCodeType { return .pay }
   public var functionName: String?
+  public var gasLimit: BigUInt?
+  public var value: BigUInt?
+  public var tokenValue: BigUInt?
   public var function: ABI.Element.Function?
-  public var parameters: [Parameter] = []
+  public var parameters: [EIPQRCodeParameter] = []
+  public var data: Data?
   
   public init(_ targetAddress: Address) {
     self.targetAddress = targetAddress
@@ -96,18 +85,37 @@ private struct EIP67CodeParser {
       switch comp.name {
       case "value":
         guard let value = comp.value,
-              let val = BigInt(scienceNotation: value) else { return nil }
+              let val = BigUInt(scienceNotation: value) else { return nil }
         code.value = val
         
       case "gas", "gasLimit":
         guard let value = comp.value,
-              let val = BigInt(scienceNotation: value) else { return nil }
+              let val = BigUInt(scienceNotation: value) else { return nil }
         code.gasLimit = val
         
       case "data":
         guard let value = comp.value,
               value.isHexWithPrefix() else { return nil }
-        code.data = Data(hex: value)
+        let data = Data(hex: value)
+        code.data = data
+        
+        let erc20transfer: ABI.Element.Function = .erc20transfer
+        let function: ABI.Element = .function(erc20transfer)
+        if let decoded = function.decodeInputData(data) as [String: AnyObject]?,
+           let transferMethod = ABI.ContractCollection.erc20.methods[.transfer],
+           let functionInputs = decoded.inputs(for: transferMethod) {
+          
+          if let to = functionInputs[.to] as? Address {
+            code.parameters.append(.init(type: .address, value: to as AnyObject))
+            inputs.append(.init(name: "0", type: .address))
+          }
+          if let amount = functionInputs[.value] as? BigUInt {
+            code.parameters.append(.init(type: .uint(bits: 256), value: amount as AnyObject))
+            inputs.append(.init(name: "1", type: .uint(bits: 256)))
+          }
+          
+          code.functionName = erc20transfer.name
+        }
         
       case "gasPrice":
         break
@@ -199,6 +207,7 @@ private struct EIP67CodeParser {
     }
     
     code.function = _buildFunction(code: code, inputs: inputs)
+    self._checkForTransfer(code: &code)
     return code
   }
   
@@ -209,5 +218,20 @@ private struct EIP67CodeParser {
                                 outputs: [],
                                 constant: false,
                                 payable: code.value != nil)
+  }
+  
+  private static func _checkForTransfer(code: inout EIP67Code) {
+    if code.function?.name == ABI.Element.Function.erc20transfer.name {
+      for parameter in code.parameters {
+        switch (parameter.type, parameter.value) {
+        case (.address, let address as Address):
+          code.recipientAddress = address
+        case (.uint(256), let amount as BigUInt):
+          code.tokenValue = amount
+        default:
+          break
+        }
+      }
+    }
   }
 }
