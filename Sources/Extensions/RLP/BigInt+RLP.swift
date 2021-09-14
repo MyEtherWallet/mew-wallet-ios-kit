@@ -29,22 +29,22 @@ extension RLPBigInt: RLP, RLPLength {
 }
 
 extension BigInt {
-    var data: Data {
-        return toTwosComplement()
-    }
-    
-    // takes all data as magnitude without dropping first bytes
-    init(data: Data) {
-        self.init()
-        
-        self.sign = .plus
-        self.magnitude = BigUInt(data)
-    }
-    
-    init(_ bytes: [UInt8]) {
-        self.init()
-        
-        self.sign = .plus
-        self.magnitude = BigUInt(Data(bytes))
-    }
+  var data: Data {
+      return toTwosComplement()
+  }
+  
+  // takes all data as magnitude without dropping first bytes
+  init(data: Data) {
+      self.init()
+      
+      self.sign = .plus
+      self.magnitude = BigUInt(data)
+  }
+  
+  init(_ bytes: [UInt8]) {
+      self.init()
+      
+      self.sign = .plus
+      self.magnitude = BigUInt(Data(bytes))
+  }
 }

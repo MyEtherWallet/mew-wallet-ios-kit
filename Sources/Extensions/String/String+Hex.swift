@@ -17,6 +17,11 @@ extension String {
     rawHex = rawHex.uppercased()
     return (rawHex.rangeOfCharacter(from: _nonHexCharacterSet) == nil)
   }
+  
+  func isHexWithPrefix() -> Bool {
+    guard self.hasHexPrefix() else { return false }
+    return self.isHex()
+  }
     
   mutating func removeHexPrefix() {
     if self.hasPrefix("0x") {

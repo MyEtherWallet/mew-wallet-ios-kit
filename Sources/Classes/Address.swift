@@ -36,7 +36,11 @@ public struct Address: CustomDebugStringConvertible {
     if let prefix = prefix, !address.hasPrefix(prefix) {
       address.insert(contentsOf: prefix, at: address.startIndex)
     }
-    self._address = address
+    if address.stringAddHexPrefix().count == Address.Ethereum.length, prefix == nil, address.isHex(), let eip55address = address.stringAddHexPrefix().eip55() {
+      self._address = eip55address
+    } else {
+      self._address = address
+    }
   }
   
   public init?(ethereumAddress: String) {

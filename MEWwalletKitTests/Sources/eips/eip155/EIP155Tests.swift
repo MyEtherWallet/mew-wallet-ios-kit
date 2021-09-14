@@ -23,15 +23,33 @@ class EIP155Tests: QuickSpec {
     let rlp: Data
     let sender: String?
     let hash: Data?
-    
+
     init(id: Int, nonce: String, gasPrice: String, gasLimit: String, to: String, data: String, value: String, r: String, s: String, v: String, rlp: String, sender: String?, hash: String?, chainID: String?) {
       self.id = id
       if let chainID = chainID {
-        self.transaction = try! Transaction(nonce: nonce, gasPrice: gasPrice, gasLimit: gasLimit, to: Address(raw: to), value: value, data: Data(hex: data), chainID: Data(hex: chainID))
+        //swiftlint:disable force_try
+        self.transaction = try! LegacyTransaction(
+          nonce: nonce,
+          gasPrice: gasPrice,
+          gasLimit: gasLimit,
+          to: Address(raw: to),
+          value: value,
+          data: Data(hex: data),
+          chainID: Data(hex: chainID)
+        )
       } else {
-        self.transaction = try! Transaction(nonce: nonce, gasPrice: gasPrice, gasLimit: gasLimit, to: Address(raw: to), value: value, data: Data(hex: data), chainID: nil)
+        //swiftlint:disable force_try
+        self.transaction = try! LegacyTransaction(
+          nonce: nonce,
+          gasPrice: gasPrice,
+          gasLimit: gasLimit,
+          to: Address(raw: to),
+          value: value,
+          data: Data(hex: data),
+          chainID: nil
+        )
       }
-      
+
       self.signature = try! TransactionSignature(r: r, s: s, v: v)
       self.transaction.signature = self.signature
       self.rlp = Data(hex: rlp)
@@ -43,7 +61,7 @@ class EIP155Tests: QuickSpec {
       }
     }
   }
-  
+
   lazy var testVectors: [TestVector] = {
     let vector: [TestVector] = [
       // EmptyTransaction.json
@@ -91,7 +109,7 @@ class EIP155Tests: QuickSpec {
     ]
     return vector
   }()
-  
+
   override func spec() {
     describe("Signature tests") {
       it("ttSignature tests") {
@@ -120,14 +138,14 @@ class EIP155Tests: QuickSpec {
           }
         }
       }
-      it("Should sign transaction and return the expected signature") {
-        let transaction = try? Transaction(nonce: "0x03", gasPrice: "0x3b9aca00", gasLimit: "0x7530",
+      it("Should sign transaction and returns the expected signature") {
+        let transaction = try? LegacyTransaction(nonce: "0x03", gasPrice: "0x3b9aca00", gasLimit: "0x7530",
                                            to: Address(raw: "0xb414031Aa4838A69e27Cb2AE31E709Bcd674F0Cb"), value: "0x64", data: Data([]))
         transaction?.chainID = BigInt(0x11)
-        
+
         expect(transaction).toNot(beNil())
         expect(transaction?.hash()).to(equal(Data(hex: "0x91e0ad336c23d84f757aa4cde2d0bb557daf5e1ca0a0b850b6431f3277fc167b")))
-        
+
         let privateKey = PrivateKeyEth1(privateKey: Data(hex: "3a0ce9a362c73439adb38c595e739539be1e34d19c5e9f04962c101c86bd7616"), network: .ethereum)
         do {
           try transaction?.sign(key: privateKey)
@@ -135,18 +153,19 @@ class EIP155Tests: QuickSpec {
           fail("Test failed beacuse of exception: \(error)")
           return
         }
-        
+
         expect(transaction?.signature).toNot(beNil())
         expect(transaction?.signature?.r.data.toHexString()).to(equal("1fff9fa845437523b0a7f334b7d2a0ab14364a3581f898cd1bba3b5909465867"))
         expect(transaction?.signature?.s.data.toHexString()).to(equal("1415137f53eeddf0687e966f8d59984676d6d92ce88140765ed343db6936679e"))
         expect(transaction?.signature?.v.data.toHexString()).to(equal("45"))
       }
       it("Should sign transaction and return the expected signature 2") {
-        let transaction = try? Transaction(nonce: "0x00", gasPrice: "0x106", gasLimit: "0x33450",
+        let transaction = try? LegacyTransaction(nonce: "0x00", gasPrice: "0x106", gasLimit: "0x33450",
                                            to: Address(raw: "0x5c5220918B616E583515A7F42b6bE0c967664462"), value: "0xc8", data: Data([]))
         expect(transaction?.serialize()?.toHexString()).to(equal("e08082010683033450945c5220918b616e583515a7f42b6be0c96766446281c880"))
-        
+
         let privateKey = PrivateKeyEth1(privateKey: Data(hex: "009312d3c3a8ac6d00fb2df851e1cb0023becc00cc7a0083b0ae70f4bd0575ae"), network: .ethereum)
+        expect(privateKey.address()?.address.lowercased()).to(equal("0x5c5220918b616e583515a7f42b6be0c967664462"))
         do {
           try transaction?.sign(key: privateKey)
         } catch {
