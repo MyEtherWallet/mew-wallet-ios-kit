@@ -13,7 +13,7 @@ public class LegacyTransaction: Transaction {
   public var gasPrice: Data {
     return self._gasPrice.data
   }
-    
+  
   init(
     nonce: BigInt = BigInt(0x00),
     gasPrice: BigInt = BigInt(0x00),
@@ -50,28 +50,30 @@ public class LegacyTransaction: Transaction {
     chainID: Data?
   ) {
     if let chainID = chainID {
-        self.init(
-            nonce: BigInt(data: nonce),
-            gasPrice: BigInt(data: gasPrice),
-            gasLimit: BigInt(data: gasLimit),
-            to: to,
-            value: BigInt(data: value),
-            data: data,
-            chainID: BigInt(data: chainID)
-        )
+      self.init(
+        nonce: BigInt(data: nonce),
+        gasPrice: BigInt(data: gasPrice),
+        gasLimit: BigInt(data: gasLimit),
+        from: from,
+        to: to,
+        value: BigInt(data: value),
+        data: data,
+        chainID: BigInt(data: chainID)
+      )
     } else {
-        self.init(
-            nonce: BigInt(data: nonce),
-            gasPrice: BigInt(data: gasPrice),
-            gasLimit: BigInt(data: gasLimit),
-            to: to,
-            value: BigInt(data: value),
-            data: data,
-            chainID: nil
-        )
+      self.init(
+        nonce: BigInt(data: nonce),
+        gasPrice: BigInt(data: gasPrice),
+        gasLimit: BigInt(data: gasLimit),
+        from: from,
+        to: to,
+        value: BigInt(data: value),
+        data: data,
+        chainID: nil
+      )
     }
   }
-
+  
   public convenience init(
     nonce: String = "0x00",
     gasPrice: String = "0x00",
@@ -87,16 +89,16 @@ public class LegacyTransaction: Transaction {
     let gasLimit = BigInt(Data(hex: gasLimit.stringWithAlignedHexBytes()).bytes)
     let value = BigInt(Data(hex: value.stringWithAlignedHexBytes()).bytes)
     if let chainID = chainID {
-        self.init(
-            nonce: nonce,
-            gasPrice: gasPrice,
-            gasLimit: gasLimit,
-            from: from,
-            to: to,
-            value: value,
-            data: data,
-            chainID: BigInt(data: chainID)
-        )
+      self.init(
+        nonce: nonce,
+        gasPrice: gasPrice,
+        gasLimit: gasLimit,
+        from: from,
+        to: to,
+        value: value,
+        data: data,
+        chainID: BigInt(data: chainID)
+      )
     } else {
       self.init(
         nonce: nonce,
@@ -109,7 +111,7 @@ public class LegacyTransaction: Transaction {
       )
     }
   }
-
+  
   public convenience init(
     nonce: Decimal? = nil,
     gasPrice: Decimal?,
@@ -124,42 +126,42 @@ public class LegacyTransaction: Transaction {
     let gasPriceBigInt: BigInt
     let gasLimitBigInt: BigInt
     let valueBigInt: BigInt
-
+    
     if let nonceString = (nonce as NSDecimalNumber?)?.stringValue, !nonceString.isEmpty {
       nonceBigInt = BigInt(nonceString) ?? BigInt(0x00)
     } else {
       nonceBigInt = BigInt(0x00)
     }
-
+    
     if let gasPriceString = (gasPrice as NSDecimalNumber?)?.stringValue {
       gasPriceBigInt = BigInt(gasPriceString) ?? BigInt(0x00)
     } else {
       gasPriceBigInt = BigInt(0x00)
     }
-
+    
     if let gasLimitString = (gasLimit as NSDecimalNumber?)?.stringValue {
       gasLimitBigInt = BigInt(gasLimitString) ?? BigInt(0x00)
     } else {
       gasLimitBigInt = BigInt(0x00)
     }
-
+    
     if let valueString = (value as NSDecimalNumber?)?.stringValue {
       valueBigInt = BigInt(valueString) ?? BigInt(0x00)
     } else {
       valueBigInt = BigInt(0x00)
     }
-
+    
     if let chainID = chainID {
-        self.init(
-            nonce: nonceBigInt,
-            gasPrice: gasPriceBigInt,
-            gasLimit: gasLimitBigInt,
-            from: from,
-            to: to,
-            value: valueBigInt,
-            data: data,
-            chainID: BigInt(data: chainID)
-        )
+      self.init(
+        nonce: nonceBigInt,
+        gasPrice: gasPriceBigInt,
+        gasLimit: gasLimitBigInt,
+        from: from,
+        to: to,
+        value: valueBigInt,
+        data: data,
+        chainID: BigInt(data: chainID)
+      )
     } else {
       self.init(
         nonce: nonceBigInt,
@@ -187,7 +189,7 @@ public class LegacyTransaction: Transaction {
     description += "Hash: \(self.hash()?.toHexString() ?? "none")"
     return description
   }
-
+  
   
   internal override func rlpData(chainID: BigInt?, forSignature: Bool = false) -> [RLP] {
     var fields: [RLP] = [self._nonce.toRLP(), self._gasPrice.toRLP(), self._gasLimit.toRLP()]
@@ -198,9 +200,9 @@ public class LegacyTransaction: Transaction {
     }
     fields += [self._value.toRLP(), self.data]
     if let signature = self.signature, !forSignature {
-        fields += [signature.v, signature.r, signature.s]
+      fields += [signature.v, signature.r, signature.s]
     } else if let chainID = chainID ?? self.chainID {
-        fields += [chainID.toRLP(), 0, 0]
+      fields += [chainID.toRLP(), 0, 0]
     }
     return fields
   }
