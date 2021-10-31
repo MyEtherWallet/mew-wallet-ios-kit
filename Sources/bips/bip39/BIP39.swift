@@ -166,7 +166,7 @@ public final class BIP39 {
       throw BIP39Error.invalidSalt
     }
     
-    let seed = try PKCS5.PBKDF2(password: mnemonicData.bytes, salt: saltData.bytes, iterations: 2048, keyLength: 64, variant: HMAC.Variant.sha512).calculate()
+    let seed = try PKCS5.PBKDF2(password: mnemonicData.bytes, salt: saltData.bytes, iterations: 2048, keyLength: 64, variant: .sha2(.sha512)).calculate()
     return Data(seed)
   }
 }

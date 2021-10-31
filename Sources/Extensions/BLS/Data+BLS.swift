@@ -43,7 +43,7 @@ extension Data {
       let inputKeyingMaterial = self.bytes + [0x00]
       let info = keyInfo.bytes + [0x00, 0x30]
       
-      let okm = try HKDF(password: inputKeyingMaterial, salt: salt, info: info, keyLength: 48, variant: .sha256).calculate()
+      let okm = try HKDF(password: inputKeyingMaterial, salt: salt, info: info, keyLength: 48, variant: .sha2(.sha256)).calculate()
       guard let okmBN = BigInt(Data(okm).toHexString(), radix: 16) else {
         throw EIP2333Error.invalidOKM
       }
