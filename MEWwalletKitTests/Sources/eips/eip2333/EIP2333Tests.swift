@@ -102,7 +102,6 @@ class EIP2333Tests: QuickSpec {
 
               let derivedWallet = try wallet.derive(vector.derivationPath)
               let childSKdata = derivedWallet.privateKey.data()
-//              debugPrint(childSKdata.toHexString())
               guard let childSK = BigInt(childSKdata.toHexString(), radix: 16) else {
                 fail("Can't get childSK")
                 return
