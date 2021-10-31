@@ -5,7 +5,7 @@ Good mood
 
 ## Common questions:
 
-[Apps containing app extensions fail to get approved by the App Store](https://github.com/MyEtherWallet/mew-wallet-ios-kit/issues/2)
+- [Apps containing app extensions fail to get approved by the App Store](https://github.com/MyEtherWallet/mew-wallet-ios-kit/issues/2)
 
 ## Installation
 ### Swift Package Manager
