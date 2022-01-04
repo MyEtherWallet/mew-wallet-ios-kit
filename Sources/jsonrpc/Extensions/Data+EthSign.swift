@@ -50,7 +50,7 @@ internal extension Data {
       return nil
     }
     do {
-      let signature = try TransactionSignature(signature: serializedRecoverableSignature)
+      let signature = try TransactionSignature(signature: serializedRecoverableSignature, normalized: true)
       var signed = Data()
       if leadingV {
         signed.append(signature.v.data)
