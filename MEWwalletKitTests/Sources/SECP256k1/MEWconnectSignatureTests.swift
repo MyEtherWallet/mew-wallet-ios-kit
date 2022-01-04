@@ -64,6 +64,15 @@ class MEWconnectSignatureTests: QuickSpec {
         expect(signedDataLeadingV) == testResultLeadingV
         expect(signedDataTrailingV) == testResultTrailingV
       }
+      it("Should have correct length") {
+        let testKey = Data(hex: "064701b9218c1a1893d8ef7e33f45afa11d4bf986fa7f815e8b23a2dc8b4d89b")
+        let data = "476020729".hashPersonalMessage()
+        let signature = data?.sign(key: testKey, leadingV: false)
+        
+        let correctSignature = Data(hex: "cb739fd04d52879de00721dcdf62ba32a79c8d8bf39c8802fb9d7154b41b2d15003ac8f68b4b1e5394831dc9ced7350bde2776024888558e1d6fe07d4f7d12f71c")
+        expect(signature) == correctSignature
+        expect(signature?.count) == 65
+      }
       
       it("Should multiply EC correctly") {
         let testPrivateKey = Data(hex: "db391b235fc493cbcab9f5d2ed9582036606b946b8685995db4a17df2b87e2a2")
