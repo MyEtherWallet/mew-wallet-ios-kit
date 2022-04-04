@@ -37,7 +37,6 @@ class MEWconnectSignatureVerificationTests: QuickSpec {
       ]
       return vector
     }()
-
   
     override func spec() {
       describe("signature verification tests") {

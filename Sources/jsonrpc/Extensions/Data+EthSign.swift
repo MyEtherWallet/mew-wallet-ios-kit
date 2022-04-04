@@ -34,7 +34,6 @@ public extension Data {
   /// - Returns: Ethereum address that signed the message if message if verified, nil if message could not be verified
   func verify(signature: Data) -> Address? {
     // Normalize V part of signature (EIP-155, if I'm not wrong)
-    guard signature.count > 64 else { return nil }
     var signature = signature
     signature[64] = signature[64] - 0x1b
       
