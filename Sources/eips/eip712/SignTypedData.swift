@@ -10,6 +10,7 @@ import Foundation
 import CryptoSwift
 
 public enum TypedMessageSignError: Error {
+  case invalidVersion
     case invalidData
     case unknown(String)
     
@@ -17,6 +18,8 @@ public enum TypedMessageSignError: Error {
         switch self {
         case .unknown(let string):
             return string
+        case .invalidVersion:
+          return "Invalid version"
         case .invalidData:
             return "Invalid data"
         }
@@ -25,7 +28,7 @@ public enum TypedMessageSignError: Error {
 
 public enum SignTypedDataVersion {
     // swiftlint:disable:next identifier_name
-    case v3, v4
+    case v1, v3, v4
 }
 
 public struct MessageTypeProperty: Codable {
@@ -38,6 +41,13 @@ public struct TypedMessageDomain: Codable {
     public let version: String?
     public let chainId: Int?
     public let verifyingContract: String?
+  
+    private enum CodingKeys: String, CodingKey {
+        case name
+        case version
+        case chainId
+        case verifyingContract
+    }
     
     public init(
         name: String?,
@@ -50,6 +60,21 @@ public struct TypedMessageDomain: Codable {
         self.chainId = chainId
         self.verifyingContract = verifyingContract
     }
+  
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    
+    self.name = try container.decodeIfPresent(String.self, forKey: .name)
+    self.version = try container.decodeIfPresent(String.self, forKey: .version)
+    if let chainId = try? container.decodeIfPresent(Int.self, forKey: .chainId) {
+      self.chainId = chainId
+    } else if let chainId = try container.decodeIfPresent(String.self, forKey: .chainId) {
+      self.chainId = Int(chainId)
+    } else {
+      self.chainId = nil
+    }
+    self.verifyingContract = try container.decodeIfPresent(String.self, forKey: .verifyingContract)
+  }
     
     func encoded() -> [String: AnyObject] {
         guard let data = try? JSONEncoder().encode(self) else {
@@ -77,10 +102,11 @@ public struct SignedMessagePayload {
 }
 
 public struct TypedMessage {
-    public let types: MessageTypes
-    public let primaryType: String
-    public let domain: TypedMessageDomain
-    public let message: [String: AnyObject]
+  public let types: MessageTypes
+  public let primaryType: String
+  public let domain: TypedMessageDomain
+  public let message: [[String: AnyObject]]
+  public let version: SignTypedDataVersion
 }
 
 public extension TypedMessage {
@@ -91,31 +117,39 @@ public extension TypedMessage {
         case message
     }
     
-    init(json: [String: Any]) throws {
-        guard
-            let primaryType = json[CodingKeys.primaryType.rawValue] as? String
-        else {
-            throw TypedMessageSignError.invalidData
+  init(json: Any, version: SignTypedDataVersion) throws {
+    self.version = version
+    switch version {
+    case .v1:
+      guard let json = json as? [[String: AnyObject]] else { throw TypedMessageSignError.invalidData }
+      self.types = [:]
+      self.domain = .init(name: nil, version: nil, chainId: nil, verifyingContract: nil)
+      self.primaryType = ""
+      self.message = json
+      
+    case .v3, .v4:
+      guard let json = json as? [String: Any] else { throw TypedMessageSignError.invalidData}
+      guard let primaryType = json[CodingKeys.primaryType.rawValue] as? String else { throw TypedMessageSignError.invalidData }
+      
+      let types = (json[CodingKeys.types.rawValue] as? [String: Any]) ?? [:]
+      var messageTypes = MessageTypes()
+      try types.forEach {
+        if let json = $0.value as? [[String: Any]] {
+          let data = try JSONSerialization.data(withJSONObject: json, options: .prettyPrinted)
+          messageTypes[$0.key] = try JSONDecoder().decode([MessageTypeProperty].self, from: data)
         }
-        
-        let types = (json[CodingKeys.types.rawValue] as? [String: Any]) ?? [:]
-        var messageTypes = MessageTypes()
-        try types.forEach {
-            if let json = $0.value as? [[String: Any]] {
-                let data = try JSONSerialization.data(withJSONObject: json, options: .prettyPrinted)
-                messageTypes[$0.key] = try JSONDecoder().decode([MessageTypeProperty].self, from: data)
-            }
-        }
-        self.types = messageTypes
-        
-        self.primaryType = primaryType
-        
-        let domain = (json[CodingKeys.domain.rawValue] as? [String: Any]) ?? [:]
-        let domainData = try JSONSerialization.data(withJSONObject: domain, options: .prettyPrinted)
-        self.domain = try JSONDecoder().decode(TypedMessageDomain.self, from: domainData)
-        
-        self.message = (json[CodingKeys.message.rawValue] as? [String: AnyObject]) ?? [:]
+      }
+      self.types = messageTypes
+      
+      self.primaryType = primaryType
+      
+      let domain = (json[CodingKeys.domain.rawValue] as? [String: Any]) ?? [:]
+      let domainData = try JSONSerialization.data(withJSONObject: domain, options: .prettyPrinted)
+      self.domain = try JSONDecoder().decode(TypedMessageDomain.self, from: domainData)
+      
+      self.message = [(json[CodingKeys.message.rawValue] as? [String: AnyObject]) ?? [:]]
     }
+  }
 }
 
 public func signTypedMessage(privateKey: PrivateKeyEth1, payload: SignedMessagePayload, version: SignTypedDataVersion = .v3) throws -> String {
@@ -129,6 +163,33 @@ public func signTypedMessage(privateKey: PrivateKeyEth1, payload: SignedMessageP
 }
 
 public func hash(message: TypedMessage, version: SignTypedDataVersion) throws -> Data {
+  switch version {
+  case .v1:
+    let data = try message.message.reduce(Data(), { partialResult, message in
+      guard let type = message["type"] as? String, let value = message["value"] else { throw TypedMessageSignError.invalidData }
+      let parsedType = try ABITypeParser.parseTypeString(type)
+      guard var data = ABIEncoder.convertToData(value, type: parsedType) else { throw TypedMessageSignError.invalidData }
+      switch parsedType {
+      case .int(bits: let length), .uint(bits: let length), .bytes(length: let length):
+        data.setLength(Int(clamping: length / 8))
+      default:
+        break
+      }
+      return partialResult + data
+    })
+    let schema = try message.message.reduce(Data(), { partialResult, message in
+      guard let type = message["type"] as? String, let name = message["name"] as? String else { throw TypedMessageSignError.invalidData }
+      guard let data = ABIEncoder.convertToData("\(type) \(name)" as AnyObject, type: .string) else { throw TypedMessageSignError.invalidData }
+      return partialResult + data
+    })
+    
+    let sha3schema = schema.sha3(.keccak256) as AnyObject
+    let sha3message = data.sha3(.keccak256) as AnyObject
+    
+    guard let hash = ABIEncoder.encode(types: [.bytes(length: 32), .bytes(length: 32)], values: [sha3schema, sha3message])?.sha3(.keccak256) else { throw TypedMessageSignError.invalidData }
+    return hash
+    
+  case .v3 where message.message.count == 1, .v4 where message.message.count == 1:
     var data = Data(hex: "1901")
     
     data.append(
@@ -144,7 +205,7 @@ public func hash(message: TypedMessage, version: SignTypedDataVersion) throws ->
         data.append(
             try hashStruct(
                 primaryType: message.primaryType,
-                data: message.message,
+                data: message.message[0],
                 types: message.types,
                 version: version
             )
@@ -152,6 +213,9 @@ public func hash(message: TypedMessage, version: SignTypedDataVersion) throws ->
     }
     
     return data.sha3(.keccak256)
+  default:
+    throw TypedMessageSignError.invalidVersion
+  }
 }
 
 public func hashStruct(
@@ -195,7 +259,7 @@ public func encodeData(
         }
         
         if type == "bytes" {
-            guard let data = ABIEncoder.convertToData(value) else {
+            guard let data = ABIEncoder.convertToData(value, type: .bytes(length: 32)) else {
                 throw TypedMessageSignError.unknown("failed to convert value \(value) to data")
             }
             
