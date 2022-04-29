@@ -106,11 +106,15 @@ extension ABIEncoder {
         return nil
     }
     
-    public static func convertToData(_ value: AnyObject) -> Data? {
+    public static func convertToData(_ value: AnyObject, type: ABI.Element.ParameterType) -> Data? {
         switch value {
         case let d as Data:
             return d
         case let d as String:
+          if type.isNumber {
+            guard let value = IntegerLiteralType(d) else { return nil }
+            return convertToData(value as AnyObject, type: type)
+          }
             if d.hasHexPrefix() {
                 return Data(hex: d)
             }
@@ -129,6 +133,8 @@ extension ABIEncoder {
                 bytesArray.append(UInt8(el))
             }
             return Data(bytesArray)
+        case is IntegerLiteralType:
+          return convertToBigInt(value)?.data
         default:
             return nil
         }
@@ -183,6 +189,9 @@ extension ABIEncoder {
     
     // swiftlint:disable:next function_body_length cyclomatic_complexity
     public static func encodeSingleType(type: ABI.Element.ParameterType, value: AnyObject) -> Data? {
+      if let d = value as? Data {
+        return d
+      }
         switch type {
         case .uint:
             if let biguint = convertToBigUInt(value) {
@@ -218,7 +227,7 @@ extension ABIEncoder {
                 }
             }
         case .bytes(let length):
-            guard let data = convertToData(value) else {break}
+            guard let data = convertToData(value, type: type) else {break}
             if data.count > length {break}
             return data.setLengthRight(32)
         case .string:
@@ -238,7 +247,7 @@ extension ABIEncoder {
                 return total
             }
         case .dynamicBytes:
-            guard let data = convertToData(value) else {break}
+            guard let data = convertToData(value, type: type) else {break}
             let minLength = ((data.count + 31) / 32)*32
             let paddedData = data.setLengthRight(minLength)
             let length = BigUInt(data.count)

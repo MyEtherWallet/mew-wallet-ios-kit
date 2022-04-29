@@ -20,6 +20,15 @@ extension ABI.Element {
         case dynamicBytes
         case string
         indirect case tuple(types: [ParameterType])
+      
+      var isNumber: Bool {
+        switch self {
+        case .int, .uint:
+          return true
+        default:
+          return false
+        }
+      }
         
         var isStatic: Bool {
             switch self {
