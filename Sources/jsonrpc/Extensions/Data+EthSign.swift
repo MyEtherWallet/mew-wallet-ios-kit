@@ -27,15 +27,18 @@ public extension Data {
     self.sign(key: key.data(), leadingV: leadingV)
   }
     
-  /// Verifies  hash of a hashed message (self).
+  /// Recovers address from a hashed message (self) with provided signature.
+  ///
   /// Caller must compare returned Ethereum address with the sender's address and
   /// confirm the hash provided by the sender is equal to the hash of the original message
-  /// - Parameter signature: signature
-  /// - Returns: Ethereum address that signed the message if message if verified, nil if message could not be verified
-  func verify(signature: Data) -> Address? {
-    // Normalize V part of signature (EIP-155, if I'm not wrong)
+  /// - Parameter with signature: signature
+  /// - Returns: Ethereum address that signed the message, nil if address could not be recovered
+  func recover(with signature: Data) -> Address? {
+    // Normalize V part of signature
     var signature = signature
-    signature[64] = signature[64] - 0x1b
+    if signature[64] > 3 {
+      signature[64] = signature[64] - 0x1b
+    }
       
     let context = secp256k1_context_create(UInt32(SECP256K1_CONTEXT_VERIFY))!
     // Recover public key from signature and hash
