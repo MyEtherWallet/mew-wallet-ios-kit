@@ -1,4 +1,4 @@
-// swift-tools-version:5.4
+// swift-tools-version:5.5
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -22,7 +22,8 @@ let package = Package(
     .package(url: "https://github.com/Quick/Nimble.git", .upToNextMajor(from: "9.0.0")),
     .package(url: "https://github.com/MyEtherWallet/bls-eth-swift.git", .exact("1.0.1")),
     .package(url: "https://github.com/attaswift/BigInt.git", from: "5.2.1"),
-    .package(name: "MEWwalletTweetNacl", url: "https://github.com/MyEtherWallet/mew-wallet-ios-tweetnacl.git", .upToNextMajor(from: "1.0.0"))
+    //.package(name: "MEWwalletTweetNacl", url: "https://github.com/MyEtherWallet/mew-wallet-ios-tweetnacl.git", .upToNextMajor(from: "1.0.0")),
+    .package(name: "MEWwalletTweetNacl", url: "https://github.com/moonfishapp/mew-wallet-ios-tweetnacl.git", branch: "main"),
   ],
   targets: [
     .target(
