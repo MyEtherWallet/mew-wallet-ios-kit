@@ -74,8 +74,8 @@ class EIP1024Tests: QuickSpec {
                     expect(decryptedByRecipientString) == "My name is Satoshi Buterin"
 
                     // Decrypt using sender's private key
-//                    let decryptedBySender = try encryptedData.decrypt(privateKey: self.senderPrivateKey)
-//                    expect(decryptedBySender) == "My name is Satoshi Buterin"
+                    let decryptedBySender = try encryptedData.decrypt(senderPrivateKey: self.senderPrivateKey, recipientPublicKey: recipientPublicKeyString)
+                    expect(decryptedBySender) == "My name is Satoshi Buterin"
                 } catch {
                     fail(error.localizedDescription)
                 }
