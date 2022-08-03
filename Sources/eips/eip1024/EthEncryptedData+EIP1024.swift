@@ -21,29 +21,40 @@ public struct EthEncryptedData: Codable {
     self.ephemPublicKey = ephemPublicKey
     self.ciphertext = ciphertext
   }
-    
-  /// - Parameters:
-  ///   - plaintext: plain text to be necrypted
-  ///   - publicKey: public key of recipient
-  /// - Returns: EthEncryptedData
-//  public static func encrypt(plaintext: String, publicKey: String) throws -> EthEncryptedData {
-//    let ephemKeys = try TweetNacl.keyPair()
-//    let publicKeyData = Data(hex: publicKey)
-//
-//    let ciphertextData = try TweetNacl.box(message: plaintext, theirPublicKey: publicKeyData, mySecretKey: ephemKeys.secretKey)
-//    guard let ciphertext = String(data: ciphertextData, encoding: .utf8), let nonceString = String(data: Data(nonce), encoding: .utf8), let ephemPublicKeyString = String(data: ephemKeys.publicKey, encoding: .utf8) else {
-//      throw EthCryptoError.encryptionFailed
-//    }
-//    return EthEncryptedData(nonce: nonceString, ephemPublicKey: ephemPublicKeyString, ciphertext: ciphertext)
-//  }
 }
 
 public enum EthCryptoError: Error {
     case decryptionFailed
     case encryptionFailed
+    case keyError
 }
 
 extension EthEncryptedData {
+    
+    // MARK: - Encrypt
+    /// - Parameters:
+    ///   - plaintext: plain text to be encrypted
+    ///   - senderKey: private ethereum key of sender
+    ///   - publicKey: public key of recipient curve25519 in hex format
+    /// - Returns: EthEncryptedData
+    public static func encrypt(plaintext: String, senderPrivateKey: PrivateKeyEth1, recipientPublicKey: String) throws -> EthEncryptedData {
+        guard let plaintextData = plaintext.data(using: .utf8),
+              let recipientPublicKey = Data(base64Encoded: recipientPublicKey) else {
+            throw EthCryptoError.encryptionFailed
+        }
+        let secretBox = try TweetNacl.box(message: plaintextData, recipientPublicKey: recipientPublicKey, senderSecretKey: senderPrivateKey.curve25519PrivateKeyData())
+        return try EthEncryptedData(nonce: secretBox.nonce.base64EncodedString(), ephemPublicKey: senderPrivateKey.curve25519PublicKey(), ciphertext: secretBox.box.base64EncodedString())
+    }
+
+  // MARK: - Decrypt
+    public func decrypt(privateKey: PrivateKeyEth1) throws -> String {
+        guard let privateKey = privateKey.string() else { throw EthCryptoError.keyError }
+        return try decrypt(privateKey: privateKey)
+    }
+    
+    /// Decrypts EthEncryptedData
+    /// - Parameter privateKey: Private Ethereum key
+    /// - Returns: cleartext message
     public func decrypt(privateKey: String) throws -> String {
         let data = Data(hex: privateKey)
                 
@@ -71,9 +82,28 @@ extension EthEncryptedData {
 }
 
 extension PrivateKeyEth1 {
-  public func eth_publicKey() throws -> String {
-    let publicKey = try TweetNacl.keyPair(fromSecretKey: data()).publicKey
     
-    return publicKey.toHexString()
+  /// Create curve25519 public key from Ethereum private key
+  /// - Returns: base64 encoded string
+  public func curve25519PublicKey() throws -> String {
+    return try curve25519PublicKeyData().base64EncodedString()
+  }
+
+  /// Create curve25519 public key from Ethereum private key
+  /// - Returns: public key
+  func curve25519PublicKeyData() throws -> Data {
+    return try TweetNacl.keyPair(fromSecretKey: data()).publicKey
+  }
+
+  /// Create curve25519 private key from Ethereum private key
+  /// - Returns: base64 encoded string
+  public func curve25519PrivateKey() throws -> String {
+    return try curve25519PrivateKeyData().base64EncodedString()
+  }
+    
+  /// Create curve25519 private key from Ethereum private key
+  /// - Returns: private key
+  func curve25519PrivateKeyData() throws -> Data {
+    return try TweetNacl.keyPair(fromSecretKey: data()).secretKey
   }
 }
