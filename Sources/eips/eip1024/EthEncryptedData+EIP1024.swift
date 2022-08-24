@@ -29,6 +29,19 @@ public enum EthCryptoError: Error {
     case keyError
 }
 
+extension EthCryptoError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .decryptionFailed:
+            return "Decryption failed"
+        case .encryptionFailed:
+            return "Encryption failed"
+        case .keyError:
+            return "Invalid private key"
+        }
+    }
+}
+
 extension EthEncryptedData {
     
     // MARK: - Encrypt
