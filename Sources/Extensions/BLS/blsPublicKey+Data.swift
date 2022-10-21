@@ -6,7 +6,6 @@
 //  Copyright © 2020 MyEtherWallet Inc. All rights reserved.
 //
 
-#if !os(Linux)
 
 import Foundation
 import bls_framework
@@ -21,4 +20,3 @@ extension blsPublicKey {
     return Data(bytes)
   }
 }
-#endif

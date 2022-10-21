@@ -6,8 +6,6 @@
 //  Copyright © 2020 MyEtherWallet Inc. All rights reserved.
 //
 
-#if !os(Linux)
-
 import Foundation
 import bls_framework
 
@@ -100,4 +98,3 @@ extension SecretKeyEth2: BIP32 {
     return derivedSK
   }
 }
-#endif
