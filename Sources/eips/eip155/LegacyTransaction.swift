@@ -14,7 +14,7 @@ public class LegacyTransaction: Transaction {
     return self._gasPrice.data
   }
   
-  init(
+  public init(
     nonce: BigInt = BigInt(0x00),
     gasPrice: BigInt = BigInt(0x00),
     gasLimit: BigInt = BigInt(0x00),
